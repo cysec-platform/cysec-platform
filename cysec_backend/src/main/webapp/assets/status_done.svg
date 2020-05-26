@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>status/done</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#B9FFB7" offset="0%"></stop>
+            <stop stop-color="#8DD7FA" offset="100%"></stop>
+        </linearGradient>
+        <polygon id="path-2" points="11 0 20.5262794 5.5 20.5262794 16.5 11 22 1.47372056 16.5 1.47372056 5.5"></polygon>
+    </defs>
+    <g id="status/done" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Polygon-Copy-2" stroke-linejoin="square">
+            <path stroke="#FFFFFF" stroke-width="1.5" d="M11,0.866025404 L2.22372056,5.9330127 L2.22372056,16.0669873 L11,21.1339746 L19.7762794,16.0669873 L19.7762794,5.9330127 L11,0.866025404 Z" fill="url(#linearGradient-1)" fill-rule="evenodd"></path>
+            <path stroke="#001921" stroke-width="0.5" d="M11,0.288675135 L1.72372056,5.64433757 L1.72372056,16.3556624 L11,21.7113249 L20.2762794,16.3556624 L20.2762794,5.64433757 L11,0.288675135 Z"></path>
+        </g>
+        <polyline id="Path-2" stroke="#001921" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" points="8 11.5061556 10.8692355 13.6292228 14.7842208 8"></polyline>
+    </g>
+</svg>

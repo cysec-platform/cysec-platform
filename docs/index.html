@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cysec</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style/cysec.css">
+    <link rel="stylesheet" href="style/fonts.css">
+</head>
+<body>
+<div id="content" class="cysec">
+    <div class="container">
+        <h2>Cysec platform</h2>
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+            <li><a data-toggle="tab" href="#menu1">Coaches</a></li>
+            <li><a data-toggle="tab" href="#menu2">Roadmap</a></li>
+        </ul>
+
+        <div class="tab-content">
+
+            <div id="home" class="tab-pane fade in active">
+                <h3>What is Cysec?</h3>
+                <p>Cysec is an open-source, extensible and flexible web application written in Java.</p>
+                <p>Its primary purpose is to provide a platform for so-called "coaches". Coaches are interactive pieces of software that collect information and provide expert advice based on this information. </p>
+				<p>The platform was designed by the <a href="https://www.fhnw.ch">University of Applied Sciences of Northwestern Switzerland</a> for cybersecurity specific advice for SMEs within the EU funded project <a href="https://www.smesec.eu">SMESEC</a>. We discovered that by aplying small changes to the platform it became suitable for all kinds of coaching.</a></p>
+
+                <h3>Who are the target groups?</h3>
+                <p>CySeC is neither limited to topics like cybersecurity nor focused on small and medium-sized enterprises (SME). The versatile nature of the coaches allows to cover arbitrary topics and is therefore suitable for other parties, such as</p>
+                <ul>
+                    <li>Private persons</li>
+                    <li>Associations</li>
+                    <li>Companies</li>
+                    <li>Governments</li>
+                    <li>Non government organizations</li>
+                </ul>
+				<p>and it may accommodate any advice given that the respective coach is available.<p>
+				
+                <h3>Data security</h3>
+                <p>CySeC has been created with security in mind. Data of individual users or companies are stored within strictly separated data structures. These structures guarantee that in the unlikely event of an algorithmic problem, not other data is leaked to a user. Furthermore, all data is kept in human-readable XML files to allow to see all data collected about a user or entity.</p>
+            </div>
+
+            <div id="menu1" class="tab-pane fade">
+                <h3>Specific coaching</h3>
+                <p>You can install diverse coaches you want to use.
+                   A coach is not a survey tool like others but an intelligent digital assistant. Questions asked may be dynamically built according to information obtained by the coach in any conceivable way.</p>
+                <img src="cysec_question_instruction.png" style="width: 50%">
+                <p>Coaches react on the users' input in a variety of different ways: Based on a users input, it might include additional questions on the fly to dig deeper into a subject. Coaches are also able to give recommendations on specific questions to guide a user towards best practices.</p>
+                <img src="cysec_feedback.png" style="width: 50%">
+                <p>Gamification is a well-known driver of motivation. CySeC was developed with people specializing in user experience to improve adherence to the coach. A coach may use scores, grades, and achievements as a stimulus to motivate users to keep going. The overall progress for a user is also displayed in the skill board.</p>
+                <img src="skillboard.png" style="width: 50%">
+                <br><br>
+                <p>Coaches consist of a set of questions (written in XML notation) and logic programmed in Java. If you want, there's nothing that keeps you from developing your own coach, e.g., expert advice on how to identify the juiciest fruit at a grocery store. It is fully customizable and easy to use.</p>
+            </div>
+
+            <div id="menu2" class="tab-pane fade">
+                <h3>Roadmap</h3>
+                <p>We are working hard to add useful features to the CySeC platform, see below for the upcoming milestones.</p>
+                <img src="roadmap.png" style="width: 70%">
+				<p>Simultaneously, a team of experts is working on a comprehensive coach bringing advanced threat protection such as honey pots and online patching to a level so that smaller SMEs may work with them.</p>
+            </div>
+        </div>
+
+        <p>IMPORTANT: There is an upcoming, public beta test for a cybersecurity coach for SMEs. We encourage all SMEs to register <a href="https://www.smesec.eu/cysec/public/signUp/">here</a> in order to get updates on the public beta program.</p>
+    </div>
+</div>
+</body>
+</html>

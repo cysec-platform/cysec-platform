@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="59px" height="72px" viewBox="0 0 59 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>badge02</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M58.5,12.5217391 L58.5,42.2608696 C58.5,56.2413913 30.8833816,72 29.2576974,72 C27.6243158,72 0,56.2413913 0,42.2608696 L0,12.5217391 C7.44797368,12.5217391 26.4219868,4.10556522 29.2669342,0 C32.0934079,4.10556522 50.8026316,12.5217391 58.5,12.5217391 Z" id="path-1"></path>
+    </defs>
+    <g id="badge02" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Rectangle-Copy-2">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="Mask" fill="#A58A97" xlink:href="#path-1"></use>
+            <rect id="Rectangle" fill="#9C7B8B" fill-rule="nonzero" mask="url(#mask-2)" x="29.25" y="0" width="29.8646907" height="72"></rect>
+        </g>
+        <path d="M58.5,12.5217391 L58.5,42.2608696 C58.5,56.2413913 30.8833816,72 29.2576974,72 C27.6243158,72 0,56.2413913 0,42.2608696 L0,12.5217391 C7.44797368,12.5217391 26.4219868,4.10556522 29.2669342,0 C32.0934079,4.10556522 50.8026316,12.5217391 58.5,12.5217391 Z" id="Page-1-Copy-16" stroke="#FFFFFF" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"></path>
+        <rect id="Rectangle" x="14" y="20" width="32" height="32"></rect>
+        <path d="M31.28,21.28 L31.28,32.8" id="Stroke-1" stroke="#FFFFFF"></path>
+        <path d="M31.28,35.36 L31.28,51.36" id="Stroke-3" stroke="#FFFFFF"></path>
+        <polygon id="Stroke-5" stroke="#FFFFFF" points="42.16 28.32 31.28 28.32 31.28 23.2 42.16 23.2 39.6 25.76"></polygon>
+        <path d="M26.8,51.36 L26.8,35.36 L30.64,35.36 C32.57152,35.36 33.2,34.22016 33.2,32.8 L21.04,32.8 C19.84,32.8 17.84,33.76768 17.84,36.64 L17.84,41.12 C17.84,42.4928 19.0272,43.68 20.4,43.68" id="Stroke-7" stroke="#FFFFFF"></path>
+        <path d="M23.6,42.4 L23.6,51.36" id="Stroke-9" stroke="#FFFFFF"></path>
+        <path d="M20.4,36.64 L20.4,51.36" id="Stroke-11" stroke="#FFFFFF"></path>
+        <path d="M26.16,28.96 C26.16,30.02048 25.30048,30.88 24.24,30.88 L23.6,30.88 C22.53952,30.88 21.68,30.02048 21.68,28.96 L21.68,27.04 C21.68,25.97952 22.53952,25.12 23.6,25.12 L24.24,25.12 C25.30048,25.12 26.16,25.97952 26.16,27.04 L26.16,28.96 Z" id="Stroke-13" stroke="#FFFFFF"></path>
+    </g>
+</svg>

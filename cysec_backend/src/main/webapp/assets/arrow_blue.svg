@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="12px" viewBox="0 0 22 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="ic/blue/arrow" transform="translate(-1.000000, -6.000000)">
+            <g id="Group">
+                <rect id="Rectangle" x="0" y="0" width="24" height="24"></rect>
+                <path d="M11,21.8613506 L11,3" id="Stroke-1" stroke="#007EA7" stroke-linecap="round" stroke-linejoin="round" transform="translate(11.500000, 12.500000) rotate(-270.000000) translate(-11.500000, -12.500000) "></path>
+                <polyline id="Stroke-3" stroke="#007EA7" stroke-linecap="round" stroke-linejoin="round" transform="translate(19.000000, 12.000000) rotate(-270.000000) translate(-19.000000, -12.000000) " points="25 15 19 9 13 15"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>

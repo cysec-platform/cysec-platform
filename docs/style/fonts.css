@@ -1,0 +1,112 @@
+/* -------------------------------------------------- /
+/ Custom Fonts Embedding:                             /
+/ This stylesheet contains all custom fonts           /
+/ used in the CYSEC tool                              /
+/ -------------------------------------------------- */
+
+
+/* Miriam Libre:
+https://fonts.google.com/specimen/Miriam+Libre
+ */
+
+@font-face { font-family: 'Miriam Libre';
+    src: url('fonts/Miriam_Libre/MiriamLibre-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face { font-family: 'Miriam Libre';
+    src: url('fonts/Miriam_Libre/MiriamLibre-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+
+
+/* Renner
+http://indestructibletype.com/Renner.html
+ */
+
+/*
+@font-face { font-family: 'Renner';
+    src: url('../fonts/Renner/Renner-Thin.otf') format('opentype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face { font-family: 'Renner';
+    src: url('../fonts/Renner/Renner-Thintalic.otf') format('opentype');
+    font-weight: 100;
+    font-style: italic;
+}
+*/
+
+@font-face { font-family: 'Renner';
+    src: url('fonts/Renner/Renner-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+/*
+@font-face { font-family: 'Renner';
+    src: url('../Renner/Renner-LightItalic.otf') format('opentype');
+    font-weight: 300;
+    font-style: italic;
+}
+*/
+
+@font-face { font-family: 'Renner';
+    src: url('fonts/Renner/Renner-Book.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/*
+@font-face { font-family: 'Renner';
+    src: url('../Renner/Renner-BookItalic.otf') format('opentype');
+    font-weight: 400;
+    font-style: italic;
+}
+*/
+
+@font-face { font-family: 'Renner';
+    src: url('fonts/Renner/Renner-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+/*
+@font-face { font-family: 'Renner';
+    src: url('../fonts/Renner/Renner-MediumItalic.otf') format('opentype');
+    font-weight: 500;
+    font-style: italic;
+}
+*/
+
+@font-face { font-family: 'Renner';
+    src: url('fonts/Renner/Renner-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/*
+@font-face { font-family: 'Renner';
+    src: url('../fonts/Renner/Renner-BoldItalic.otf') format('opentype');
+    font-weight: 700;
+    font-style: italic;
+}
+*/
+
+/*
+@font-face { font-family: 'Renner';
+    src: url('../fonts/Renner/Renner-Black.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face { font-family: 'Renner';
+    src: url('../fonts/Renner/Renner-BlackItalic.otf') format('opentype');
+    font-weight: 900;
+    font-style: italic;
+}
+*/

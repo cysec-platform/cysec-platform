@@ -1,0 +1,565 @@
+<?xml version='1.0'?>
+<questionnaire id="getResourcesCoachTest" version="1" readableName="getResourcesCoachTest"  xmlns="https://smesec.eu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://smesec.eu ../questionnaire.xsd">
+    <questions>
+        <question id="q1" type="text">
+            <text>How many employees does your company have approximately?</text>
+            <attachments/>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b01a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q2" type="yesno">
+            <text>Does your company have a company-internal IT department?</text>
+            <attachments/>
+            <options correct="q2o1">
+                <option id="q2o1">
+                    <text>test</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q2o2">
+                    <text>text</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b02a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q3" type="yesno">
+            <text>Does your company have a person responsible for cybersecurity?</text>
+            <attachments/>
+            <options correct="q3o1">
+                <option id="q3o1">
+                    <text>test</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q3o2">
+                    <text>text</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b03a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q4" type="yesno">
+            <text>Is the person responsible for cybersecurity experienced?</text>
+            <attachments/>
+            <options correct="q4o1">
+                <option id="q4o1">
+                    <text>test</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q4o2">
+                    <text>text</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b04a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q5" type="A">
+            <text>Where is your company located?</text>
+            <attachments/>
+            <options correct="q5o1">
+                <option id="q5o1">
+                    <text>EU</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q5o2">
+                    <text>Other</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b05a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q6" type="A">
+            <text>Do you have customers at the following places?</text>
+            <attachments/>
+            <options correct="q6o1">
+                <option id="q6o1">
+                    <text>EU</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q6o2">
+                    <text>Other</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b06a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q7" type="yesno">
+            <text>Does your company have an experienced person responsible for data protection?</text>
+            <attachments/>
+            <options correct="q7o1">
+                <option id="q7o1">
+                    <text>test</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q7o2">
+                    <text>text</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b07a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q8" type="A">
+            <text>Does your company have an experienced incident response team?</text>
+            <attachments/>
+            <options correct="q8o1">
+                <option id="q8o1">
+                    <text>YES, WITH THREE OR MORE MEMBERS</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q8o2">
+                    <text>YES, WITH ONE OR TWO MEMBERS</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q8o3">
+                    <text>NO</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b08a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q9" type="Astar">
+            <text>Do you provide of the following digital offerings for customers?</text>
+            <attachments/>
+            <options correct="q9o1">
+                <option id="q9o1">
+                    <text>SOFTWARE</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q9o2">
+                    <text>HARDWARE, CPS, OR IOT</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q9o3">
+                    <text>X-AS-A-SERVICE</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q9o4">
+                    <text>SYSTEM INTEGRATION OR IT SERVICES</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q9o5">
+                    <text>NO DIGITAL OFFERING</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b09a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q10" type="Astar">
+            <text>Which of the following client operating systems are in use in your company?
+            </text>
+            <attachments/>
+            <options correct="q10o1">
+                <option id="q10o1">
+                    <text>Windows</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q10o2">
+                    <text>MAC OS AND/OR IOS</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q10o3">
+                    <text>Android</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q10o4">
+                    <text>Linux</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q10o5">
+                    <text>Other</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b10a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q11" type="Astar">
+            <text>Which of the following server operating systems are in use in your company?
+            </text>
+            <attachments/>
+            <options correct="q11o1">
+                <option id="q11o1">
+                    <text>WINDOWS</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q11o2">
+                    <text>Linux</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q11o3">
+                    <text>Other</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q11o4">
+                    <text>WE HAVE NO SERVERS</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b11a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q12" type="text">
+            <text>How many Windows servers do you have approximately?</text>
+            <attachments/>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b12a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q13" type="text">
+            <text>How many Linux servers do you have approximately?</text>
+            <attachments/>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b13a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q14" type="yesno">
+            <text>Is at least one server Internet-facing?</text>
+            <attachments/>
+            <options correct="q14o1">
+                <option id="q14o1">
+                    <text>test</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q14o2">
+                    <text>text</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b14a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q15" type="A">
+            <text>Do your provide services for your customers with your servers?</text>
+            <attachments/>
+            <options correct="q15o1">
+                <option id="q15o1">
+                    <text>YES, WITH 99.99% AVAILABILITY</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q15o2">
+                    <text>YES, WITH 99.9% AVAILABILITY</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q15o3">
+                    <text>YES, WITH 99% AVAILABILITY</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q15o4">
+                    <text>YES, WITH 90% AVAILABILITY</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q15o5">
+                    <text>NO</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b15a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q16" type="Astar">
+            <text>Which of the following Internet-facing functions do your servers provide?</text>
+            <attachments/>
+            <options correct="q16o1">
+                <option id="q16o1">
+                    <text>WEB SERVER</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q16o2">
+                    <text>PROXY SERVER</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q16o3">
+                    <text>Other</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q16o4">
+                    <text>None</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b16a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q17" type="Astar">
+            <text>Which of the following other functions do your servers provide?</text>
+            <attachments/>
+            <options correct="q17o1">
+                <option id="q17o1">
+                    <text>FILE SERVER</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q17o2">
+                    <text>ACTIVE directory</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q17o3">
+                    <text>DNS</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q17o4">
+                    <text>e-mail server</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q17o5">
+                    <text>Other</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b17a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q18" type="yesno">
+            <text>Is at least one file server Internet-facing?</text>
+            <attachments/>
+            <options correct="q18o1">
+                <option id="q18o1">
+                    <text>test</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q18o2">
+                    <text>text</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b18a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q19" type="yesno">
+            <text>Is at least one Active Directory server Internet-facing?</text>
+            <attachments/>
+            <options correct="q19o1">
+                <option id="q19o1">
+                    <text>test</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q19o2">
+                    <text>text</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b19a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q20" type="yesno">
+            <text>Is at least one DNS server Internet-facing?</text>
+            <attachments/>
+            <options correct="q20o1">
+                <option id="q20o1">
+                    <text>test</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q20o2">
+                    <text>text</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b20a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+        <question id="q21" type="yesno">
+            <text>Is at least one email server Internet-facing?</text>
+            <attachments/>
+            <options correct="q21o1">
+                <option id="q21o1">
+                    <text>test</text>
+                    <attachments></attachments>
+                </option>
+                <option id="q21o2">
+                    <text>text</text>
+                    <attachments></attachments>
+                </option>
+            </options>
+            <listeners/>
+            <instruction>
+                <text>
+                    text
+                </text>
+                <attachments>
+                    <attachment id="b21a1" mime="image/jpeg"><content filename="image.jpg" xml:lang="de"> codehere </content>
+                    </attachment>
+                </attachments>
+            </instruction>
+        </question>
+    </questions>
+    <blocks>
+        <listeners>
+            <listener event="onResponseChange" libraries="eu.smesec.library.DemoLibrary"
+                      call="eu.smesec.library.DemoLibrary.onRespnseChange"/>
+        </listeners>
+        <block title="Company" qid-list="q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 q11 q12 q13 q14 q15 q16 q17 q18 q19 q20 q21" position="1" id="b1">
+            <listeners/>
+            <instruction>
+                <text>Test</text>
+            </instruction>
+        </block>
+    </blocks>
+
+    <library id="eu.smesec.library.FirstLibrary">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
+       </library>
+</questionnaire>

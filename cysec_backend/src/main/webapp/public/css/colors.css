@@ -1,0 +1,131 @@
+/* -------------------------------------------------- /
+/ Color Definition:                                   /
+/ This stylesheet contains all relevant colors        /
+/ of the SMESEC branding                              /
+/ -------------------------------------------------- */
+
+
+
+.bg-white {
+    background-color: #FFFFFF;
+}
+
+.white {
+    color: #FFFFFF;
+}
+
+.bg-dark {
+    background-color: #001921;
+}
+
+.dark {
+    color: #001921;
+}
+
+.bg-transparent {
+    background-color: transparent;
+}
+
+.transparent {
+    color: transparent;
+}
+
+
+
+/* main colors */
+
+.bg-lightblue {
+    background-color: #8DD7FA;
+}
+
+.lightblue {
+    color: #8DD7FA;
+}
+
+.bg-blue {
+    background-color: #229CCD;
+}
+
+.border-blue {
+    border: 1px solid #229CCD;
+}
+
+.blue {
+    color: #229CCD;
+}
+
+.bg-darkblue {
+    background-color: #007EA7;
+}
+
+.border-darkblue {
+    border: 1px solid #007EA7;
+}
+
+.darkblue {
+    color: #007EA7;
+}
+
+
+
+/* accent color */
+
+.bg-green {
+    background-color: #C8FA96;
+}
+
+.green {
+    color: #C8FA96;
+}
+
+
+
+/* grey scales */
+
+.bg-lightbluegrey {
+    background-color: #F7F8FC;
+}
+
+.lightbluegrey {
+    color: #F7F8FC;
+}
+
+.bg-verylightgrey {
+    background-color: #F5F7F3; // #F2F3F4
+}
+
+.verylightgrey {
+    color: #F5F7F3; // #F2F3F4
+}
+
+.bg-lightgrey {
+    background-color: #ECEFE8;
+}
+
+.lightgrey {
+    color: #ECEFE8;
+}
+
+.bg-mediumgrey {
+    background-color: #DADFDC;
+}
+
+.mediumgrey {
+    color: #DADFDC;
+}
+
+.bg-grey {
+    background-color: #B9C0C0;
+}
+
+.grey {
+    color: #B9C0C0;
+}
+
+.bg-darkgrey {
+    background-color: #66757A;
+}
+
+.darkgrey {
+    color: #66757A;
+}

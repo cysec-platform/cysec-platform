@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>status/workinprogress</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="11 0 20.5262794 5.5 20.5262794 16.5 11 22 1.47372056 16.5 1.47372056 5.5"></polygon>
+    </defs>
+    <g id="status/workinprogress" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Polygon-Copy-5" stroke-linejoin="square">
+            <path stroke="#FFFFFF" stroke-width="1.5" d="M11,0.866025404 L2.22372056,5.9330127 L2.22372056,16.0669873 L11,21.1339746 L19.7762794,16.0669873 L19.7762794,5.9330127 L11,0.866025404 Z" fill="#CCD1D3" fill-rule="evenodd"></path>
+            <path stroke="#001921" stroke-width="0.5" d="M11,0.288675135 L1.72372056,5.64433757 L1.72372056,16.3556624 L11,21.7113249 L20.2762794,16.3556624 L20.2762794,5.64433757 L11,0.288675135 Z"></path>
+        </g>
+        <polyline id="Path-3" stroke="#001921" stroke-width="0.5" stroke-linecap="round" points="11 6 11 11.9487224 14.1481472 14.2551532"></polyline>
+    </g>
+</svg>

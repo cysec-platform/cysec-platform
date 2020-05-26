@@ -1,0 +1,69 @@
+.panel-body {
+    padding: 2em;
+}
+
+/* grades */
+.grade-container {
+    border-radius: 12px;
+    color: #ffffff;
+    display: inline-block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 88px;
+    height: 128px;
+    line-height: 116px; /* height - total border */
+    padding-right: 4px;
+    width: 128px;
+}
+.grade-container sup {
+    float: right;
+    font-size: 52px;
+    position: relative;
+    top: 32px;
+}
+
+.grade-a {
+    background: rgb(45, 136, 45);
+    border: solid 6px rgb(17, 102, 17);
+}
+
+.grade-b {
+    background: rgb(170, 170, 57);
+    border: solid 6px rgb(128, 128, 21);
+}
+
+.grade-c {
+    background: rgb(170, 112, 57);
+    border: solid 6px rgb(128, 73, 21);
+}
+
+.grade-d, .grade-e {
+    background: rgb(101, 39, 112);
+    border: solid 6px rgb(74, 16, 84);
+}
+
+.grade-f {
+    background: rgb(170, 57, 57);
+    border: solid 6px rgb(128, 21, 21);
+}
+
+.grade-i {  /* intermediate is a weird font that needs to be bigger */
+    font-size: 102px;
+}
+
+.grade-na {
+    background: rgb(149, 165, 166);
+    border: solid 6px rgb(218, 223, 225);
+}
+
+/* that is, A+ or A- */
+.grade-with-modifier {
+    padding-right: 4px;
+}
+
+.grade-with-modifier-narrow {
+    right: 10px;
+}
+
+.grade-with-modifier-wide {
+    right: -2px;
+}

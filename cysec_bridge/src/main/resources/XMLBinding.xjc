@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns="http://java.sun.com/xml/ns/jaxws"
+               jaxb:extensionBindingPrefixes="xjc" jaxb:version="2.0">
+    <jaxb:bindings schemaLocation="questionnaire.xsd" node="/xs:schema" >
+        <jaxb:globalBindings choiceContentProperty="true">
+            <xjc:javaType name="java.lang.String" xmlType="xs:base64Binary"
+                          adapter="eu.smesec.bridge.bindings.Base64Adapter" />
+        </jaxb:globalBindings>
+    </jaxb:bindings>
+</jaxb:bindings>

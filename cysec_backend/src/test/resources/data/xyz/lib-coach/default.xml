@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<answers context="lib-coach.default" readableContext="Coach" xmlns="https://smesec.eu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://smesec.eu questionnaire.xsd">
+    <questionnaireReference>
+        <questionnaireId>lib-coach</questionnaireId>
+        <filename>/var/lib/cysec/coaches/lib-coach.xml</filename>
+    </questionnaireReference>
+    <answer qid="q1">
+        <text>test text</text>
+        <metadata key="meta1">
+            <mvalue key="key1" link="link">
+                <stringValue>dataValue</stringValue>
+            </mvalue>
+            <mvalue key="key2" link="otherlink">
+                <binaryValue>ZGF0YSB2YWx1ZQ==</binaryValue>
+            </mvalue>
+        </metadata>
+    </answer>
+    <answer qid="q2">
+        <text>test2</text>
+    </answer>
+    <metadata key="rating">
+        <mvalue key="microscore">
+            <stringValue>0</stringValue>
+        </mvalue>
+        <mvalue key="micrograde">
+            <stringValue>F</stringValue>
+        </mvalue>
+    </metadata>
+</answers>
