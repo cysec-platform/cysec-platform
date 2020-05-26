@@ -26,4 +26,4 @@ Feature and bugfix branches are based on "dev" unless the bugfix is specifically
 a specific already-released version.
 
 ## License
-See MIT license
+See MPLv2 license
