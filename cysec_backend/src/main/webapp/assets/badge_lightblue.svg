@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="48px" viewBox="0 0 40 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.1 (57501) - http://www.bohemiancoding.com/sketch -->
+    <title>badge empty</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linejoin="round">
+        <g id="01.6-copy-7" transform="translate(-617.000000, -791.000000)" fill="#8DD7FA" stroke="#F5F7F3" stroke-width="2">
+            <g id="badge-empty" transform="translate(637.000000, 815.000000) rotate(-360.000000) translate(-637.000000, -815.000000) translate(617.000000, 791.000000)">
+                <path d="M20,1 C21.847,3.623 34,9 39,9 L39,28 C39,36.932 21.061,47 20.005,47 L20,47 C18.944,47 1,36.932 1,28 L1,9 C5.838,9 18.163,3.623 20.011,1 L20,1 Z" id="Page-1"></path>
+            </g>
+        </g>
+    </g>
+</svg>

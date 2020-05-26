@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>ic/blue/check</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="button/box/active-selection" transform="translate(-257.000000, -13.000000)">
+            <g id="ic/blue/check" transform="translate(256.000000, 12.000000)">
+                <rect id="Rectangle" x="0" y="0" width="24" height="24"></rect>
+                <path d="M18.3576232,4.28078719 C18.0373448,4.0166994 17.7003488,3.77215824 17.3484609,3.54898951 C15.8016867,2.56801891 13.9671773,2 12,2 C6.4771525,2 2,6.4771525 2,12 C2,17.5228475 6.4771525,22 12,22 C17.5228475,22 22,17.5228475 22,12 C22,11.4258496 21.9516132,10.8630005 21.8586949,10.3153082" id="Path" stroke="#007EA7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero"></path>
+                <polyline id="Path-4" stroke="#007EA7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill-rule="nonzero" points="7 11.9384486 12.228768 17.1672165 21.7603615 5.23289574"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>

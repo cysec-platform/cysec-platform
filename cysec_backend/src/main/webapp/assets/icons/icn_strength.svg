@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>strength</title>
+    <desc>Created with Sketch.</desc>
+    <g id="strength" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="shield" transform="translate(2.500000, 1.000000)" stroke="#505050" stroke-width="0.956521739">
+            <path d="M9.5095,22 C9.5095,22 19,16.754913 19,12.8298261 L19,3.82608696 C16.15,3.31434783 15.55625,2.07230435 14.725,0 L4.275,0 C3.44375,2.07230435 2.85,3.31434783 0,3.82608696 L0,12.8298261 C0,16.754913 9.5095,22 9.5095,22 Z" id="Stroke-1"></path>
+            <path d="M9.5,18.6521739 C9.5,18.6521739 16.159025,14.6256957 16.159025,12.6356522 C16.159025,11.0205652 16.1576,6.83052174 16.161875,5.73913043 C14.5787,5.14130435 13.695675,4.10491304 13.3,2.86956522 L5.7,2.86956522 C5.304325,4.10491304 4.4213,5.14130435 2.838125,5.73913043 C2.8424,6.83052174 2.840975,11.0205652 2.840975,12.6356522 C2.840975,14.6256957 9.5,18.6521739 9.5,18.6521739 Z" id="Stroke-3"></path>
+            <path d="M9.5,2.86956522 L9.5,18.6521739" id="Stroke-5"></path>
+            <path d="M2.85,10.0434783 L16.15,10.0434783" id="Stroke-7"></path>
+        </g>
+        <rect id="Rectangle" x="0" y="0" width="24" height="24"></rect>
+    </g>
+</svg>

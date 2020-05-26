@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>knowhow</title>
+    <desc>Created with Sketch.</desc>
+    <g id="knowhow" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="light">
+            <rect id="Rectangle" x="0" y="0" width="24" height="24"></rect>
+            <g id="Group-29" stroke-linejoin="round" transform="translate(2.880000, 1.440000)" stroke="#505050" stroke-width="0.96">
+                <path d="M11.001936,16.1316 C11.001936,14.79144 11.854896,13.99224 12.803376,13.07976 C13.882896,12.04152 14.558736,10.56072 14.558736,8.91528 C14.558736,5.71752 12.010416,3.13512 8.900496,3.2244 C5.790576,3.13512 3.242256,5.71752 3.242256,8.91528 C3.242256,10.56072 3.918096,12.04152 4.997136,13.07976 C5.945616,13.99224 6.798576,14.79144 6.798576,16.1316" id="Stroke-1"></path>
+                <polyline id="Stroke-3" points="10.744848 20.697216 9.784848 20.697216 9.304848 21.177216 8.344848 21.177216 7.864848 20.697216 6.904848 20.697216"></polyline>
+                <path d="M6.424848,17.817216 L11.224848,17.817216" id="Stroke-5"></path>
+                <path d="M6.424848,19.257216 L11.224848,19.257216" id="Stroke-7"></path>
+                <path d="M0.124128,11.343792 L2.178528,10.793712" id="Stroke-9"></path>
+                <path d="M2.495088,15.45048 L3.998928,13.94664" id="Stroke-11"></path>
+                <path d="M6.601824,0.124224 L7.152384,2.178144" id="Stroke-13"></path>
+                <path d="M2.495088,2.495184 L3.998928,3.999024" id="Stroke-15"></path>
+                <path d="M0.124128,6.60192 L2.178528,7.152" id="Stroke-17"></path>
+                <path d="M17.821344,6.60192 L15.767424,7.152" id="Stroke-19"></path>
+                <path d="M17.821344,11.343792 L15.767424,10.793712" id="Stroke-21"></path>
+                <path d="M15.450384,15.45048 L13.946544,13.94664" id="Stroke-23"></path>
+                <path d="M11.343696,0.124224 L10.793616,2.178144" id="Stroke-25"></path>
+                <path d="M15.450384,2.495184 L13.946544,3.999024" id="Stroke-27"></path>
+            </g>
+        </g>
+    </g>
+</svg>
