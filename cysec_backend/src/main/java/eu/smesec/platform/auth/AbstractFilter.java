@@ -86,29 +86,34 @@ public abstract class AbstractFilter {
             .build());
       }
     } catch (BadRequestException bre) {
-      logger.log(Level.WARNING, "Request has invalid content", bre);
+//      logger.log(Level.WARNING, "Request has invalid content", bre);
+      logger.log(Level.WARNING, "Request has invalid content");
       requestContext.abortWith(Response
           .status(400)
           .build());
     } catch (NotAuthorizedException nae) {
-      logger.log(Level.WARNING, "Request not authorized", nae);
+//      logger.log(Level.WARNING, "Request not authorized", nae);
+      logger.log(Level.WARNING, "Request not authorized");
 //      throw nae;
       requestContext.abortWith(Response
               .status(401)
               .header("WWW-Authenticate", "Basic realm=SecuredApp")
               .build());
     } catch (ForbiddenException fe) {
-      logger.log(Level.WARNING, "Access not allowed", fe);
+//      logger.log(Level.WARNING, "Access not allowed", fe);
+      logger.log(Level.WARNING, "Access not allowed");
       requestContext.abortWith(Response
           .status(403)
           .build());
     } catch (LockedExpetion le) {
-      logger.log(Level.WARNING, le.getMessage(), le);
+//      logger.log(Level.WARNING, le.getMessage(), le);
+      logger.log(Level.WARNING, le.getMessage());
       requestContext.abortWith(Response
           .status(423)
           .build());
     } catch (CacheException ce) {
-      logger.log(Level.WARNING, "An error occurred accessing the cache", ce);
+//      logger.log(Level.WARNING, "An error occurred accessing the cache", ce);
+      logger.log(Level.WARNING, "An error occurred accessing the cache");
       requestContext.abortWith(Response
           .status(400)
           .build());
