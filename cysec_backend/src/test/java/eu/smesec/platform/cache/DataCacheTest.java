@@ -91,7 +91,7 @@ public class DataCacheTest {
       Assert.assertTrue(Files.exists(temp));
       Assert.assertTrue(Files.isDirectory(temp));
       new DataCache(temp);
-      PowerMockito.verifyStatic(CacheFactory.class, Mockito.times(1));
+      PowerMockito.verifyStatic(CacheFactory.class, Mockito.times(2));
       CacheFactory.createCompanyCache(Mockito.any());
       PowerMockito.verifyStatic(ThreadFactory.class, Mockito.times(1));
       ThreadFactory.createTimer(Mockito.anyString(), Mockito.anyLong());
@@ -104,12 +104,14 @@ public class DataCacheTest {
 
   @Test
   public void testGetCompanies() {
-    String companyId = "xyz";
+    String companyId1 = "xyz";
+    String companyId2 = "ro";
     try {
       DataCache cache = new DataCache(temp);
       Collection<String> companyIds = cache.getCompanyIds();
       Assert.assertArrayEquals(new String[]{
-            companyId
+            companyId1,
+            companyId2,
       }, companyIds.toArray());
     } catch (Exception e) {
       e.printStackTrace();
@@ -184,10 +186,10 @@ public class DataCacheTest {
       cache.addCompany(companyId, companyName, admin, companyCoach);
 
       Assert.assertTrue(cache.existsCompany(companyId));
-      PowerMockito.verifyStatic(CacheFactory.class, Mockito.times(2));
+      PowerMockito.verifyStatic(CacheFactory.class, Mockito.times(3));
       CacheFactory.createCompanyCache(Mockito.any());
       Mockito.verify(xyz, Mockito.times(1))
-            .instantiateCoach(Paths.get("lib-company"), companyCoach, null);
+            .instantiateCoach(null, companyCoach, null);
     } catch (Exception e) {
       e.printStackTrace();
       Assert.fail();

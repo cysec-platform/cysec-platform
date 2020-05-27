@@ -120,8 +120,12 @@ class CompanyCache extends Cache {
       readOnly = Files.exists(this.path.resolve(READ_ONLY_FILE));
       replicaToken = Files.readAllLines(this.path.resolve(REPLICA_TOKEN_FILE)).get(0);
       Company source = getSource(Paths.get(USER_XML), Company.class);
-      Optional<User> maximum = source.getUser().stream().max(Comparator.comparingLong(User::getId));
-      this.userCount.set(maximum.map(User::getId).orElse(1000L));
+      if (source != null) {
+        Optional<User> maximum = source.getUser().stream().max(Comparator.comparingLong(User::getId));
+        this.userCount.set(maximum.map(User::getId).orElse(1000L));
+      } else {
+        this.userCount.set(1000L);
+      }
     } catch (IOException ioe) {
 //        logger.log(Level.WARNING, ioe.getMessage(), ioe);
       logger.log(Level.WARNING, "No replica token defined in company " + path.getFileName().toString());
