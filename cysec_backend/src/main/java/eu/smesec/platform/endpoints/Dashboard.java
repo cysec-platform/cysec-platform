@@ -1,7 +1,7 @@
 package eu.smesec.platform.endpoints;
 
 import eu.smesec.bridge.FQCN;
-import eu.smesec.bridge.generated.Answers;
+import eu.smesec.bridge.generated.*;
 import eu.smesec.bridge.md.Badge;
 import eu.smesec.bridge.md.LastSelected;
 import eu.smesec.bridge.md.Rating;
@@ -15,10 +15,6 @@ import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.cache.LibCal;
 import eu.smesec.platform.config.CysecConfig;
 import eu.smesec.platform.helpers.dashboard.CoachHelper;
-import eu.smesec.bridge.generated.Attachment;
-import eu.smesec.bridge.generated.Attachments;
-import eu.smesec.bridge.generated.Metadata;
-import eu.smesec.bridge.generated.Questionnaire;
 
 import eu.smesec.platform.messages.DashboardMsg;
 
@@ -167,12 +163,13 @@ public class Dashboard {
             logger.info("Start processing metadata");
             for (Metadata md : answers.getMetadata()) {
               String mdKey = md.getKey();
-              Map<String, MetadataUtils.SimpleMvalue> mvalues = MetadataUtils
-                    .parseMvalues(md.getMvalue());
+              Set<String> mvalues = md.getMvalue().stream()
+                      .map(Mvalue::getKey)
+                      .collect(Collectors.toSet());
               // rating
               if (mdKey.equals(MetadataUtils.MD_RATING)
-                    && mvalues.containsKey(MetadataUtils.MV_MICRO_SCORE)
-                    && mvalues.containsKey(MetadataUtils.MV_MICRO_GRADE)) {
+                    && mvalues.contains(MetadataUtils.MV_MICRO_SCORE)
+                    && mvalues.contains(MetadataUtils.MV_MICRO_GRADE)) {
                 logger.info("Adding rating");
                 coachHelper.setRating(MetadataUtils.fromMd(md, Rating.class));
               } else if (lastSelectedFqcn.equals(fqcn)
