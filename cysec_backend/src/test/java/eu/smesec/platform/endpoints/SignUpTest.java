@@ -1,6 +1,5 @@
 package eu.smesec.platform.endpoints;
 
-import eu.smesec.bridge.generated.Locks;
 import eu.smesec.bridge.generated.User;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.services.MailServiceImpl;
