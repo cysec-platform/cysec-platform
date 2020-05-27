@@ -5,7 +5,6 @@ import eu.smesec.bridge.execptions.ElementNotFoundException;
 import eu.smesec.bridge.generated.Locks;
 import eu.smesec.bridge.generated.User;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
-import eu.smesec.platform.utils.Validator;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -20,7 +19,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 
 public class UserTest extends JerseyTest {
   private static String RESOURCE_PATH = "rest/users";
@@ -54,6 +52,7 @@ public class UserTest extends JerseyTest {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   @Test
   public void testCreateUser() {
     String companyId = "fhnw";
@@ -118,7 +117,8 @@ public class UserTest extends JerseyTest {
 
     try {
       Mockito.doReturn(companyId).when(context).getAttribute("company");
-      Mockito.doThrow(new CacheNotFoundException("")).when(cal).getUser(companyId, userId);
+      Mockito.doThrow(new CacheNotFoundException("Company " + companyId + " not found"))
+              .when(cal).getUser(companyId, userId);
       Response res = target(RESOURCE_PATH + "/{id}")
           .resolveTemplate("id", userId)
           .request().get();
@@ -208,7 +208,8 @@ public class UserTest extends JerseyTest {
 
     try {
       Mockito.doReturn(companyId).when(context).getAttribute("company");
-      Mockito.doThrow(new CacheNotFoundException("")).when(cal).removeUser(companyId, userId);
+      Mockito.doThrow(new CacheNotFoundException("Company " + companyId + " not found"))
+              .when(cal).removeUser(companyId, userId);
       Response res = target(RESOURCE_PATH + "/{id}")
           .resolveTemplate("id", userId)
           .request().delete();
@@ -226,7 +227,8 @@ public class UserTest extends JerseyTest {
 
     try {
       Mockito.doReturn(companyId).when(context).getAttribute("company");
-      Mockito.doThrow(new ElementNotFoundException("")).when(cal).removeUser(companyId, userId);
+      Mockito.doThrow(new ElementNotFoundException("User " + userId + " not found"))
+              .when(cal).removeUser(companyId, userId);
       Response res = target(RESOURCE_PATH + "/{id}")
           .resolveTemplate("id", userId)
           .request().delete();

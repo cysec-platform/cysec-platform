@@ -54,10 +54,10 @@ public class CysecConfig extends Config {
         List<String> candidates = new ArrayList<>(4);
         candidates.add("/var/lib/cysec/");
         candidates.add("/etc/cysec/");
-        candidates.add("./"); //TODO discuss
+        candidates.add("./");
         String env = System.getenv("CYSEC_HOME");
         if (env != null) {
-            candidates.add(env); //TODO discuss
+            candidates.add(env);
         }
 
         Path finalPath = null;

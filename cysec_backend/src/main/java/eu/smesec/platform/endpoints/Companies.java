@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import eu.smesec.bridge.FQCN;
 import eu.smesec.bridge.md.MetadataUtils;
+import eu.smesec.bridge.md.Rating;
 import eu.smesec.platform.auth.Secured;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.bridge.execptions.CacheException;
@@ -12,10 +13,7 @@ import eu.smesec.bridge.generated.Metadata;
 
 import java.awt.geom.Rectangle2D;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -50,8 +48,7 @@ public class Companies {
   @Inject
   private CacheAbstractionLayer cal;
   // Needed to wrap String in JSON
-  private Gson gson = new Gson();
-  //test
+  private final Gson gson = new Gson();
 
   /***
    * <p>Return the Company for which the logged in user is registered.</p>
@@ -78,7 +75,7 @@ public class Companies {
 
   /***
    * <p>Fetch the last couple of actions from the audit file.</p>
-   * @Param qid The coach id to filter the audit logs. Not used at the moment.
+   * @param qid The coach id to filter the audit logs. Not used at the moment.
    * @return The <code>User</code> representation of the requested user.
    */
   @GET
@@ -111,21 +108,16 @@ public class Companies {
             // only display last 7 entries
             .skip(auditChartData.size() - maxEntries)
             // cut year (yyyy-) e.g 5 chars from date string
-            .collect(Collectors.toMap(e -> e.getKey().substring(5), e -> e.getValue()));
+            .collect(Collectors.toMap(e -> e.getKey().substring(5), Map.Entry::getValue));
       // Safely collect the grade and score from Metadata
-      Metadata rating = cal.getMetadataOnAnswer(company, FQCN.fromString(qid), MetadataUtils.MD_RATING);
+      Metadata md = cal.getMetadataOnAnswer(company, FQCN.fromString(qid), MetadataUtils.MD_RATING);
       // handle case there is no grade and score
       Map<String, Object> model = new HashMap<>();
-      if (rating != null) {
-        Map<String, MetadataUtils.SimpleMvalue> ratingValues = MetadataUtils
-              .parseMvalues(rating.getMvalue());
-        model.put("grade", ratingValues.containsKey(MetadataUtils.MV_MICRO_GRADE)
-              ? ratingValues.get(MetadataUtils.MV_MICRO_GRADE).getValue()
-              : "n/a"
-        );
-        model.put("score", ratingValues.containsKey(MetadataUtils.MV_MICRO_SCORE)
-              ? ratingValues.get(MetadataUtils.MV_MICRO_SCORE).getValue()
-              : "0"
+      if (md != null) {
+        Rating rating = MetadataUtils.fromMd(md, Rating.class);
+        String grade = rating.getGrade();
+        model.put("grade", grade != null ? grade : "n/a");
+        model.put("score", Double.toString(rating.getScore())
         );
       }
 

@@ -118,10 +118,12 @@ public class Users {
       cal.createUser(companyId, newUser);
       return Response.status(200).entity(newUser.getId()).build();
     } catch (CacheNotFoundException nfe) {
-      logger.log(Level.WARNING, nfe.getMessage(), nfe);
+//      logger.log(Level.WARNING, nfe.getMessage(), nfe);
+      logger.log(Level.WARNING, nfe.getMessage());
       return Response.status(400).build();
     } catch (ElementAlreadyExistsException aee) {
-      logger.log(Level.WARNING, aee.getMessage(), aee);
+//      logger.log(Level.WARNING, aee.getMessage(), aee);
+      logger.log(Level.WARNING, aee.getMessage());
       return Response.status(409).build();
     } catch(Exception e) {
       logger.log(Level.SEVERE, "Failed to create user", e);
@@ -146,7 +148,8 @@ public class Users {
       }
       return Response.status(404).build();
     } catch (CacheNotFoundException nfe) {
-      logger.log(Level.WARNING, nfe.getMessage(), nfe);
+//      logger.log(Level.WARNING, nfe.getMessage(), nfe);
+      logger.log(Level.WARNING, nfe.getMessage());
       return Response.status(400).build();
     } catch (Exception e) {
       logger.log(Level.SEVERE, e.getMessage(), e);
@@ -179,10 +182,12 @@ public class Users {
       cal.updateUser(companyId, newUser);
       return Response.status(200).entity(newUser.getId()).build();
     } catch (CacheNotFoundException nfe) {
-      logger.log(Level.WARNING, nfe.getMessage(), nfe);
+//      logger.log(Level.WARNING, nfe.getMessage(), nfe);
+      logger.log(Level.WARNING, nfe.getMessage());
       return Response.status(400).build();
     } catch (ElementNotFoundException | ElementAlreadyExistsException ee) {
-      logger.log(Level.WARNING, ee.getMessage(), ee);
+//      logger.log(Level.WARNING, ee.getMessage(), ee);
+      logger.log(Level.WARNING, ee.getMessage());
       return Response.status(409).build();
     } catch(Exception e) {
       logger.log(Level.SEVERE, "Failed to create user", e);
@@ -201,14 +206,15 @@ public class Users {
   public Response deleteUser(@PathParam("id") long userId) {
     String companyId = context.getAttribute("company").toString();
     try {
-      logger.log(Level.INFO, "delete user user " + userId);
       cal.removeUser(companyId, userId);
       return Response.status(204).build();
     } catch (CacheNotFoundException nfe) {
-      logger.log(Level.WARNING, nfe.getMessage(), nfe);
+//      logger.log(Level.WARNING, nfe.getMessage(), nfe);
+      logger.log(Level.WARNING, nfe.getMessage());
       return Response.status(400).build();
     } catch (ElementNotFoundException aee) {
-      logger.log(Level.WARNING, aee.getMessage(), aee);
+//      logger.log(Level.WARNING, aee.getMessage(), aee);
+      logger.log(Level.WARNING, aee.getMessage());
       return Response.status(404).build();
     } catch(Exception e) {
       logger.log(Level.SEVERE, "Failed to delete user", e);
