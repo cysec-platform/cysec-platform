@@ -73,7 +73,6 @@ public class CryptPasswordStorage extends PasswordStorage {
    * @throws IllegalArgumentException if salt is an empty String
    */
   void setPassword(String password, String salt, CryptType type) throws NoSuchAlgorithmException {
-    // TODO: handle type CRYPT.PLAIN differently
     if (salt == null) {
       salt = getRandomHexString();
     }

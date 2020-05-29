@@ -36,8 +36,6 @@ public class AdminAuthStrategyTest {
   private CryptPasswordStorage passwordStorage;
   private Config config;
 
-  //todo verify logger
-
   @Before
   public void setup() {
     context = PowerMockito.mock(ServletContext.class, Mockito.CALLS_REAL_METHODS);
