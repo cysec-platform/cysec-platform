@@ -3,6 +3,7 @@ package eu.smesec.platform.cache;
 import eu.smesec.bridge.generated.Questionnaire;
 import eu.smesec.platform.threading.FileWatcher;
 import eu.smesec.platform.threading.ThreadFactory;
+import eu.smesec.platform.utils.LocaleUtils;
 import org.glassfish.jersey.logging.LoggingFeature;
 
 import java.io.IOException;
@@ -108,6 +109,9 @@ public class CoachManager {
       }
       if (parentId != null && parentId.isEmpty()) {
         throw new IllegalArgumentException("ParentId is empty");
+      }
+      if (language != null && !LocaleUtils.isLanguage(language)) {
+        throw new IllegalArgumentException("Language tag is invalid: " + language);
       }
       this.cache.addCoach(coachId, parentId, language, path);
     } catch (Exception e) {
