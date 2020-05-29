@@ -26,19 +26,20 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.logging.LoggingFeature;
 
-/**
- * <p>Endpoint for synchronization from a external server</p>
- */
+/** Endpoint for synchronization from a external server. */
 @SecuredReplica
 @Path("replica/slave")
 public class ReplicaSlave {
-  private static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
+  private static final Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
-  @Context
-  private ServletContext context;
-  @Inject
-  private CacheAbstractionLayer cal;
+  @Context private ServletContext context;
+  @Inject private CacheAbstractionLayer cal;
 
+  /**
+   * Zips the company and marks it as readonly.
+   *
+   * @return zipped company
+   */
   @GET
   @Path("/clone")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -49,20 +50,24 @@ public class ReplicaSlave {
       FileResponse fd = cal.zipCompany(companyId);
       cal.setCompanyReadonly(companyId, true);
       logger.log(Level.INFO, "Downloading company " + companyId);
-      return Response.status(200)
-            .entity(fd)
-            .build();
+      return Response.status(200).entity(fd).build();
     } catch (Exception e) {
       logger.log(Level.SEVERE, e.getMessage(), e);
     }
     return Response.status(500).build();
   }
 
+  /**
+   * Handles the file upload to this company.
+   *
+   * @param inputStream data of the file
+   * @param segments path of the file
+   * @return response
+   */
   @POST
   @Path("/file/{any: .*}")
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-  public Response upload(InputStream inputStream,
-                         @PathParam("any") List<PathSegment> segments) {
+  public Response upload(InputStream inputStream, @PathParam("any") List<PathSegment> segments) {
     String companyId = context.getAttribute("company").toString();
     try {
       String relative = PathSegmentUtils.combine(segments);
@@ -76,6 +81,12 @@ public class ReplicaSlave {
     return Response.status(500).build();
   }
 
+  /**
+   * Handles the file download from this company.
+   *
+   * @param segments path of the file
+   * @return file
+   */
   @GET
   @Path("/file/{any: .*}")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -88,10 +99,7 @@ public class ReplicaSlave {
       FileResponse fd = cal.createFileResponse(companyId, relPath);
       if (fd != null) {
         logger.log(Level.INFO, "Downloading File: " + companyId + "/" + relative);
-        return Response.status(200)
-              .entity(fd)
-              .type(Files.probeContentType(relPath))
-              .build();
+        return Response.status(200).entity(fd).type(Files.probeContentType(relPath)).build();
       }
       logger.log(Level.WARNING, "File: " + companyId + "/" + relative + " not found");
       return Response.status(404).build();
