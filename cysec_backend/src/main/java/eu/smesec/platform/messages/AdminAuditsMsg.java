@@ -3,6 +3,12 @@ package eu.smesec.platform.messages;
 import java.util.Locale;
 
 public class AdminAuditsMsg extends Message {
+  /**
+   * Admin audit page messages constructor.
+   *
+   * @param locale display language
+   * @param audits number of audits
+   */
   public AdminAuditsMsg(Locale locale, int audits) {
     super(locale);
 

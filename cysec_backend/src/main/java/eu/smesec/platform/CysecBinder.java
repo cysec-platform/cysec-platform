@@ -1,14 +1,15 @@
 package eu.smesec.platform;
 
 import eu.smesec.platform.cache.CacheAbstractionLayer;
+import eu.smesec.platform.cache.ResourceManager;
 import eu.smesec.platform.config.Config;
 import eu.smesec.platform.config.CysecConfig;
 import eu.smesec.platform.services.MailServiceImpl;
 
-import eu.smesec.platform.cache.ResourceManager;
 import java.nio.file.Paths;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
+
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 public class CysecBinder extends AbstractBinder {
@@ -23,7 +24,8 @@ public class CysecBinder extends AbstractBinder {
     try {
       Config config = CysecConfig.getDefault();
       // Instantiate Singletons
-      ResourceManager resManager = new ResourceManager(Paths.get(context.getRealPath(ApplicationConfig.JSP_TEMPLATE_HOME)));
+      ResourceManager resManager =
+          new ResourceManager(Paths.get(context.getRealPath(ApplicationConfig.JSP_TEMPLATE_HOME)));
       CacheAbstractionLayer cal = new CacheAbstractionLayer(context, resManager, config);
       MailServiceImpl mailService = new MailServiceImpl();
       // bind Singletons
@@ -34,5 +36,4 @@ public class CysecBinder extends AbstractBinder {
       throw new RuntimeException("Error in binding configuration");
     }
   }
-
 }

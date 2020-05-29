@@ -20,6 +20,13 @@ public class CoachHelper {
   private Rating rating;
   private List<Block> blocks;
 
+  /**
+   * Coach visible data container constructor.
+   *
+   * @param id The id of the coach
+   * @param readableName The name of the coach
+   * @param readableClass The class of the coach
+   */
   public CoachHelper(String id, String readableName, String readableClass) {
     this.id = id;
     this.readableName = readableName;

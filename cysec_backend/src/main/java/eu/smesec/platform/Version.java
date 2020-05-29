@@ -1,9 +1,8 @@
 package eu.smesec.platform;
 
 public class Version {
-
-  private final static String BUILD_VERSION = Version.class.getPackage().getImplementationVersion();
-  private final static String VERSION = Version.class.getPackage().getSpecificationVersion();
+  private static final String BUILD_VERSION = Version.class.getPackage().getImplementationVersion();
+  private static final String VERSION = Version.class.getPackage().getSpecificationVersion();
 
   public static String getVersion() {
     return VERSION;
@@ -14,7 +13,7 @@ public class Version {
   }
 
   public static void main(String[] args) {
-    System.out.println("VERSION="+getVersion());
-    System.out.println("BUILD="+getBuildVersion());
+    System.out.println("VERSION=" + getVersion());
+    System.out.println("BUILD=" + getBuildVersion());
   }
 }

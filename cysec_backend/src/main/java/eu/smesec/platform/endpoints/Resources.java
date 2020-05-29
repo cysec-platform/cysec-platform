@@ -4,12 +4,12 @@ import eu.smesec.bridge.Library;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.cache.ResourceManager;
 import eu.smesec.platform.utils.FileResponse;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -35,6 +35,16 @@ public class Resources {
   @Inject
   private ResourceManager resManager;
 
+  /**
+   * Download a resource file of a coach.
+   * Renders *.jsp files.
+   *
+   * @param coachId The id of the coach
+   * @param libId The id of the library
+   * @param segments The file path, relative to the coach resource root
+   * @param info uri context
+   * @return file
+   */
   @GET
   @Path("{coach}/{lib}/{any: .*}")
   public Response get(@PathParam("coach") String coachId,
