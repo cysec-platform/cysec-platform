@@ -2,20 +2,18 @@ package eu.smesec.platform.auth;
 
 import java.security.NoSuchAlgorithmException;
 
-/**
- * <p>Abstract Password storage container.</p>
- */
+/** Abstract Password storage container. */
 public abstract class PasswordStorage {
 
   String storage = null;
 
   protected PasswordStorage() {}
 
-  /***
-   * <p>Initializes a new password storage with the given password and salt.</p>
+  /**
+   * Initializes a new password storage with the given password and salt.
    *
-   * @param password  The password to be stored
-   * @param salt      The salt to be used. If salt is null a random salt will be gennerated
+   * @param password The password to be stored
+   * @param salt The salt to be used. If salt is null a random salt will be gennerated
    * @throws NoSuchAlgorithmException if default CryptType is illegal
    * @throws IllegalArgumentException if salt is an empty String
    */
@@ -23,10 +21,10 @@ public abstract class PasswordStorage {
     setPassword(password, salt);
   }
 
-  /***
-   * <p>Initializes a new password storage with the given storage.</p>
+  /**
+   * Initializes a new password storage with the given storage.
    *
-   * @param storageString             the storage representation of the password
+   * @param storageString the storage representation of the password
    * @throws NoSuchAlgorithmException if default CryptType is illegal
    * @throws IllegalArgumentException if salt is an empty String
    */
@@ -34,20 +32,20 @@ public abstract class PasswordStorage {
     setStorage(storageString);
   }
 
-  /***
-   * <p>Sets a new password.</p>
+  /**
+   * Sets a new password.
    *
-   * @param password  The password to be stored
-   * @param salt      The salt to be used. If salt is null a random salt will be gennerated
+   * @param password The password to be stored
+   * @param salt The salt to be used. If salt is null a random salt will be gennerated
    * @throws NoSuchAlgorithmException if default CryptType is illegal
    * @throws IllegalArgumentException if salt is an empty String
    */
   abstract void setPassword(String password, String salt) throws NoSuchAlgorithmException;
 
-  /***
-   * <p>Sets a new storage.</p>
+  /**
+   * Sets a new storage.
    *
-   * @param storage   The storage string
+   * @param storage The storage string
    * @throws NoSuchAlgorithmException if CryptType is illegal
    * @throws IllegalArgumentException if salt is an empty String
    */
@@ -56,8 +54,8 @@ public abstract class PasswordStorage {
     verify("");
   }
 
-  /***
-   * <p>Returns the storage string.</p>
+  /**
+   * Returns the storage string.
    *
    * @return the storage string
    */
@@ -65,21 +63,22 @@ public abstract class PasswordStorage {
     return storage;
   }
 
-  /***
-   * <p>Verifies a given plain text password against the storage.</p>
+  /**
+   * Verifies a given plain text password against the storage.
    *
-   * @param password      The password to be verified
-   * @return              True if password matches
-   * @throws NoSuchAlgorithmException if the storage does not contain a storage
-   *                                  with a valid CRYPT-TYPE
+   * @param password The password to be verified
+   * @return True if password matches
+   * @throws NoSuchAlgorithmException if the storage does not contain a storage with a valid
+   *     CRYPT-TYPE
    * @throws IllegalArgumentException if the salt string in the storage is empty
    */
   public abstract boolean verify(String password) throws NoSuchAlgorithmException;
 
   @Override
   public boolean equals(Object o) {
-    return (o instanceof PasswordStorage) && (storage != null)
-            && (storage.equals(((PasswordStorage)(o)).storage));
+    return (o instanceof PasswordStorage)
+        && (storage != null)
+        && (storage.equals(((PasswordStorage) (o)).storage));
   }
 
   @Override

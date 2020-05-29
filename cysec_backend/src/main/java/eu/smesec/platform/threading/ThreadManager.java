@@ -3,14 +3,12 @@ package eu.smesec.platform.threading;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Global executor service as singleton
- */
+/** Global executor service as singleton. */
 public class ThreadManager {
   private static final ThreadManager tm = new ThreadManager();
 
   /**
-   * <p>Returns the singleton instance.</p>
+   * Returns the singleton instance.
    *
    * @return instance
    */
@@ -25,17 +23,15 @@ public class ThreadManager {
   }
 
   /**
-   * <p>Submits a new task to the thread manager.</p>
+   * Submits a new task to the thread manager.
    *
-   * @param task The task to execuete.
+   * @param task The task to execute
    */
   public void register(Runnable task) {
     service.submit(task);
   }
 
-  /**
-   * <p>Cancels each task and shuts down the thread manager.</p>
-   */
+  /** Cancels each task and shuts down the thread manager. */
   public void shutdown() {
     service.shutdownNow();
   }

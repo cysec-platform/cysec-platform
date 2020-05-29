@@ -6,19 +6,27 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 
 /**
- * <p>Provides file downloading as entity in {@link javax.ws.rs.core.Response}.</p>
+ * Provides file downloading as entity in {@link javax.ws.rs.core.Response}.
  */
 public class FileResponse implements StreamingOutput {
-  private byte[] data;
+  private final byte[] data;
 
   /**
-   * <p>Constructor</p>
+   * File response constructor.
+   *
    * @param data file content
    */
   public FileResponse(byte[] data) {
     this.data = data;
   }
 
+  /**
+   * Writes the file data to the output stream.
+   *
+   * @param output The output stream
+   * @throws IOException If an io error occurs
+   * @throws WebApplicationException If an general error occurs
+   */
   @Override
   public void write(OutputStream output) throws IOException, WebApplicationException {
     output.write(data);

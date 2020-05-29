@@ -1,7 +1,15 @@
 package eu.smesec.platform.cache;
 
-import eu.smesec.bridge.execptions.*;
-import eu.smesec.bridge.generated.*;
+import eu.smesec.bridge.execptions.CacheAlreadyExistsException;
+import eu.smesec.bridge.execptions.CacheException;
+import eu.smesec.bridge.execptions.CacheNotFoundException;
+import eu.smesec.bridge.execptions.CacheReadOnlyException;
+import eu.smesec.bridge.execptions.MapperException;
+import eu.smesec.bridge.generated.Answers;
+import eu.smesec.bridge.generated.Audits;
+import eu.smesec.bridge.generated.Company;
+import eu.smesec.bridge.generated.Questionnaire;
+import eu.smesec.bridge.generated.User;
 import eu.smesec.platform.utils.FileResponse;
 import eu.smesec.platform.utils.FileUtils;
 
@@ -14,7 +22,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -23,9 +37,7 @@ import java.util.stream.Stream;
 import org.jvnet.jaxb2_commons.lang.CopyTo2;
 
 /**
- * <p>Company cache:
- * Handles the company directory.
- * Thread safe read/write access.</p>
+ * Company cache: Handles the company directory. Thread safe read/write access.
  *
  * @author Claudio Seitz
  * @version 1.2
@@ -80,9 +92,9 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Creates the company directory and all required files.</p>
+   * Creates the company directory and all required files.
    *
-   * @param company      Company object containing admin user.
+   * @param company Company object containing admin user.
    * @param replicaToken Replica token value.
    * @throws CacheException If an error occurs during the company installation
    */
@@ -94,13 +106,24 @@ class CompanyCache extends Cache {
     try {
       Files.createDirectories(this.path);
       CacheFactory.createMapper(Company.class).init(this.path.resolve(USER_XML), company);
-      logger.log(Level.INFO, "Created user file: " + this.path.resolve(USER_XML).toString()
-          + " for company " + company.getId());
+      logger.log(
+          Level.INFO,
+          "Created user file: "
+              + this.path.resolve(USER_XML).toString()
+              + " for company "
+              + company.getId());
       CacheFactory.createMapper(Audits.class).init(this.path.resolve(AUDITS_XML), audits);
-      logger.log(Level.INFO, "Created audit file: " + this.path.resolve(AUDITS_XML).toString()
-          + " for company " + company.getId());
-      Files.write(this.path.resolve(REPLICA_TOKEN_FILE), replicaToken.getBytes(),
-          StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW);
+      logger.log(
+          Level.INFO,
+          "Created audit file: "
+              + this.path.resolve(AUDITS_XML).toString()
+              + " for company "
+              + company.getId());
+      Files.write(
+          this.path.resolve(REPLICA_TOKEN_FILE),
+          replicaToken.getBytes(),
+          StandardOpenOption.WRITE,
+          StandardOpenOption.CREATE_NEW);
       logger.log(Level.INFO, "Created replika token file for company " + company.getId());
     } catch (IOException | MapperException e) {
       throw new CacheException(e.getMessage());
@@ -110,7 +133,7 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Loads the replica token, the read only flag file and the users file.</p>
+   * Loads the replica token, the read only flag file and the users file.
    *
    * @throws CacheException If an io error occurs during the company loading.
    */
@@ -120,18 +143,24 @@ class CompanyCache extends Cache {
       readOnly = Files.exists(this.path.resolve(READ_ONLY_FILE));
       replicaToken = Files.readAllLines(this.path.resolve(REPLICA_TOKEN_FILE)).get(0);
       Company source = getSource(Paths.get(USER_XML), Company.class);
-      Optional<User> maximum = source.getUser().stream().max(Comparator.comparingLong(User::getId));
-      this.userCount.set(maximum.map(User::getId).orElse(1000L));
+      if (source != null) {
+        Optional<User> maximum =
+            source.getUser().stream().max(Comparator.comparingLong(User::getId));
+        this.userCount.set(maximum.map(User::getId).orElse(1000L));
+      } else {
+        this.userCount.set(1000L);
+      }
     } catch (IOException ioe) {
-//        logger.log(Level.WARNING, ioe.getMessage(), ioe);
-      logger.log(Level.WARNING, "No replica token defined in company " + path.getFileName().toString());
+      //        logger.log(Level.WARNING, ioe.getMessage(), ioe);
+      logger.log(
+          Level.WARNING, "No replica token defined in company " + path.getFileName().toString());
     } finally {
       writeLock.unlock();
     }
   }
 
   /**
-   * <p>Returns the next higher user id.</p>
+   * Returns the next higher user id.
    *
    * @return the next higher user id
    */
@@ -140,7 +169,7 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Return the replica token of this company.</p>
+   * Return the replica token of this company.
    *
    * @return The replica token if the replica token file is present, or <code>null</code> otherwise.
    */
@@ -154,9 +183,10 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Returns the readonly flag of this company.</p>
+   * Returns the readonly flag of this company.
    *
-   * @return <code>true</code> if the company is marked as readonly, or <code>false</code> otherwise.
+   * @return <code>true</code> if the company is marked as readonly, or <code>false</code>
+   *     otherwise.
    */
   public boolean isReadOnly() {
     readLock.lock();
@@ -172,7 +202,7 @@ class CompanyCache extends Cache {
   /////////////////////
 
   /**
-   * <p>Executes a read command on the users xml file.</p>
+   * Executes a read command on the users xml file.
    *
    * @param command The read command to execute.
    * @param <R> The return type of the read command.
@@ -184,7 +214,7 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Executes a read command on the audits xml file.</p>
+   * Executes a read command on the audits xml file.
    *
    * @param command The read command to execute.
    * @param <R> The return type of the read command.
@@ -196,7 +226,7 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Executes a read command on the answers xml file.</p>
+   * Executes a read command on the answers xml file.
    *
    * @param relative The answer xml file path, relative to the coach directory.
    * @param command The read command to execute.
@@ -208,15 +238,15 @@ class CompanyCache extends Cache {
     return readOnCache(relative, Answers.class, command);
   }
 
-  private <T extends CopyTo2, R> R readOnCache(Path path, Class<T> tClass, ICommand<T, R> command)
+  private <T extends CopyTo2, R> R readOnCache(Path path, Class<T> classOfT, ICommand<T, R> command)
       throws CacheException {
-    if (path == null || tClass == null || command == null) {
+    if (path == null || classOfT == null || command == null) {
       throw new IllegalArgumentException("path, class or command is null");
     }
     readLock.lock();
     try {
-      T source = getSource(path, tClass);
-      T copy = tClass.cast(source.copyTo(source.createNewInstance()));
+      T source = getSource(path, classOfT);
+      T copy = classOfT.cast(source.copyTo(source.createNewInstance()));
       return command.execute(copy);
     } finally {
       readLock.unlock();
@@ -224,7 +254,7 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Executes a read command on each answers xml file.</p>
+   * Executes a read command on each answers xml file.
    *
    * @param command The read command to execute.
    * @param <R> The return type of the read command.
@@ -245,12 +275,14 @@ class CompanyCache extends Cache {
       }
       // use foreach loop for proper cache exception handling
       for (Path subdir : subdirs) {
-        visitCoachFiles(subdir, path1 -> {
-          Path relative = path.relativize(path1);
-          Answers source = getSource(relative, Answers.class);
-          map.put(relative, (Answers) source.clone());
-          return null;
-        });
+        visitCoachFiles(
+            subdir,
+            path1 -> {
+              Path relative = path.relativize(path1);
+              Answers source = getSource(relative, Answers.class);
+              map.put(relative, (Answers) source.clone());
+              return null;
+            });
       }
       return command.execute(map);
     } catch (IOException ioe) {
@@ -289,7 +321,7 @@ class CompanyCache extends Cache {
   //////////////////////
 
   /**
-   * <p>Executes a write command on the users xml file.</p>
+   * Executes a write command on the users xml file.
    *
    * @param command The write command to execute.
    * @throws CacheException If an error occurs during the command execution.
@@ -299,7 +331,7 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Executes a write command on the audit xml file.</p>
+   * Executes a write command on the audit xml file.
    *
    * @param command The write command to execute.
    * @throws CacheException If an error occurs during the command execution.
@@ -309,7 +341,7 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Executes a write command on the answers xml file.</p>
+   * Executes a write command on the answers xml file.
    *
    * @param relative The answer xml file path, relative to the coach directory.
    * @param command The write command to execute.
@@ -319,15 +351,17 @@ class CompanyCache extends Cache {
     writeOnCache(relative, Answers.class, command);
   }
 
-  private <T extends CopyTo2> void writeOnCache(Path path, Class<T> tClass, ICommand<T, Void> command)
-      throws CacheException {
-    if (path == null || tClass == null || command == null) {
+  private <T extends CopyTo2> void writeOnCache(
+      Path path, Class<T> classOfT, ICommand<T, Void> command) throws CacheException {
+    if (path == null || classOfT == null || command == null) {
       throw new IllegalArgumentException("path, class or command is null");
     }
     writeLock.lock();
     try {
-      if (readOnly) throw new CacheReadOnlyException("Company " + id + " is read only");
-      T source = getSource(path, tClass);
+      if (readOnly) {
+        throw new CacheReadOnlyException("Company " + id + " is read only");
+      }
+      T source = getSource(path, classOfT);
       command.execute(source);
     } finally {
       writeLock.unlock();
@@ -343,7 +377,8 @@ class CompanyCache extends Cache {
     synchronized (objectCache) {
       if (!objectCache.containsKey(path)) {
         Path path1 = this.path.resolve(path);
-        CachedObject<T> cachedObject = new CachedObject<>(path1, CacheFactory.createMapper(classOfT));
+        CachedObject<T> cachedObject =
+            new CachedObject<>(path1, CacheFactory.createMapper(classOfT));
         logger.log(Level.INFO, "Loading cache: " + cachedObject.path);
         cachedObject.load();
         objectCache.put(path, cachedObject);
@@ -356,8 +391,9 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Saves all cached source objects to their corresponding files and clears the cache</p>
-   * <p>Ignores failed operations.</p>
+   * Saves all cached source objects to their corresponding files and clears the cache
+   *
+   * <p>Ignores failed operations.
    */
   void saveCachedObjects() {
     writeLock.lock();
@@ -379,7 +415,7 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Removes an source object from the cache and save to its corresponding file.</p>
+   * Removes an source object from the cache and save to its corresponding file.
    *
    * @param path relative path to source object
    */
@@ -424,14 +460,16 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Synchronizes a file in this directory.</p>
-   * <p>If the file exists the file will be overwritten.</p>
-   * <p>WARNING: The readonly flag will be ignored.</p>
+   * Synchronizes a file in this directory.
+   *
+   * <p>If the file exists the file will be overwritten.
+   *
+   * <p>WARNING: The readonly flag will be ignored.
    *
    * @param relative The file path relative to the company directory.
    * @param inputStream The new file content.
-   * @throws CacheException if the file already exists and can not be overwritten,
-   * or the synchronization fails.
+   * @throws CacheException if the file already exists and can not be overwritten, or the
+   *     synchronization fails.
    */
   void syncFile(Path relative, InputStream inputStream, boolean overwrite) throws CacheException {
     if (relative == null || inputStream == null) {
@@ -444,7 +482,8 @@ class CompanyCache extends Cache {
       try {
         Files.copy(inputStream, temp, StandardCopyOption.REPLACE_EXISTING);
         if (overwrite) {
-          Files.move(temp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+          Files.move(
+              temp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
         } else {
           Files.move(temp, file, StandardCopyOption.ATOMIC_MOVE);
         }
@@ -462,7 +501,7 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Creates a response from a file.</p>
+   * Creates a response from a file.
    *
    * @param relative The file path relative to the company directory.
    * @return The file response object if the file was found, or <code>null</code> otherwise.
@@ -486,12 +525,11 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Marks the company as readonly or readwrite.
-   * If the company is marked as readonly, then no write commands can be executed anymore,
-   * but file synchronization still works.</p>
+   * Marks the company as readonly or readwrite. If the company is marked as readonly, then no write
+   * commands can be executed anymore, but file synchronization still works.
    *
-   * @param value <code>true</code> to mark the company as readonly,
-   *              or <code>false</code> to mark the company as readwrite.
+   * @param value <code>true</code> to mark the company as readonly, or <code>false</code> to mark
+   *     the company as readwrite.
    */
   void setReadOnly(boolean value) {
     this.writeLock.lock();
@@ -510,8 +548,7 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Creates a *.zip file of this company.
-   * The token file and readonly file will be ignored.</p>
+   * Creates a *.zip file of this company. The token file and readonly file will be ignored.
    *
    * @param dest The path of the new zip file.
    * @throws CacheException If an error during the zipping occurs.
@@ -521,8 +558,11 @@ class CompanyCache extends Cache {
     try {
       FileUtils.zip(this.path, dest, REPLICA_TOKEN_FILE, READ_ONLY_FILE);
     } catch (Exception e) {
-      throw new CacheException("error during zipping company "
-          + this.path.getFileName().toString() + ": " + e.getMessage());
+      throw new CacheException(
+          "error during zipping company "
+              + this.path.getFileName().toString()
+              + ": "
+              + e.getMessage());
     } finally {
       this.readLock.unlock();
     }
@@ -533,12 +573,12 @@ class CompanyCache extends Cache {
   ////////////////////////
 
   /**
-   * <p>Instantiate a new answer.xml file from a given coach.</p>
+   * Instantiate a new answer.xml file from a given coach.
    *
    * @param parent relative parent coach directory.
-   * @param coach  coach object.
-   * @param names  file names, if no names are specified default.xml will be used.
-   * @throws CacheNotFoundException if the  parent coach was not found.
+   * @param coach coach object.
+   * @param names file names, if no names are specified default.xml will be used.
+   * @throws CacheNotFoundException if the parent coach was not found.
    * @throws CacheAlreadyExistsException if the coach directory already exists.
    * @throws CacheException If an io error or mapper error occurs during the instantiation.
    */
@@ -576,7 +616,7 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Deletes an existing coach file.</p>
+   * Deletes an existing coach file.
    *
    * @param coach The coach path to delete, relative to the company directory.
    * @throws CacheException If the coach path is a directory or an io error occurs.
@@ -594,15 +634,15 @@ class CompanyCache extends Cache {
       objectCache.remove(coach);
       FileUtils.deleteDir(coachDir);
     } catch (IOException ioe) {
-      throw new CacheException("Error during deleting answer file "
-          + coach.toString() + ": " + ioe.getMessage());
+      throw new CacheException(
+          "Error during deleting answer file " + coach.toString() + ": " + ioe.getMessage());
     } finally {
       writeLock.unlock();
     }
   }
 
   /**
-   * <p>Checks if an answer xml file is present.</p>
+   * Checks if an answer xml file is present.
    *
    * @param relative The path of the answer xml file, relative to the company directory.
    * @return <code>true</code> if the coach file is present, or <code>false</code> otherwise.
@@ -617,7 +657,7 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * <p>Lists all instantiated coach xml file paths.</p>
+   * Lists all instantiated coach xml file paths.
    *
    * @return list of all answers xml file paths.
    * @throws CacheException If an io error occurs.
@@ -636,11 +676,13 @@ class CompanyCache extends Cache {
       }
       // use foreach loop for proper cache exception handling
       for (Path subdir : subdirs) {
-        visitCoachFiles(subdir, path1 -> {
-          Path relative = path.relativize(path1);
-          names.add(relative);
-          return null;
-        });
+        visitCoachFiles(
+            subdir,
+            path1 -> {
+              Path relative = path.relativize(path1);
+              names.add(relative);
+              return null;
+            });
       }
       return names;
     } catch (IOException ioe) {

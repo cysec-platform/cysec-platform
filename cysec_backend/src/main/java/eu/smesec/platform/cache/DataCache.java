@@ -26,9 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * <p>Data cache:
- * Handles root data directory.
- * Thread safe read/write access.</p>
+ * Data cache: Handles root data directory. Thread safe read/write access.
  *
  * @author Claudio Seitz
  * @version 1.1
@@ -37,7 +35,7 @@ class DataCache extends Cache {
   private Map<String, CompanyCache> companies;
 
   /**
-   * <p>Data cache constructor.</p>
+   * Data cache constructor.
    *
    * @param path data root directory
    */
@@ -52,9 +50,7 @@ class DataCache extends Cache {
       List<Path> subDirs = new ArrayList<>();
       // use try with resources to close stream automatically
       try (Stream<Path> stream = Files.list(path)) {
-        subDirs.addAll(stream
-              .filter(Files::isDirectory)
-              .collect(Collectors.toList()));
+        subDirs.addAll(stream.filter(Files::isDirectory).collect(Collectors.toList()));
       }
       // use for loop instead of lambda for better exception handling
       for (Path companyPath : subDirs) {
@@ -80,13 +76,13 @@ class DataCache extends Cache {
   }
 
   /**
-   * <p>Executes a company command.</p>
+   * Executes a company command.
    *
    * @param companyId the id of the company
-   * @param command   the command object
+   * @param command the command object
    */
   <R> R executeOnCompany(String companyId, ICommand<CompanyCache, R> command)
-        throws CacheException {
+      throws CacheException {
     readLock.lock();
     try {
       CompanyCache company = companies.get(companyId.toLowerCase());
@@ -101,12 +97,12 @@ class DataCache extends Cache {
   }
 
   /**
-   * <p>Executes a company command on all companies.</p>
+   * Executes a company command on all companies.
    *
    * @param command the command object
    */
   <R> R executeOnAllCompanies(ICommand<Collection<Map.Entry<String, CompanyCache>>, R> command)
-        throws CacheException {
+      throws CacheException {
     readLock.lock();
     try {
       return command.execute(companies.entrySet());
@@ -115,9 +111,8 @@ class DataCache extends Cache {
     }
   }
 
-
   /**
-   * <p>Returns a set of all loaded company ids.</p>
+   * Returns a set of all loaded company ids.
    *
    * @return Set of company ids
    */
@@ -131,7 +126,7 @@ class DataCache extends Cache {
   }
 
   /**
-   * <p>Checks if a company exists.</p>
+   * Checks if a company exists.
    *
    * @param id the id of the company
    * @return <code>true</code> if the company id exists, or <code>false</code> otherwise
@@ -146,12 +141,13 @@ class DataCache extends Cache {
   }
 
   /**
-   * <p>Adds a new company to the cache.</p>
+   * Adds a new company to the cache.
    *
-   * @param id   the id of the company
+   * @param id the id of the company
    * @param name the name of the company
    */
-  void addCompany(String id, String name, User admin, Questionnaire companyCoach) throws CacheException {
+  void addCompany(String id, String name, User admin, Questionnaire companyCoach)
+      throws CacheException {
     writeLock.lock();
     String cid = id.toLowerCase();
     try {
@@ -175,9 +171,11 @@ class DataCache extends Cache {
   }
 
   /**
+   * Extracts the *.zip file and populates the company.
    *
-   * @param zip
-   * @throws Exception
+   * @param zip The path of the zip file.
+   * @throws java.io.IOException if an io error occurs.
+   * @throws CacheAlreadyExistsException if the company already exists.
    */
   void unzipCompany(Path zip) throws Exception {
     writeLock.lock();
@@ -200,32 +198,30 @@ class DataCache extends Cache {
     }
   }
 
-//  /**
-//   * <p>Deletes a company from the cache.</p>
-//   *
-//   * @param id the id of the company
-//   */
-//  void deleteCompany(String id) throws CacheException {
-//    writeLock.lock();
-//    String cid = id.toLowerCase();
-//    try {
-//      CompanyCache company = companies.remove(cid);
-//      if (company != null) {
-//        company.destroy();
-//        logger.info("Removed company " + cid);
-//      } else {
-//        throw new CacheNotFoundException("Company " + cid + " was not found");
-//      }
-//    } finally {
-//      writeLock.unlock();
-//    }
-//  }
-//
-//  //todo: load/unload company
-//
-  /**
-   * <p>Updates all xml files.</p>
-   */
+  //  /**
+  //   * <p>Deletes a company from the cache.</p>
+  //   *
+  //   * @param id the id of the company
+  //   */
+  //  void deleteCompany(String id) throws CacheException {
+  //    writeLock.lock();
+  //    String cid = id.toLowerCase();
+  //    try {
+  //      CompanyCache company = companies.remove(cid);
+  //      if (company != null) {
+  //        company.destroy();
+  //        logger.info("Removed company " + cid);
+  //      } else {
+  //        throw new CacheNotFoundException("Company " + cid + " was not found");
+  //      }
+  //    } finally {
+  //      writeLock.unlock();
+  //    }
+  //  }
+  //
+  //  //todo: load/unload company
+  //
+  /** Updates all xml files. */
   void updateXml() {
     readLock.lock();
     logger.log(Level.INFO, "auto saving companies");

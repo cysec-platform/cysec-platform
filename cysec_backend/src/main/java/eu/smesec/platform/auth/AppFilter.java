@@ -5,7 +5,6 @@ import eu.smesec.platform.config.CysecConfig;
 
 import java.io.IOException;
 import java.util.logging.Logger;
-import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -22,24 +21,20 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.glassfish.jersey.logging.LoggingFeature;
 
-
 // Maybe can be placed by js content fetcher?
 @WebFilter(
-      urlPatterns = "/app/*",
-      filterName = "AppFilter",
-      description = "Filter all frontend URL"
-)
+    urlPatterns = "/app/*",
+    filterName = "AppFilter",
+    description = "Filter all frontend URL")
 public class AppFilter implements Filter {
-  private Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
+  private static final Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
   private static final String AUTHORIZATION_PROPERTY = "authorization";
   //  private static final String AUTHENTICATION_SCHEME = "Basic";
 
-  /**
-   * The OIDC parameters are the headers that contain user info from keycloak.
-   * Even thoug
-   */
+  /** The OIDC parameters are the headers that contain user info from keycloak. Even thoug */
   private static final String OIDC_NAME = "cysec_header_username";
+
   private static final String OIDC_MAIL = "cysec_header_email";
   private static final String OIDC_FIRSTNAME = "cysec_header_firstname";
   private static final String OIDC_LASTNAME = "cysec_header_lastname";
@@ -47,20 +42,20 @@ public class AppFilter implements Filter {
   private static final String OIDC_LOCALE = "cysec_header_locale";
 
   @Override
-  public void init(FilterConfig filterConfig) throws ServletException {}
+  public void init(FilterConfig filterConfig) {}
 
   /**
-   * Needed to authenticate access to the /webapp folder
+   * Needed to authenticate access to the /webapp folder.
    *
-   * @param request
-   * @param response
-   * @param chain
-   * @throws IOException
-   * @throws ServletException
+   * @param request The servlet request
+   * @param response The servlet response
+   * @param chain The filter chain
+   * @throws IOException If an io error occurs
+   * @throws ServletException If an io servlet occurs
    */
   @Override
-  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws
-      IOException, ServletException {
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
 
     // for some reason, config equals null here, there refetching the instance
     logger.info("Checking for authentication header, to force webapp to pop up basic auth");
@@ -68,18 +63,21 @@ public class AppFilter implements Filter {
     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
     // extract context from the request object
-    String url = httpServletRequest.getScheme() + "://localhost:"
-        + httpServletRequest.getLocalPort()
-        + httpServletRequest.getContextPath() + "/api/rest/login";
+    String url =
+        httpServletRequest.getScheme()
+            + "://localhost:"
+            + httpServletRequest.getLocalPort()
+            + httpServletRequest.getContextPath()
+            + "/api/rest/login";
     HttpPost httpPost = new HttpPost(url);
 
     Config config = CysecConfig.getDefault();
     String authorization = httpServletRequest.getHeader(AUTHORIZATION_PROPERTY);
-    String userName = httpServletRequest.getHeader(config.getStringValue(null, OIDC_NAME));
     // Case distinguition OAuth/Basic
     logger.info(String.format("doFilter authorization header %s", authorization));
-    logger.info(String.format("doFilter authorization header %s",
-        httpServletRequest.getHeader("authorization")));
+    logger.info(
+        String.format(
+            "doFilter authorization header %s", httpServletRequest.getHeader("authorization")));
     logger.info(httpServletRequest.getHeader(config.getStringValue(null, OIDC_NAME)));
     logger.info(httpServletRequest.getHeader(config.getStringValue(null, OIDC_MAIL)));
     logger.info(httpServletRequest.getHeader(config.getStringValue(null, OIDC_FIRSTNAME)));
@@ -87,24 +85,25 @@ public class AppFilter implements Filter {
     logger.info(httpServletRequest.getHeader(config.getStringValue(null, OIDC_COMPANY)));
 
     // User name is guaranteed to contain a value
+    String userName = httpServletRequest.getHeader(config.getStringValue(null, OIDC_NAME));
     if (userName != null && !userName.isEmpty()) {
       // Set headers from OIDC
       httpPost.setHeader("Authorization", authorization);
-      httpPost.setHeader(config.getStringValue(null, OIDC_NAME),
-          httpServletRequest.getHeader(config.getStringValue(null,
-              OIDC_NAME)));
-      httpPost.setHeader(config.getStringValue(null, OIDC_MAIL),
-          httpServletRequest.getHeader(config.getStringValue(null,
-              OIDC_MAIL)));
-      httpPost.setHeader(config.getStringValue(null, OIDC_FIRSTNAME),
-          httpServletRequest.getHeader(config.getStringValue(null,
-              OIDC_FIRSTNAME)));
-      httpPost.setHeader(config.getStringValue(null, OIDC_LASTNAME),
-          httpServletRequest.getHeader(config.getStringValue(null,
-              OIDC_LASTNAME)));
-      httpPost.setHeader(config.getStringValue(null, OIDC_COMPANY),
-          httpServletRequest.getHeader(config.getStringValue(null,
-              OIDC_COMPANY)));
+      httpPost.setHeader(
+          config.getStringValue(null, OIDC_NAME),
+          httpServletRequest.getHeader(config.getStringValue(null, OIDC_NAME)));
+      httpPost.setHeader(
+          config.getStringValue(null, OIDC_MAIL),
+          httpServletRequest.getHeader(config.getStringValue(null, OIDC_MAIL)));
+      httpPost.setHeader(
+          config.getStringValue(null, OIDC_FIRSTNAME),
+          httpServletRequest.getHeader(config.getStringValue(null, OIDC_FIRSTNAME)));
+      httpPost.setHeader(
+          config.getStringValue(null, OIDC_LASTNAME),
+          httpServletRequest.getHeader(config.getStringValue(null, OIDC_LASTNAME)));
+      httpPost.setHeader(
+          config.getStringValue(null, OIDC_COMPANY),
+          httpServletRequest.getHeader(config.getStringValue(null, OIDC_COMPANY)));
     } else {
       String authHeader = httpServletRequest.getHeader("Authorization");
       if (authHeader == null) {
@@ -112,7 +111,6 @@ public class AppFilter implements Filter {
         httpServletResponse.setHeader("WWW-Authenticate", "Basic realm=SecuredApp");
         httpServletResponse.sendError(401, "Please login");
       }
-
     }
     // call protected resource to execute filter()
     httpPost.setHeader("Authorization", authorization);

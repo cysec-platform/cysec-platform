@@ -13,6 +13,11 @@ public abstract class Cache {
   protected ReentrantReadWriteLock.ReadLock readLock;
   protected ReentrantReadWriteLock.WriteLock writeLock;
 
+  /**
+   * Cache base class constructor.
+   *
+   * @param path Cache directory path
+   */
   public Cache(Path path) {
     this.path = path;
     ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
