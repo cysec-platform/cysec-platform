@@ -1,11 +1,10 @@
 package eu.smesec.platform.auth.strategies;
 
-import eu.smesec.bridge.execptions.CacheException;
-
 import static eu.smesec.platform.auth.strategies.BasicAuthStrategy.AUTHORIZATION_PROPERTY;
 import static eu.smesec.platform.auth.strategies.BasicAuthStrategy.regexAuth;
 import static eu.smesec.platform.auth.strategies.BasicAuthStrategy.regexBasic;
 
+import eu.smesec.bridge.execptions.CacheException;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.config.Config;
 import eu.smesec.platform.utils.Validator;
@@ -27,7 +26,7 @@ public class AdminAuthStrategy extends AbstractAuthStrategy {
   public static final String ADMIN_PREFIX = "cysec_admin_prefix";
   public static final String ADMIN_NAMES = "cysec_admin_users";
   public static final String ADMIN_PWS = "cysec_admin_passwords";
-  private List<String> headers;
+  private final List<String> headers;
 
   public AdminAuthStrategy(CacheAbstractionLayer cal, Config config, ServletContext context) {
     super(cal, config, context, false);
@@ -40,7 +39,8 @@ public class AdminAuthStrategy extends AbstractAuthStrategy {
   }
 
   @Override
-  public boolean authenticate(MultivaluedMap<String, String> headers, Method method) throws CacheException, ClientErrorException {
+  public boolean authenticate(MultivaluedMap<String, String> headers, Method method)
+      throws CacheException, ClientErrorException {
     logger.info("Checking Admin auth");
     String contextName = context.getContextPath().substring(1);
     String basicAuth = headers.getFirst(AUTHORIZATION_PROPERTY);
@@ -69,18 +69,20 @@ public class AdminAuthStrategy extends AbstractAuthStrategy {
         if (password == null || password.isEmpty()) {
           throw new BadRequestException("Password is null or empty");
         }
-        List<String> adminNames = Arrays.asList(config.getStringValue(contextName, ADMIN_NAMES).split(" "));
-        List<String> admimPws = Arrays.asList(config.getStringValue(contextName, ADMIN_PWS).split(" "));
+        List<String> adminNames =
+            Arrays.asList(config.getStringValue(contextName, ADMIN_NAMES).split(" "));
+        List<String> admimPws =
+            Arrays.asList(config.getStringValue(contextName, ADMIN_PWS).split(" "));
         if (adminNames.size() != admimPws.size()) {
-          logger.log(Level.WARNING, "number of server admin names " +
-                "and number of server passwords is not equals");
+          logger.log(
+              Level.WARNING,
+              "number of server admin names " + "and number of server passwords is not equals");
         }
         int i = adminNames.indexOf(username);
         if (i < 0) {
           logger.log(Level.WARNING, "server admin name " + username + " is not in admin list");
           return false;
         }
-        //TODO: Clarify password hashed?
         if (i >= admimPws.size() || !admimPws.get(i).equalsIgnoreCase(password)) {
           logger.log(Level.WARNING, "server admin password " + password + " does not match");
           return false;

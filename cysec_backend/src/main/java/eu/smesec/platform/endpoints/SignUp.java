@@ -5,11 +5,11 @@ import com.google.gson.GsonBuilder;
 
 import eu.smesec.bridge.execptions.CacheNotFoundException;
 import eu.smesec.bridge.execptions.ElementAlreadyExistsException;
+import eu.smesec.bridge.generated.Locks;
+import eu.smesec.bridge.generated.User;
 import eu.smesec.platform.auth.CryptPasswordStorage;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.json.FieldsExclusionStrategy;
-import eu.smesec.bridge.generated.Locks;
-import eu.smesec.bridge.generated.User;
 import eu.smesec.platform.services.MailServiceImpl;
 import eu.smesec.platform.utils.Validator;
 
@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -40,20 +39,15 @@ import org.glassfish.jersey.server.mvc.Viewable;
 @Path("rest/signUp")
 public class SignUp {
   private static final Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
+  private static final Gson addUserGson =
+      new GsonBuilder()
+          .addDeserializationExclusionStrategy(
+              new FieldsExclusionStrategy("id", "lock", "roles", "token"))
+          .create();
 
-  private static Gson addUserGson = new GsonBuilder()
-        .addDeserializationExclusionStrategy(new FieldsExclusionStrategy("id", "lock", "roles", "token"))
-        .create();
-
-  @Inject
-  private CacheAbstractionLayer cal;
-
-  @Inject
-  private MailServiceImpl mailService;
-
-  @Context
-  private ServletContext context;
-
+  @Inject private CacheAbstractionLayer cal;
+  @Inject private MailServiceImpl mailService;
+  @Context private ServletContext context;
 
   /**
    * Renders the sign up form template.
@@ -76,12 +70,18 @@ public class SignUp {
     return Response.status(500).build();
   }
 
+  /**
+   * Creates a new user.
+   *
+   * @param json user data as json
+   * @param companyId company id
+   * @return response
+   */
   @POST
   @Path("/user")
   @PermitAll
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response createCompany(String json,
-                                @QueryParam("company") String companyId) {
+  public Response createUser(String json, @QueryParam("company") String companyId) {
     if (json == null) {
       logger.log(Level.WARNING, "user json is null");
       return Response.status(400).build();
@@ -105,7 +105,7 @@ public class SignUp {
       // Get company admins and send notification email
       List<User> admins = cal.getAllAdminUsers(companyId);
       // enable on production
-      //mailService.sendMail(admins, "", "",
+      // mailService.sendMail(admins, "", "",
       //        "New user request", "Approve user: " + user.getUsername());
       return Response.status(200).entity(newUser.getId()).build();
     } catch (CacheNotFoundException nfe) {
@@ -114,12 +114,17 @@ public class SignUp {
     } catch (ElementAlreadyExistsException aee) {
       logger.log(Level.WARNING, aee.getMessage(), aee);
       return Response.status(409).build();
-    } catch(Exception e) {
+    } catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to create user", e);
     }
     return Response.status(500).build();
   }
 
+  /**
+   * Renders the sign-up form.
+   *
+   * @return rendered sign-up form
+   */
   @GET
   @Path("/company")
   @PermitAll
@@ -135,13 +140,21 @@ public class SignUp {
     return Response.status(500).build();
   }
 
+  /**
+   * Creates a new company.
+   * The user will be the first company admin.
+   *
+   * @param json the data of the company
+   * @param companyId the id of the company
+   * @param companyName the name of the company
+   * @return response
+   */
   @POST
   @Path("/company")
   @PermitAll
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response createCompany(String json,
-                                @QueryParam("id") String companyId,
-                                @QueryParam("name") String companyName) {
+  public Response createCompany(
+      String json, @QueryParam("id") String companyId, @QueryParam("name") String companyName) {
     if (json == null) {
       logger.log(Level.WARNING, "user json is null");
       return Response.status(400).build();

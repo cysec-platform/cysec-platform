@@ -3,10 +3,14 @@ package eu.smesec.platform.json;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class ClassFieldsExclusionStrategy implements ExclusionStrategy {
-  private Map<Class<?>, Set<String>> exclusion;
+  private final Map<Class<?>, Set<String>> exclusion;
 
   public ClassFieldsExclusionStrategy() {
     this.exclusion = new HashMap<>();
@@ -14,10 +18,6 @@ public class ClassFieldsExclusionStrategy implements ExclusionStrategy {
 
   public void ignoreClassFields(Class<?> clazz, String... fieldNames) {
     exclusion.put(clazz, new HashSet<>(Arrays.asList(fieldNames)));
-  }
-
-  public void ClassExclusion(Class<?> clazz) {
-    exclusion.remove(clazz);
   }
 
   @Override

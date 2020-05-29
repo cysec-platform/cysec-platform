@@ -7,6 +7,8 @@ import eu.smesec.platform.auth.Secured;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.cache.LibCal;
 import eu.smesec.platform.messages.BadgeMsg;
+import eu.smesec.platform.utils.LocaleUtils;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -23,7 +25,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import eu.smesec.platform.utils.LocaleUtils;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.mvc.Viewable;
 
@@ -31,13 +32,16 @@ import org.glassfish.jersey.server.mvc.Viewable;
 @DenyAll
 @Path("rest/badges")
 public class Badges {
-  private static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
+  private static final Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
-  @Inject
-  private CacheAbstractionLayer cal;
-  @Context
-  ServletContext context;
+  @Inject private CacheAbstractionLayer cal;
+  @Context ServletContext context;
 
+  /**
+   * Renders the badge overview page.
+   *
+   * @return rendered badge page
+   */
   @GET
   @Path("/render")
   @Produces(MediaType.TEXT_HTML)
@@ -45,16 +49,17 @@ public class Badges {
     String companyId = context.getAttribute("company").toString();
     Locale locale = LocaleUtils.fromString(context.getAttribute("locale").toString());
     try {
-      List<Badge> badges = cal.getAllMetadataOnAnswer(companyId, LibCal.FQCN_COMPANY).stream()
-            .filter(md -> md.getKey().startsWith(MetadataUtils.MD_BADGES))
-            .map(md -> MetadataUtils.fromMd(md, Badge.class))
-            .collect(Collectors.toList());
+      List<Badge> badges =
+          cal.getAllMetadataOnAnswer(companyId, LibCal.FQCN_COMPANY).stream()
+              .filter(md -> md.getKey().startsWith(MetadataUtils.MD_BADGES))
+              .map(md -> MetadataUtils.fromMd(md, Badge.class))
+              .collect(Collectors.toList());
       BadgeMsg msg = new BadgeMsg(locale, badges.size());
       Map<String, Object> model = new HashMap<>();
       model.put("msg", msg.getMessages());
       model.put("badges", badges);
       return Response.status(200).entity(new Viewable("/all_badges", model)).build();
-    } catch(CacheException ce) {
+    } catch (CacheException ce) {
       logger.warning(ce.getMessage());
       return Response.status(400).build();
     } catch (Exception e) {

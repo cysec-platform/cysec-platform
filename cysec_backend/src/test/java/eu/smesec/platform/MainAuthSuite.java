@@ -22,9 +22,7 @@ import org.junit.runners.Suite;
         HeaderAuthStrategyTest.class,
         ReplicaAuthStrategyTest.class
 })
-
 public class MainAuthSuite {
-
   public static junit.framework.Test suite() {
     final TestSuite s = new TestSuite();
     s.addTest(new JUnit4TestAdapter(PasswordStorageTest.class));
@@ -33,5 +31,4 @@ public class MainAuthSuite {
     s.addTest(new JUnit4TestAdapter(ReplicaAuthStrategyTest.class));
     return s;
   }
-
 }

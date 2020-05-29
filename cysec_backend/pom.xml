@@ -278,7 +278,8 @@
                     <prefix>git</prefix>
                     <verbose>false</verbose>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
+                    </generateGitPropertiesFilename>
                     <format>json</format>
                     <gitDescribe>
                         <skip>false</skip>
@@ -381,9 +382,7 @@
                 <executions>
                     <execution>
                         <id>validate</id>
-                        <!-- TODO: enable checkstyle -->
-                        <!-- <phase>validate</phase> -->
-                        <phase>none</phase>
+                        <phase>validate</phase>
                         <configuration>
                             <encoding>UTF-8</encoding>
                             <consoleOutput>true</consoleOutput>

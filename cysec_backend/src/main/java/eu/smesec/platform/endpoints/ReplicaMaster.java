@@ -38,24 +38,32 @@ import org.glassfish.jersey.logging.LoggingFeature;
 
 @Path("replica/master")
 public class ReplicaMaster {
+  private static final Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
   public static final String REPLICA_HOST = "cysec_replica_host";
   public static final String REPLICA_TOKEN = "cysec_replica_token";
 
-  private static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
+  @Context private ServletContext context;
+  @Inject private CacheAbstractionLayer cal;
+
   private Client client;
   private Config config;
 
+  /**
+   * Initialization after construction.
+   */
   @PostConstruct
   public void init() {
     this.client = ClientBuilder.newClient();
     this.config = CysecConfig.getDefault();
   }
 
-  @Context
-  private ServletContext context;
-  @Inject
-  private CacheAbstractionLayer cal;
-
+  /**
+   * Clones a company from the slave into this master.
+   * The cloned company inside the slave will be marked as readonly.
+   *
+   * @param companyId The id of the company to clone, replica token must match
+   * @return response
+   */
   @SecuredAdmin
   @POST
   @Path("/clone/{id}")
@@ -69,10 +77,12 @@ public class ReplicaMaster {
       String remote = getReplicaEntry(contextName, REPLICA_HOST);
       String companyToken = getCompanyToken(contextName, companyId);
       logger.log(Level.INFO, "Downloading company " + companyId + " from " + remote);
-      Response res = client.target(remote + "/api/replica/clone/")
-            .request(MediaType.APPLICATION_OCTET_STREAM)
-            .header(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, companyToken)
-            .get();
+      Response res =
+          client
+              .target(remote + "/api/replica/clone/")
+              .request(MediaType.APPLICATION_OCTET_STREAM)
+              .header(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, companyToken)
+              .get();
       if (res.getStatus() == 200) {
         logger.log(Level.INFO, "Successfully downloaded company " + companyId + " from " + remote);
         InputStream is = res.readEntity(InputStream.class);
@@ -94,6 +104,12 @@ public class ReplicaMaster {
     return Response.status(500).build();
   }
 
+  /**
+   * Pushes the changed file to the slave and synchronizes them.
+   *
+   * @param segments file path, relative to the company directory
+   * @return response
+   */
   @Secured
   @POST
   @RolesAllowed("Admin")
@@ -108,15 +124,23 @@ public class ReplicaMaster {
       FileResponse fd = cal.createFileResponse(companyId, Paths.get(relative));
       if (fd != null) {
         logger.log(Level.INFO, "Uploading file " + relative + " to " + remote);
-        Response res = client.target(remote + "/api/replica/file/" + relative)
-              .request()
-              .header(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, companyToken)
-              .post(Entity.entity(fd, MediaType.APPLICATION_OCTET_STREAM));
+        Response res =
+            client
+                .target(remote + "/api/replica/file/" + relative)
+                .request()
+                .header(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, companyToken)
+                .post(Entity.entity(fd, MediaType.APPLICATION_OCTET_STREAM));
         if (res.getStatus() == 204) {
           logger.log(Level.INFO, "Successfully uploaded file " + relative + " to " + remote);
         } else {
-          logger.log(Level.WARNING, "Failed uploading file" + relative + " to " + remote
-                + ". Server responded with status code " + res.getStatus());
+          logger.log(
+              Level.WARNING,
+              "Failed uploading file"
+                  + relative
+                  + " to "
+                  + remote
+                  + ". Server responded with status code "
+                  + res.getStatus());
         }
         return res;
       }
@@ -134,6 +158,13 @@ public class ReplicaMaster {
     return Response.status(500).build();
   }
 
+  /**
+   * Pulls changes from the slave into this master and synchronizes them.
+   * This method should not be used.
+   *
+   * @param segments file path, relative to the company directory
+   * @return response
+   */
   @Secured
   @POST
   @RolesAllowed("Admin")
@@ -146,10 +177,12 @@ public class ReplicaMaster {
       String remote = getReplicaEntry(contextName, REPLICA_HOST);
       String companyToken = getCompanyToken(contextName, companyId);
       logger.log(Level.INFO, "Downloading file " + relative + " from " + remote);
-      Response res = client.target(remote + "/api/replica/file/" + relative)
-            .request(MediaType.APPLICATION_OCTET_STREAM)
-            .header(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, companyToken)
-            .get();
+      Response res =
+          client
+              .target(remote + "/api/replica/file/" + relative)
+              .request(MediaType.APPLICATION_OCTET_STREAM)
+              .header(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, companyToken)
+              .get();
       if (res.getStatus() == 200) {
         logger.log(Level.INFO, "Successfully downloaded file " + relative + " from " + remote);
         InputStream is = res.readEntity(InputStream.class);
@@ -173,9 +206,10 @@ public class ReplicaMaster {
   }
 
   private String getCompanyToken(String context, String companyId) throws ConfigException {
-    Optional<String> companyToken = Arrays.stream(getReplicaEntry(context, REPLICA_TOKEN).split(" "))
-          .filter(entry -> entry.startsWith(companyId + "/"))
-          .findFirst();
+    Optional<String> companyToken =
+        Arrays.stream(getReplicaEntry(context, REPLICA_TOKEN).split(" "))
+            .filter(entry -> entry.startsWith(companyId + "/"))
+            .findFirst();
     if (!companyToken.isPresent()) {
       throw new ConfigException("No replica token found for company " + companyId);
     }
