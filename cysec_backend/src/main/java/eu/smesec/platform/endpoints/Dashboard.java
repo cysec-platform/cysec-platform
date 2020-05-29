@@ -209,13 +209,11 @@ public class Dashboard {
   }
 
   private String getAnswerName(FQCN fqcn, Map<String, Questionnaire> coaches) {
-    String name = fqcn.coacheIds()
-          .map(cid -> coaches.get(cid).getReadableName())
-          .reduce((s, s2) -> s + "." + s2).orElse("");
-    String coachName = fqcn.getName();
-    if (!coachName.equals("default")) {
-      name += "." + coachName;
+    StringBuilder name = new StringBuilder(coaches.get(fqcn.getCoachId()).getReadableName());
+    String fileName = fqcn.getName();
+    if (!fileName.equals("default")) {
+      name.append(".").append(fileName);
     }
-    return name;
+    return name.toString();
   }
 }
