@@ -16,7 +16,7 @@ import javax.xml.bind.JAXBElement;
 
 /** Gson Mavlue adapter class to handle JAXBElement class. */
 public class MValueAdapter implements JsonSerializer<Mvalue>, JsonDeserializer<Mvalue> {
-  private ObjectFactory factory;
+  private final ObjectFactory factory;
 
   public MValueAdapter() {
     factory = new ObjectFactory();

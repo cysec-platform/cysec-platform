@@ -3,6 +3,12 @@ package eu.smesec.platform.messages;
 import java.util.Locale;
 
 public class AdminMsg extends Message {
+  /**
+   * Admin overview page messages constructor.
+   *
+   * @param locale display language
+   * @param companies number of companies
+   */
   public AdminMsg(Locale locale, int companies) {
     super(locale);
 
