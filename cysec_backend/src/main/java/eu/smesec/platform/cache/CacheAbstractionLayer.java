@@ -1,17 +1,13 @@
 package eu.smesec.platform.cache;
 
 import eu.smesec.bridge.FQCN;
+import eu.smesec.bridge.Library;
 import eu.smesec.bridge.execptions.CacheAlreadyExistsException;
 import eu.smesec.bridge.execptions.CacheException;
 import eu.smesec.bridge.execptions.CacheNotFoundException;
 import eu.smesec.bridge.execptions.ElementAlreadyExistsException;
 import eu.smesec.bridge.execptions.ElementNotFoundException;
 import eu.smesec.bridge.execptions.TokenExpiredException;
-import eu.smesec.bridge.generated.Token;
-import eu.smesec.bridge.utils.Tuple;
-import eu.smesec.platform.config.Config;
-import eu.smesec.bridge.Library;
-
 import eu.smesec.bridge.generated.Answer;
 import eu.smesec.bridge.generated.Answers;
 import eu.smesec.bridge.generated.Audit;
@@ -21,52 +17,62 @@ import eu.smesec.bridge.generated.Metadata;
 import eu.smesec.bridge.generated.Mvalue;
 import eu.smesec.bridge.generated.Question;
 import eu.smesec.bridge.generated.Questionnaire;
+import eu.smesec.bridge.generated.Token;
 import eu.smesec.bridge.generated.User;
-
+import eu.smesec.bridge.utils.Tuple;
+import eu.smesec.platform.config.Config;
 import eu.smesec.platform.utils.FileResponse;
+
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-
 import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-/**
- * <p>Cache abstraction layer.
- * Provides cache API.</p>
- */
+/** Cache abstraction layer. Provides cache API. */
 @Singleton
 public class CacheAbstractionLayer {
   private DataCache data;
   private CoachCache coaches;
-  private CoachManager coachManager;
 
   /**
-   * <p>CAL constructor.</p>
+   * CAL constructor.
    *
    * @param context servlet context
-   * @param config  app config
+   * @param config app config
    */
-  public CacheAbstractionLayer(@Context ServletContext context, ResourceManager resManager, Config config) {
+  public CacheAbstractionLayer(
+      @Context ServletContext context, ResourceManager resManager, Config config) {
     try {
       String contextName = context.getContextPath().substring(1);
       String basePath = config.getStringValue(contextName, "cysec_base_path");
       String dataPath = config.getStringValue(contextName, "cysec_data_path");
       String coachPath = config.getStringValue(contextName, "cysec_coach_path");
-      this.data = new DataCache(dataPath.startsWith("/") ? Paths.get(dataPath) : Paths.get(basePath, dataPath,
-            context.getContextPath()));
-      this.coaches = new CoachCache(coachPath.startsWith("/") ? Paths.get(coachPath) : Paths.get(basePath, coachPath),
-            new LibCal(this, context, resManager));
-      this.coachManager = new CoachManager(this.coaches);
-      this.coachManager.init();   // todo call on webapp start and not in constructor
+      this.data =
+          new DataCache(
+              dataPath.startsWith("/")
+                  ? Paths.get(dataPath)
+                  : Paths.get(basePath, dataPath, context.getContextPath()));
+      this.coaches =
+          new CoachCache(
+              coachPath.startsWith("/") ? Paths.get(coachPath) : Paths.get(basePath, coachPath),
+              new LibCal(this, context, resManager));
+      CoachManager coachManager = new CoachManager(this.coaches);
+      coachManager.init(); // check call on webapp start and not in constructor
     } catch (Exception e) {
       e.printStackTrace();
       System.exit(1);
@@ -78,7 +84,7 @@ public class CacheAbstractionLayer {
   // -------------------
 
   /**
-   * <p>Returns all loaded company ids.</p>
+   * Returns all loaded company ids.
    *
    * @return Set of all companyIds.
    */
@@ -87,23 +93,24 @@ public class CacheAbstractionLayer {
   }
 
   /**
-   * <p>Returns a list of loaded companies.</p>
+   * Returns a list of loaded companies.
    *
-   * @return
-   * @throws CacheException
+   * @return company list
+   * @throws CacheException If an error occurs during accessing the companies
    */
   public List<Company> getCompanies() throws CacheException {
-    return data.executeOnAllCompanies(entries -> {
-      List<Company> companies = new ArrayList<>();
-      for (Map.Entry<String, CompanyCache> entry : entries) {
-        entry.getValue().readOnUsers(companies::add);
-      }
-      return companies;
-    });
+    return data.executeOnAllCompanies(
+        entries -> {
+          List<Company> companies = new ArrayList<>();
+          for (Map.Entry<String, CompanyCache> entry : entries) {
+            entry.getValue().readOnUsers(companies::add);
+          }
+          return companies;
+        });
   }
 
   /**
-   * <p>Checks if a company is loaded.</p>
+   * Checks if a company is loaded.
    *
    * @param companyId The id of the company.
    * @return <code>true</code> if the company is loaded, or <code>false</code> otherwise.
@@ -113,36 +120,41 @@ public class CacheAbstractionLayer {
   }
 
   /**
-   * <p>Find the company for which the email is registered.</p>
+   * Find the company for which the email is registered.
    *
    * @param email The email address of the user.
    * @return An optional of Company that has to be handled by the caller of the method.
    */
   public String getCompanyByEmail(String email) throws CacheException {
-    return data.executeOnAllCompanies(entries -> {
-      List<String> result = new ArrayList<>();
-      for (Map.Entry<String, CompanyCache> entry : entries) {
-        if (entry.getValue().readOnUsers(company -> company.getUser().stream()
-              .anyMatch(user -> user.getEmail().equals(email)))) {
-          result.add(entry.getKey());
-        }
-      }
-      return result.size() > 0 ? result.get(0) : null;
-    });
+    return data.executeOnAllCompanies(
+        entries -> {
+          List<String> result = new ArrayList<>();
+          for (Map.Entry<String, CompanyCache> entry : entries) {
+            if (entry
+                .getValue()
+                .readOnUsers(
+                    company ->
+                        company.getUser().stream()
+                            .anyMatch(user -> user.getEmail().equals(email)))) {
+              result.add(entry.getKey());
+            }
+          }
+          return result.size() > 0 ? result.get(0) : null;
+        });
   }
 
   /**
-   * <p>Creates a new company.</p>
+   * Creates a new company.
    *
-   * @param companyId   The id of the new company.
+   * @param companyId The id of the new company.
    * @param companyName The name of the new company.
-   * @param admin       The companies first user who should be admin.
-   * @throws CacheException              If the a general error occurs.
-   * @throws ElementNotFoundException    If the coach company was not found.
+   * @param admin The companies first user who should be admin.
+   * @throws CacheException If the a general error occurs.
+   * @throws ElementNotFoundException If the coach company was not found.
    * @throws CacheAlreadyExistsException If the company already exists.
    */
   public void createCompany(String companyId, String companyName, User admin)
-        throws CacheException {
+      throws CacheException {
     Questionnaire companyCoach = getCoach("lib-company");
     if (companyCoach == null) {
       throw new ElementNotFoundException("coach \"lib-company\" was not found");
@@ -151,33 +163,33 @@ public class CacheAbstractionLayer {
     data.addCompany(companyId.toLowerCase(), companyName, admin, companyCoach);
   }
 
-//    /**
-//     * <p>Removes an existing company.</p>
-//     *
-//     * @param companyId The id of the company to remove.
-//     * @throws CacheException         If the a general error occurs.
-//     * @throws CacheNotFoundException If the company was not found.
-//     */
-//    public void removeCompany(String companyId) throws CacheException {
-//        data.deleteCompany(companyId.toLowerCase());
-//    }
-
+  //    /**
+  //     * <p>Removes an existing company.</p>
+  //     *
+  //     * @param companyId The id of the company to remove.
+  //     * @throws CacheException         If the a general error occurs.
+  //     * @throws CacheNotFoundException If the company was not found.
+  //     */
+  //    public void removeCompany(String companyId) throws CacheException {
+  //        data.deleteCompany(companyId.toLowerCase());
+  //    }
 
   // ----------------
   // ----- USER -----
   // ----------------
 
-  private <R> R readOnUsers(String companyId, ICommand<Company, R> command)
-        throws CacheException {
+  private <R> R readOnUsers(String companyId, ICommand<Company, R> command) throws CacheException {
     return data.executeOnCompany(companyId, cache -> cache.readOnUsers(command));
   }
 
   private void writeOnUser(String companyId, ICommand<Company, Void> command)
-        throws CacheException {
-    data.executeOnCompany(companyId, cache -> {
-      cache.writeOnUsers(command);
-      return null;
-    });
+      throws CacheException {
+    data.executeOnCompany(
+        companyId,
+        cache -> {
+          cache.writeOnUsers(command);
+          return null;
+        });
   }
 
   public Company getCompany(String companyId) throws CacheException {
@@ -193,129 +205,148 @@ public class CacheAbstractionLayer {
   }
 
   /**
-   * <p>Creates a new user.</p>
+   * Creates a new user.
    *
    * @param companyId The id of the company.
-   * @param user      The new user.
-   * @throws CacheNotFoundException        If the company was not found.
+   * @param user The new user.
+   * @throws CacheNotFoundException If the company was not found.
    * @throws ElementAlreadyExistsException If the username or email are already in use.
    */
   public void createUser(String companyId, User user) throws CacheException {
-    data.executeOnCompany(companyId, companyCache -> {
-      companyCache.writeOnUsers(company -> {
-        String username = user.getUsername();
-        String email = user.getEmail();
-        if (company.getUser().stream().anyMatch(user1 ->
-            user1.getUsername().equals(username) || user1.getEmail().equals(email))) {
-          throw new ElementAlreadyExistsException("User with username " + username
-              + ", or email " + email + " already exists in company " + companyId);
-        }
-        user.setId(companyCache.nextUserId());
-        company.getUser().add((User) user.clone());
-        return null;
-      });
-      return null;
-    });
+    data.executeOnCompany(
+        companyId,
+        companyCache -> {
+          companyCache.writeOnUsers(
+              company -> {
+                String username = user.getUsername();
+                String email = user.getEmail();
+                if (company.getUser().stream()
+                    .anyMatch(
+                        user1 ->
+                            user1.getUsername().equals(username)
+                                || user1.getEmail().equals(email))) {
+                  throw new ElementAlreadyExistsException(
+                      "User with username "
+                          + username
+                          + ", or email "
+                          + email
+                          + " already exists in company "
+                          + companyId);
+                }
+                user.setId(companyCache.nextUserId());
+                company.getUser().add((User) user.clone());
+                return null;
+              });
+          return null;
+        });
   }
 
   /**
-   * <p>Returns an user by its id.</p>
+   * Returns an user by its id.
    *
    * @param companyId The id of the company.
-   * @param userId    The id of the user.
+   * @param userId The id of the user.
    * @return <code>User</code> if an user was found, <code>null</code> otherwise.
    * @throws CacheNotFoundException If the company was not found.
    */
   public User getUser(String companyId, long userId) throws CacheException {
-    return readOnUsers(companyId, company -> {
-      ListIterator<User> it = company.getUser().listIterator();
-      while (it.hasNext()) {
-        User user = it.next();
-        if (user.getId() == userId) {
-          return user;
-        }
-      }
-      return null;
-    });
+    return readOnUsers(
+        companyId,
+        company -> {
+          ListIterator<User> it = company.getUser().listIterator();
+          while (it.hasNext()) {
+            User user = it.next();
+            if (user.getId() == userId) {
+              return user;
+            }
+          }
+          return null;
+        });
   }
 
   /**
-   * <p>Returns an user by its name.</p>
+   * Returns an user by its name.
    *
    * @param companyId The id of the company.
-   * @param username  The name of the user.
+   * @param username The name of the user.
    * @return <code>User</code> if an user was found, <code>null</code> otherwise.
    * @throws CacheNotFoundException If the company was not found.
    */
   public User getUserByName(String companyId, String username) throws CacheException {
-    return readOnUsers(companyId, company -> {
-      ListIterator<User> it = company.getUser().listIterator();
-      while (it.hasNext()) {
-        User user = it.next();
-        if (user.getUsername().equals(username)) {
-          return user;
-        }
-      }
-      return null;
-    });
+    return readOnUsers(
+        companyId,
+        company -> {
+          ListIterator<User> it = company.getUser().listIterator();
+          while (it.hasNext()) {
+            User user = it.next();
+            if (user.getUsername().equals(username)) {
+              return user;
+            }
+          }
+          return null;
+        });
   }
 
   /**
-   * <p>Returns an user by its email.</p>
+   * Returns an user by its email.
    *
    * @param companyId The id of the company.
-   * @param email     The email of the user.
+   * @param email The email of the user.
    * @return <code>User</code> if an user was found, <code>null</code> otherwise.
    * @throws CacheNotFoundException If the company was not found.
    */
   public User getUserByEmail(String companyId, String email) throws CacheException {
-    return readOnUsers(companyId, company -> {
-      ListIterator<User> it = company.getUser().listIterator();
-      while (it.hasNext()) {
-        User user = it.next();
-        if (user.getEmail().equals(email)) {
-          return user;
-        }
-      }
-      return null;
-    });
+    return readOnUsers(
+        companyId,
+        company -> {
+          ListIterator<User> it = company.getUser().listIterator();
+          while (it.hasNext()) {
+            User user = it.next();
+            if (user.getEmail().equals(email)) {
+              return user;
+            }
+          }
+          return null;
+        });
   }
 
   /**
-   * <p>Returns an user by its email.</p>
+   * Returns an user by its email.
    *
    * @param companyId The id of the company.
-   * @param token     The reset token.
+   * @param token The reset token.
    * @return <code>User</code> if an user was found, <code>null</code> otherwise.
    * @throws CacheNotFoundException If the company was not found.
-   * @throws TokenExpiredException  If the token is expired.
+   * @throws TokenExpiredException If the token is expired.
    */
   public User getUserByToken(String companyId, String token) throws CacheException {
-    return readOnUsers(companyId, company -> {
-      ListIterator<User> itUser = company.getUser().listIterator();
-      while (itUser.hasNext()) {
-        User user = itUser.next();
-        ListIterator<Token> itToken = user.getToken().listIterator();
-        while (itToken.hasNext()) {
-          Token token1 = itToken.next();
-          if (token1.getId().equals("reset") && token1.getValue().equals(token)) {
-            XMLGregorianCalendar tokenExpiry = token1.getExpiry();
-            LocalDate expiry = LocalDate.of(tokenExpiry.getYear(),
-                  tokenExpiry.getMonth(),
-                  tokenExpiry.getDay());
-            if (LocalDate.now().isAfter(expiry)) {
-              throw new TokenExpiredException(token1);
+    return readOnUsers(
+        companyId,
+        company -> {
+          ListIterator<User> itUser = company.getUser().listIterator();
+          while (itUser.hasNext()) {
+            User user = itUser.next();
+            ListIterator<Token> itToken = user.getToken().listIterator();
+            while (itToken.hasNext()) {
+              Token token1 = itToken.next();
+              if (token1.getId().equals("reset") && token1.getValue().equals(token)) {
+                XMLGregorianCalendar tokenExpiry = token1.getExpiry();
+                LocalDate expiry =
+                    LocalDate.of(
+                        tokenExpiry.getYear(), tokenExpiry.getMonth(), tokenExpiry.getDay());
+                if (LocalDate.now().isAfter(expiry)) {
+                  throw new TokenExpiredException(token1);
+                }
+                return user;
+              }
             }
-            return user;
           }
-        }
-      }
-      return null;
-    });
+          return null;
+        });
   }
 
   /**
-   * <p>Returns all users of a company.</p>
+   * Returns all users of a company.
    *
    * @param companyId The id of the company.
    * @return List of all users.
@@ -326,69 +357,82 @@ public class CacheAbstractionLayer {
   }
 
   /**
-   * <p>Returns a list of all users within the given company that bear the Admin role.</p>
+   * Returns a list of all users within the given company that bear the Admin role.
    *
    * @param companyId The company to query.
    * @return A list of Users.
    * @throws CacheNotFoundException If the company was not found.
    */
   public List<User> getAllAdminUsers(String companyId) throws CacheException {
-    return readOnUsers(companyId, company -> company.getUser().stream()
-          .filter(user -> user.getRole().contains("Admin"))
-          .collect(Collectors.toList()));
+    return readOnUsers(
+        companyId,
+        company ->
+            company.getUser().stream()
+                .filter(user -> user.getRole().contains("Admin"))
+                .collect(Collectors.toList()));
   }
 
   /**
-   * <p>Updates an user.</p>
-   * The id of this user must be unmodified.
+   * Updates an user. The id of this user must be unmodified.
    *
    * @param companyId The id of the company.
-   * @param user      The modified user.
-   * @throws CacheNotFoundException        If the company was not found.
+   * @param user The modified user.
+   * @throws CacheNotFoundException If the company was not found.
    * @throws ElementAlreadyExistsException If the username or email are already in use.
-   * @throws ElementNotFoundException      If the user was not found.
+   * @throws ElementNotFoundException If the user was not found.
    */
   public void updateUser(String companyId, User user) throws CacheException {
-    writeOnUser(companyId, company -> {
-      ListIterator<User> it = company.getUser().listIterator();
-      int i = -1;
-      while (it.hasNext()) {
-        User user1 = it.next();
-        if (user1.getId().equals(user.getId())) {
-          i = it.nextIndex();
-          if (user.getPassword() == null) {
-            user.setPassword(user1.getPassword());
+    writeOnUser(
+        companyId,
+        company -> {
+          ListIterator<User> it = company.getUser().listIterator();
+          int i = -1;
+          while (it.hasNext()) {
+            User user1 = it.next();
+            if (user1.getId().equals(user.getId())) {
+              i = it.nextIndex();
+              if (user.getPassword() == null) {
+                user.setPassword(user1.getPassword());
+              }
+            } else if (user1.getUsername().equals(user.getUsername())
+                || user1.getEmail().equals(user.getEmail())) {
+              throw new ElementAlreadyExistsException(
+                  "User with username "
+                      + user.getUsername()
+                      + " or email "
+                      + user.getEmail()
+                      + " already exists in company "
+                      + companyId);
+            }
           }
-        } else if (user1.getUsername().equals(user.getUsername())
-              || user1.getEmail().equals(user.getEmail())) {
-          throw new ElementAlreadyExistsException("User with username " + user.getUsername()
-                + " or email " + user.getEmail() + " already exists in company " + companyId);
-        }
-      }
-      if (i >= 0) {
-        // -1 since list is 0-based
-        company.getUser().set(i - 1, (User) user.clone());
-        return null;
-      }
-      throw new ElementNotFoundException("User " + user.getId() + " not found in company " + companyId);
-    });
+          if (i >= 0) {
+            // -1 since list is 0-based
+            company.getUser().set(i - 1, (User) user.clone());
+            return null;
+          }
+          throw new ElementNotFoundException(
+              "User " + user.getId() + " not found in company " + companyId);
+        });
   }
 
   /**
-   * <p>Removes an user.</p>
+   * Removes an user.
    *
    * @param companyId The id of the company.
-   * @param userId    The id of the user.
-   * @throws CacheNotFoundException   If the company was not found.
+   * @param userId The id of the user.
+   * @throws CacheNotFoundException If the company was not found.
    * @throws ElementNotFoundException If the user was not found.
    */
   public void removeUser(String companyId, long userId) throws CacheException {
-    writeOnUser(companyId, company -> {
-      if (!company.getUser().removeIf(user -> user.getId() == userId)) {
-        throw new ElementNotFoundException("User " + userId + " not found in company " + companyId);
-      }
-      return null;
-    });
+    writeOnUser(
+        companyId,
+        company -> {
+          if (!company.getUser().removeIf(user -> user.getId() == userId)) {
+            throw new ElementNotFoundException(
+                "User " + userId + " not found in company " + companyId);
+          }
+          return null;
+        });
   }
 
   // ------------------
@@ -396,82 +440,105 @@ public class CacheAbstractionLayer {
   // ------------------
 
   private <R> R readOnAllAnswers(String companyId, ICommand<Map<Path, Answers>, R> command)
-        throws CacheException {
+      throws CacheException {
     return data.executeOnCompany(companyId, company -> company.readOnAllAnswers(command));
   }
 
   private <R> R readOnAnswers(String companyId, FQCN fqcn, ICommand<Answers, R> command)
-        throws CacheException {
-    return data.executeOnCompany(companyId, company -> company.readOnAnswers(fqcn.toPath(), command));
+      throws CacheException {
+    return data.executeOnCompany(
+        companyId, company -> company.readOnAnswers(fqcn.toPath(), command));
   }
 
   private void writeOnAnswers(String companyId, FQCN fqcn, ICommand<Answers, Void> command)
-        throws CacheException {
-    data.executeOnCompany(companyId, company -> {
-        company.writeOnAnswers(fqcn.toPath(), command);
-        return null;
-    });
+      throws CacheException {
+    data.executeOnCompany(
+        companyId,
+        company -> {
+          company.writeOnAnswers(fqcn.toPath(), command);
+          return null;
+        });
   }
 
   /**
-   * <p>Appends an answer object.</p>
+   * Appends an answer object.
    *
    * @param companyId The id of the company.
-   * @param fqcn      the full qualified coach name
-   * @param answer    The new answer object.
-   * @throws CacheNotFoundException        If the company was not found.
-   * @throws CacheNotFoundException        If the instance was not found.
+   * @param fqcn the full qualified coach name
+   * @param answer The new answer object.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
    * @throws ElementAlreadyExistsException If answer qid is already in use.
    */
-  public void createAnswer(String companyId, FQCN fqcn, Answer answer)
-        throws CacheException {
-    writeOnAnswers(companyId, fqcn, answers -> {
-      if (answers.getAnswer().stream().anyMatch(answer1 ->
-            answer1.getQid().equals(answer.getQid()))) {
-        throw new ElementAlreadyExistsException("Answer " + answer.getQid().toString()
-              + " already exists for " + fqcn
-              + " in company " + companyId);
-      }
-      answers.getAnswer().add((Answer) answer.clone());
-      return null;
-    });
-  }
-
-  @Deprecated
-  public boolean existsAnswer(String companyId, FQCN fqcn, Object qid)
-        throws CacheException {
-    return readOnAnswers(companyId, fqcn, answers -> answers.getAnswer().stream()
-          .anyMatch(answer -> answer.getQid().equals(qid)));
+  public void createAnswer(String companyId, FQCN fqcn, Answer answer) throws CacheException {
+    writeOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          if (answers.getAnswer().stream()
+              .anyMatch(answer1 -> answer1.getQid().equals(answer.getQid()))) {
+            throw new ElementAlreadyExistsException(
+                "Answer "
+                    + answer.getQid().toString()
+                    + " already exists for "
+                    + fqcn
+                    + " in company "
+                    + companyId);
+          }
+          answers.getAnswer().add((Answer) answer.clone());
+          return null;
+        });
   }
 
   /**
-   * <p>Returns an answer object.</p>
+   * Old answer check, this method will be removed in a later release.
    *
    * @param companyId The id of the company.
-   * @param fqcn      the full qualified coach name
-   * @param qid       The id of an answer.
+   * @param fqcn the full qualified coach name.
+   * @param qid The id of an answer.
+   * @return <code>true</code> if the company exists, or <code>false</code> otherwise.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
+   */
+  @Deprecated
+  public boolean existsAnswer(String companyId, FQCN fqcn, Object qid) throws CacheException {
+    return readOnAnswers(
+        companyId,
+        fqcn,
+        answers -> answers.getAnswer().stream().anyMatch(answer -> answer.getQid().equals(qid)));
+  }
+
+  /**
+   * Returns an answer object.
+   *
+   * @param companyId The id of the company.
+   * @param fqcn the full qualified coach name.
+   * @param qid The id of an answer.
    * @return Answer object if the answer was found, or <code>null</code> otherwise.
    * @throws CacheNotFoundException If the company was not found.
    * @throws CacheNotFoundException If the instance was not found.
    */
   public Answer getAnswer(String companyId, FQCN fqcn, Object qid) throws CacheException {
-    return readOnAnswers(companyId, fqcn, answers -> {
-      ListIterator<Answer> it = answers.getAnswer().listIterator();
-      while (it.hasNext()) {
-        Answer answer = it.next();
-        if (answer.getQid().equals(qid)) {
-          return answer;
-        }
-      }
-      return null;
-    });
+    return readOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          ListIterator<Answer> it = answers.getAnswer().listIterator();
+          while (it.hasNext()) {
+            Answer answer = it.next();
+            if (answer.getQid().equals(qid)) {
+              return answer;
+            }
+          }
+          return null;
+        });
   }
 
   /**
-   * <p>Returns all answer objects.</p>
+   * Returns all answer objects.
    *
    * @param companyId The id of the company.
-   * @param fqcn      the full qualified coach name
+   * @param fqcn the full qualified coach name
    * @return A list of all answer objects.
    * @throws CacheNotFoundException If the company was not found.
    * @throws CacheNotFoundException If the instance was not found.
@@ -481,53 +548,64 @@ public class CacheAbstractionLayer {
   }
 
   /**
-   * <p>Updates an existing answer object.
-   * The qid of the answer must be the same.</p>
+   * Updates an existing answer object. The qid of the answer must be the same.
    *
    * @param companyId The id of the company.
-   * @param fqcn      the full qualified coach name
-   * @param answer    The new answer object.
-   * @throws CacheNotFoundException   If the company was not found.
-   * @throws CacheNotFoundException   If the instance was not found.
+   * @param fqcn the full qualified coach name
+   * @param answer The new answer object.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
    * @throws ElementNotFoundException If the answer was not found.
    */
-  public void updateAnswer(String companyId, FQCN fqcn, Answer answer)
-        throws CacheException {
-    writeOnAnswers(companyId, fqcn, answers -> {
-      ListIterator<Answer> it = answers.getAnswer().listIterator();
-      while (it.hasNext()) {
-        Answer answer1 = it.next();
-        if (answer1.getQid().equals(answer.getQid())) {
-          it.set((Answer) answer.clone());
-          return null;
-        }
-      }
-      throw new ElementNotFoundException("Answer " + answer.getQid().toString()
-            + " not found for instance " + fqcn
-            + " in company " + companyId);
-    });
+  public void updateAnswer(String companyId, FQCN fqcn, Answer answer) throws CacheException {
+    writeOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          ListIterator<Answer> it = answers.getAnswer().listIterator();
+          while (it.hasNext()) {
+            Answer answer1 = it.next();
+            if (answer1.getQid().equals(answer.getQid())) {
+              it.set((Answer) answer.clone());
+              return null;
+            }
+          }
+          throw new ElementNotFoundException(
+              "Answer "
+                  + answer.getQid().toString()
+                  + " not found for instance "
+                  + fqcn
+                  + " in company "
+                  + companyId);
+        });
   }
 
   /**
-   * <p>Removes an existing answer object.</p>
+   * Removes an existing answer object.
    *
-   * @param companyId  The id of the company.
-   * @param fqcn       the full qualified coach name
+   * @param companyId The id of the company.
+   * @param fqcn the full qualified coach name
    * @param questionId The id of an answer.
-   * @throws CacheNotFoundException   If the company was not found.
-   * @throws CacheNotFoundException   If the instance was not found.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
    * @throws ElementNotFoundException If the answer was not found.
    */
-  public void removeAnswer(String companyId, FQCN fqcn, Object questionId)
-        throws CacheException {
-    writeOnAnswers(companyId, fqcn, answers -> {
-      if (!answers.getAnswer().removeIf(answer -> answer.getQid().equals(questionId))) {
-        throw new ElementNotFoundException("Answer " + questionId.toString()
-              + " not found for instance " + fqcn
-              + " in company " + companyId);
-      }
-      return null;
-    });
+  public void removeAnswer(String companyId, FQCN fqcn, Object questionId) throws CacheException {
+    writeOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          if (!answers.getAnswer().removeIf(answer -> answer.getQid().equals(questionId))) {
+            throw new ElementNotFoundException(
+                "Answer "
+                    + questionId.toString()
+                    + " not found for instance "
+                    + fqcn
+                    + " in company "
+                    + companyId);
+          }
+          return null;
+        });
   }
 
   // ---------------------
@@ -535,39 +613,45 @@ public class CacheAbstractionLayer {
   // ---------------------
 
   /**
-   * <p>Appends a new metadata object.</p>
-   * Metadata object should contain some mvalues.
+   * Appends a new metadata object. Metadata object should contain some mvalues.
    *
    * @param companyId The id of the company.
-   * @param fqcn      the full qualified coach name
-   * @param metadata  The new metadata object.
-   * @throws CacheNotFoundException        If the company was not found.
-   * @throws CacheNotFoundException        If the instance was not found.
+   * @param fqcn the full qualified coach name
+   * @param metadata The new metadata object.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
    * @throws ElementAlreadyExistsException If metadata key is already in use.
    */
   @Deprecated
   public void createMetadataOnAnswers(String companyId, FQCN fqcn, Metadata metadata)
-        throws CacheException {
-    writeOnAnswers(companyId, fqcn, answers -> {
-      ListIterator<Metadata> it = answers.getMetadata().listIterator();
-      while (it.hasNext()) {
-        Metadata md = it.next();
-        if (md.getKey().equals(metadata.getKey())) {
-          throw new ElementAlreadyExistsException("Metadata key " + metadata.getKey()
-                + " already exists for instance " + fqcn
-                + " in company " + companyId);
-        }
-      }
-      answers.getMetadata().add((Metadata) metadata.clone());
-      return null;
-    });
+      throws CacheException {
+    writeOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          ListIterator<Metadata> it = answers.getMetadata().listIterator();
+          while (it.hasNext()) {
+            Metadata md = it.next();
+            if (md.getKey().equals(metadata.getKey())) {
+              throw new ElementAlreadyExistsException(
+                  "Metadata key "
+                      + metadata.getKey()
+                      + " already exists for instance "
+                      + fqcn
+                      + " in company "
+                      + companyId);
+            }
+          }
+          answers.getMetadata().add((Metadata) metadata.clone());
+          return null;
+        });
   }
 
   /**
-   * <p>Checks if a metadata key exists.</p>
+   * Checks if a metadata key exists.
    *
-   * @param companyId   The id of the company.
-   * @param fqcn        the full qualified coach name
+   * @param companyId The id of the company.
+   * @param fqcn the full qualified coach name
    * @param metadataKey The key of the metadata.
    * @return <code>true</code> if the metadata exists, or <code>false</code> otherwise.
    * @throws CacheNotFoundException If the company was not found.
@@ -575,115 +659,138 @@ public class CacheAbstractionLayer {
    */
   @Deprecated
   public boolean existsMetadataOnAnswer(String companyId, FQCN fqcn, String metadataKey)
-        throws CacheException {
-    return readOnAnswers(companyId, fqcn, answers -> answers.getMetadata().stream()
-          .anyMatch(md -> md.getKey().equals(metadataKey)));
+      throws CacheException {
+    return readOnAnswers(
+        companyId,
+        fqcn,
+        answers -> answers.getMetadata().stream().anyMatch(md -> md.getKey().equals(metadataKey)));
   }
 
   /**
-   * <p>Returns a metadata.</p>
+   * Returns a metadata.
    *
-   * @param companyId   The id of the company.
-   * @param fqcn        the full qualified coach name
+   * @param companyId The id of the company.
+   * @param fqcn the full qualified coach name
    * @param metadataKey The key of the metadata.
    * @return the metadata if the key exists, or <code>null</code> otherwise.
    * @throws CacheNotFoundException If the company was not found.
    * @throws CacheNotFoundException If the instance was not found.
    */
   public Metadata getMetadataOnAnswer(String companyId, FQCN fqcn, String metadataKey)
-        throws CacheException {
-    return readOnAnswers(companyId, fqcn, answers -> {
-      ListIterator<Metadata> it = answers.getMetadata().listIterator();
-      while (it.hasNext()) {
-        Metadata md = it.next();
-        if (md.getKey().equals(metadataKey)) {
-          return md;
-        }
-      }
-      return null;
-    });
+      throws CacheException {
+    return readOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          ListIterator<Metadata> it = answers.getMetadata().listIterator();
+          while (it.hasNext()) {
+            Metadata md = it.next();
+            if (md.getKey().equals(metadataKey)) {
+              return md;
+            }
+          }
+          return null;
+        });
   }
 
   /**
-   * <p>Returns all Metadata.</p>
+   * Returns all Metadata.
    *
    * @param companyId The id of the company.
-   * @param fqcn      the full qualified coach name
+   * @param fqcn the full qualified coach name
    * @return A list of all metadata.
    * @throws CacheNotFoundException If the company was not found.
    * @throws CacheNotFoundException If the instance was not found.
    */
-  public List<Metadata> getAllMetadataOnAnswer(String companyId, FQCN fqcn)
-        throws CacheException {
+  public List<Metadata> getAllMetadataOnAnswer(String companyId, FQCN fqcn) throws CacheException {
     return readOnAnswers(companyId, fqcn, Answers::getMetadata);
   }
 
   /**
-   * <p>Returns all Metadata that start with the specified prefix.</p>
+   * Returns all Metadata that start with the specified prefix.
    *
    * @param companyId The id of the company.
-   * @param fqcn      The instance of the coach.
-   * @param prefix    The prefix that the metadata have to match
+   * @param fqcn The instance of the coach.
+   * @param prefix The prefix that the metadata have to match
    * @return A list of all metadata.
    * @throws CacheNotFoundException If the company was not found.
    * @throws CacheNotFoundException If the instance was not found.
    */
   public List<Metadata> getAllMetadataOnAnswer(String companyId, FQCN fqcn, String prefix)
-        throws CacheException {
-    if (prefix == null) return getAllMetadataOnAnswer(companyId, fqcn);
-    return readOnAnswers(companyId, fqcn, answers -> answers.getMetadata().stream()
-          .filter(md -> md.getKey().startsWith(prefix))
-          .collect(Collectors.toList()));
+      throws CacheException {
+    if (prefix == null) {
+      return getAllMetadataOnAnswer(companyId, fqcn);
+    }
+    return readOnAnswers(
+        companyId,
+        fqcn,
+        answers ->
+            answers.getMetadata().stream()
+                .filter(md -> md.getKey().startsWith(prefix))
+                .collect(Collectors.toList()));
   }
 
   /**
-   * <p>Updates an existing metadata object.</p>
-   * The key of the metadata must be the same.
+   * Updates an existing metadata object. The key of the metadata must be the same.
    *
    * @param companyId The id of the company.
-   * @param fqcn      the full qualified coach name
-   * @param metadata  The new metadata object.
-   * @throws CacheNotFoundException   If the company was not found.
-   * @throws CacheNotFoundException   If the instance was not found.
+   * @param fqcn the full qualified coach name
+   * @param metadata The new metadata object.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
    * @throws ElementNotFoundException If the metadata was not found.
    */
   @Deprecated
   public void updateMetadataOnAnswer(String companyId, FQCN fqcn, Metadata metadata)
-        throws CacheException {
-    writeOnAnswers(companyId, fqcn, answers -> {
-      ListIterator<Metadata> it = answers.getMetadata().listIterator();
-      while (it.hasNext()) {
-        Metadata md = it.next();
-        if (md.getKey().equals(metadata.getKey())) {
-          it.set((Metadata) metadata.clone());
-        }
-      }
-      throw new ElementNotFoundException("Metadata " + metadata.getKey()
-            + " was not found for instance " + fqcn
-            + " in company " + companyId);
-    });
+      throws CacheException {
+    writeOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          ListIterator<Metadata> it = answers.getMetadata().listIterator();
+          while (it.hasNext()) {
+            Metadata md = it.next();
+            if (md.getKey().equals(metadata.getKey())) {
+              it.set((Metadata) metadata.clone());
+            }
+          }
+          throw new ElementNotFoundException(
+              "Metadata "
+                  + metadata.getKey()
+                  + " was not found for instance "
+                  + fqcn
+                  + " in company "
+                  + companyId);
+        });
   }
 
   /**
-   * <p>Deletes a  metadata object.</p>
+   * Deletes a metadata object.
    *
-   * @param companyId   The id of the company.
-   * @param fqcn        The instance of the coach.
+   * @param companyId The id of the company.
+   * @param fqcn The instance of the coach.
    * @param metadataKey The key of the metadata.
-   * @throws CacheNotFoundException   If the company was not found.
-   * @throws CacheNotFoundException   If the instance was not found.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
    * @throws ElementNotFoundException If the metadata was not found.
    */
   public void deleteMetadataOnAnswers(String companyId, FQCN fqcn, String metadataKey)
-        throws CacheException {
-    writeOnAnswers(companyId, fqcn, answers -> {
-      if (!answers.getMetadata().removeIf(metadata -> metadata.getKey().equals(metadataKey))) {
-        throw new ElementNotFoundException("Metadata " + metadataKey
-              + " was not found for instance " + fqcn
-              + " in company " + companyId);
-      }
-      return null;
-    });
+      throws CacheException {
+    writeOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          if (!answers.getMetadata().removeIf(metadata -> metadata.getKey().equals(metadataKey))) {
+            throw new ElementNotFoundException(
+                "Metadata "
+                    + metadataKey
+                    + " was not found for instance "
+                    + fqcn
+                    + " in company "
+                    + companyId);
+          }
+          return null;
+        });
   }
 
   // -------------------
@@ -691,304 +798,360 @@ public class CacheAbstractionLayer {
   // -------------------
 
   /**
-   * <p>Sets all mvalues in the metadata.
-   * If the metadata does not exists, it will be created.
-   * If a mvalue exists, it will be updated, or added otherwise.
-   * If a mvalue key exists more than once in the list, then the last one will be used.</p>
+   * Sets all mvalues in the metadata. If the metadata does not exists, it will be created. If a
+   * mvalue exists, it will be updated, or added otherwise. If a mvalue key exists more than once in
+   * the list, then the last one will be used.
    *
    * @param companyId The id of the company.
-   * @param fqcn      the full qualified coach name
-   * @param metadata  The metadata object.
+   * @param fqcn the full qualified coach name
+   * @param metadata The metadata object.
    * @throws CacheNotFoundException If the company was not found.
    * @throws CacheNotFoundException If the instance was not found.
    */
   public void setMetadataOnAnswers(String companyId, FQCN fqcn, Metadata metadata)
-        throws CacheException {
+      throws CacheException {
     Map<String, Mvalue> mvs = new HashMap<>(metadata.getMvalue().size());
     for (Mvalue mv : metadata.getMvalue()) {
       mvs.put(mv.getKey(), (Mvalue) mv.clone());
     }
 
-    writeOnAnswers(companyId, fqcn, answers -> {
-      ListIterator<Metadata> it = answers.getMetadata().listIterator();
-      while (it.hasNext()) {
-        Metadata md = it.next();
-        if (md.getKey().equals(metadata.getKey())) {
-          // update Metadata
-          ListIterator<Mvalue> it2 = md.getMvalue().listIterator();
-          while (it2.hasNext()) {
-            Mvalue mv = it2.next();
-            if (mvs.containsKey(mv.getKey())) {
-              it2.set(mvs.remove(mv.getKey()));
+    writeOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          ListIterator<Metadata> it = answers.getMetadata().listIterator();
+          while (it.hasNext()) {
+            Metadata md = it.next();
+            if (md.getKey().equals(metadata.getKey())) {
+              // update Metadata
+              ListIterator<Mvalue> it2 = md.getMvalue().listIterator();
+              while (it2.hasNext()) {
+                Mvalue mv = it2.next();
+                if (mvs.containsKey(mv.getKey())) {
+                  it2.set(mvs.remove(mv.getKey()));
+                }
+              }
+              md.getMvalue().addAll(mvs.values());
+              return null;
             }
           }
+          // create new Metadata
+          Metadata md = new Metadata();
+          md.setKey(metadata.getKey());
           md.getMvalue().addAll(mvs.values());
+          answers.getMetadata().add(md);
           return null;
-        }
-      }
-      // create new Metadata
-      Metadata md = new Metadata();
-      md.setKey(metadata.getKey());
-      md.getMvalue().addAll(mvs.values());
-      answers.getMetadata().add(md);
-      return null;
-    });
+        });
   }
 
   /**
-   * <p>Removes all mvalues in the metadata object.
-   * If the mvalue is not present it will be ignored.
-   * If the metadata will be empty, it will be removed.</p>
+   * Removes all mvalues in the metadata object. If the mvalue is not present it will be ignored. If
+   * the metadata will be empty, it will be removed.
    *
-   * @param companyId   The id of the company.
-   * @param fqcn        the full qualified coach name
+   * @param companyId The id of the company.
+   * @param fqcn the full qualified coach name
    * @param metadataKey The key of the metadata.
-   * @param mvalueKeys  The keys of the mvalues.
+   * @param mvalueKeys The keys of the mvalues.
    * @throws CacheNotFoundException If the company was not found.
    * @throws CacheNotFoundException If the instance was not found.
    */
-  public void removeMvaluesFromAnswer(String companyId, FQCN fqcn, String metadataKey,
-                                      Set<String> mvalueKeys) throws CacheException {
-    writeOnAnswers(companyId, fqcn, answers -> {
-      ListIterator<Metadata> it = answers.getMetadata().listIterator();
-      while (it.hasNext()) {
-        Metadata md = it.next();
-        if (md.getKey().equals(metadataKey)) {
-          // update Metadata
-          md.getMvalue().removeIf(mv -> mvalueKeys.contains(mv.getKey()));
-          if (md.getMvalue().isEmpty()) {
-            it.remove();
+  public void removeMvaluesFromAnswer(
+      String companyId, FQCN fqcn, String metadataKey, Set<String> mvalueKeys)
+      throws CacheException {
+    writeOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          ListIterator<Metadata> it = answers.getMetadata().listIterator();
+          while (it.hasNext()) {
+            Metadata md = it.next();
+            if (md.getKey().equals(metadataKey)) {
+              // update Metadata
+              md.getMvalue().removeIf(mv -> mvalueKeys.contains(mv.getKey()));
+              if (md.getMvalue().isEmpty()) {
+                it.remove();
+              }
+              return null;
+            }
           }
           return null;
-        }
-      }
-      return null;
-    });
+        });
   }
 
   /**
-   * <p>Appends a new mvalue to the answer.</p>
+   * Appends a new mvalue to the answer.
    *
-   * @param companyId   The id of the company.
-   * @param fqcn        the full qualified coach name
+   * @param companyId The id of the company.
+   * @param fqcn the full qualified coach name
    * @param metadataKey The key of the metadata.
-   * @param mvalue      The new mvalue object.
-   * @throws CacheNotFoundException        If the company was not found.
-   * @throws CacheNotFoundException        If the instance was not found.
-   * @throws ElementNotFoundException      If the metadata was not found.
+   * @param mvalue The new mvalue object.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
+   * @throws ElementNotFoundException If the metadata was not found.
    * @throws ElementAlreadyExistsException If the mvalue key is already in use.
    */
   @Deprecated
-  public void createMvalueOnAnswers(String companyId, FQCN fqcn, String metadataKey,
-                                    Mvalue mvalue) throws CacheException {
-    writeOnAnswers(companyId, fqcn, answers -> {
-      ListIterator<Metadata> mdit = answers.getMetadata().listIterator();
-      while (mdit.hasNext()) {
-        Metadata md = mdit.next();
-        if (md.getKey().equals(metadataKey)) {
-          ListIterator<Mvalue> mvit = md.getMvalue().listIterator();
-          while (mvit.hasNext()) {
-            Mvalue mv = mvit.next();
-            if (mv.getKey().equals(mvalue.getKey())) {
-              throw new ElementAlreadyExistsException("Mvalue key " + mv.getKey()
-                    + " already exists in metadata " + metadataKey
-                    + " for instance " + fqcn
-                    + " in company " + companyId);
+  public void createMvalueOnAnswers(String companyId, FQCN fqcn, String metadataKey, Mvalue mvalue)
+      throws CacheException {
+    writeOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          ListIterator<Metadata> mdit = answers.getMetadata().listIterator();
+          while (mdit.hasNext()) {
+            Metadata md = mdit.next();
+            if (md.getKey().equals(metadataKey)) {
+              ListIterator<Mvalue> mvit = md.getMvalue().listIterator();
+              while (mvit.hasNext()) {
+                Mvalue mv = mvit.next();
+                if (mv.getKey().equals(mvalue.getKey())) {
+                  throw new ElementAlreadyExistsException(
+                      "Mvalue key "
+                          + mv.getKey()
+                          + " already exists in metadata "
+                          + metadataKey
+                          + " for instance "
+                          + fqcn
+                          + " in company "
+                          + companyId);
+                }
+              }
+              md.getMvalue().add((Mvalue) mvalue.clone());
+              return null;
             }
           }
-          md.getMvalue().add((Mvalue) mvalue.clone());
-          return null;
-        }
-      }
-      throw new ElementNotFoundException("Metadata key " + metadataKey
-            + " not found for instance " + fqcn
-            + " in company " + companyId);
-    });
+          throw new ElementNotFoundException(
+              "Metadata key "
+                  + metadataKey
+                  + " not found for instance "
+                  + fqcn
+                  + " in company "
+                  + companyId);
+        });
   }
 
   /**
-   * <p>Checks if a metadata key exists.</p>
+   * Checks if a metadata key exists.
    *
-   * @param companyId   The id of the company.
-   * @param fqcn        The instance of the coach.
+   * @param companyId The id of the company.
+   * @param fqcn The instance of the coach.
    * @param metadataKey The key of the metadata.
-   * @param mvalueKey   The key of the mvalue.
+   * @param mvalueKey The key of the mvalue.
    * @return <code>true</code> if the metadata exists, or <code>false</code> otherwise.
-   * @throws CacheNotFoundException   If the company was not found.
-   * @throws CacheNotFoundException   If the instance was not found.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
    * @throws ElementNotFoundException If the metadata was not found.
    */
   @Deprecated
-  public boolean existsMvalueOnAnswer(String companyId, FQCN fqcn, String metadataKey,
-                                      String mvalueKey) throws CacheException {
-    return readOnAnswers(companyId, fqcn, answers -> {
-      ListIterator<Metadata> mdit = answers.getMetadata().listIterator();
-      while (mdit.hasNext()) {
-        Metadata md = mdit.next();
-        if (md.getKey().equals(metadataKey)) {
-          return md.getMvalue().stream().anyMatch(mv -> mv.getKey().equals(mvalueKey));
-        }
-      }
-      throw new ElementNotFoundException("Metadata key " + metadataKey
-            + " not found for instance " + fqcn
-            + " in company " + companyId);
-    });
+  public boolean existsMvalueOnAnswer(
+      String companyId, FQCN fqcn, String metadataKey, String mvalueKey) throws CacheException {
+    return readOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          ListIterator<Metadata> mdit = answers.getMetadata().listIterator();
+          while (mdit.hasNext()) {
+            Metadata md = mdit.next();
+            if (md.getKey().equals(metadataKey)) {
+              return md.getMvalue().stream().anyMatch(mv -> mv.getKey().equals(mvalueKey));
+            }
+          }
+          throw new ElementNotFoundException(
+              "Metadata key "
+                  + metadataKey
+                  + " not found for instance "
+                  + fqcn
+                  + " in company "
+                  + companyId);
+        });
   }
 
   /**
-   * <p>Returns a mvalue.</p>
+   * Returns a mvalue.
    *
-   * @param companyId   The id of the company.
-   * @param fqcn        The instance of the coach.
+   * @param companyId The id of the company.
+   * @param fqcn The instance of the coach.
    * @param metadataKey The key of the metadata.
-   * @param mvalueKey   The key of the mvalue.
+   * @param mvalueKey The key of the mvalue.
    * @return <code>Mvalue</code> if the mvalue exists, or <code>null</code> otherwise.
    * @throws CacheNotFoundException If the company was not found.
    * @throws CacheNotFoundException If the instance was not found.
    */
-  public Mvalue getMvalueOnAnswers(String companyId, FQCN fqcn, String metadataKey,
-                                   String mvalueKey) throws CacheException {
-    return readOnAnswers(companyId, fqcn, answers -> {
-      ListIterator<Metadata> mdit = answers.getMetadata().listIterator();
-      while (mdit.hasNext()) {
-        Metadata md = mdit.next();
-        if (md.getKey().equals(metadataKey)) {
-          ListIterator<Mvalue> mvit = md.getMvalue().listIterator();
-          while (mvit.hasNext()) {
-            Mvalue mv = mvit.next();
-            if (mv.getKey().equals(mvalueKey)) {
-              return mv;
+  public Mvalue getMvalueOnAnswers(
+      String companyId, FQCN fqcn, String metadataKey, String mvalueKey) throws CacheException {
+    return readOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          ListIterator<Metadata> mdit = answers.getMetadata().listIterator();
+          while (mdit.hasNext()) {
+            Metadata md = mdit.next();
+            if (md.getKey().equals(metadataKey)) {
+              ListIterator<Mvalue> mvit = md.getMvalue().listIterator();
+              while (mvit.hasNext()) {
+                Mvalue mv = mvit.next();
+                if (mv.getKey().equals(mvalueKey)) {
+                  return mv;
+                }
+              }
             }
           }
-        }
-      }
-      return null;
-    });
+          return null;
+        });
   }
 
   /**
-   * <p>Updates a mvalues.
-   * The key of the mvalue must be the same.</p>
+   * Updates a mvalues. The key of the mvalue must be the same.
    *
-   * @param companyId   The id of the company.
-   * @param fqcn        the full qualified coach name
+   * @param companyId The id of the company.
+   * @param fqcn the full qualified coach name
    * @param metadataKey The key of the metadata.
-   * @param mvalue      The new mvalue object.
-   * @throws CacheNotFoundException   If the company was not found.
-   * @throws CacheNotFoundException   If the instance was not found.
+   * @param mvalue The new mvalue object.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
    * @throws ElementNotFoundException If the metadata was not found.
    * @throws ElementNotFoundException If the mvalue was not found.
    */
   @Deprecated
-  public void updateMvalueOnAnswers(String companyId, FQCN fqcn, String metadataKey,
-                                    Mvalue mvalue) throws CacheException {
-    writeOnAnswers(companyId, fqcn, answers -> {
-      ListIterator<Metadata> mdit = answers.getMetadata().listIterator();
-      while (mdit.hasNext()) {
-        Metadata md = mdit.next();
-        if (md.getKey().equals(metadataKey)) {
-          ListIterator<Mvalue> mvit = md.getMvalue().listIterator();
-          while (mvit.hasNext()) {
-            Mvalue mv = mvit.next();
-            if (mv.getKey().equals(mvalue.getKey())) {
-              mvit.set((Mvalue) mvalue.clone());
+  public void updateMvalueOnAnswers(String companyId, FQCN fqcn, String metadataKey, Mvalue mvalue)
+      throws CacheException {
+    writeOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          ListIterator<Metadata> mdit = answers.getMetadata().listIterator();
+          while (mdit.hasNext()) {
+            Metadata md = mdit.next();
+            if (md.getKey().equals(metadataKey)) {
+              ListIterator<Mvalue> mvit = md.getMvalue().listIterator();
+              while (mvit.hasNext()) {
+                Mvalue mv = mvit.next();
+                if (mv.getKey().equals(mvalue.getKey())) {
+                  mvit.set((Mvalue) mvalue.clone());
+                  return null;
+                }
+              }
+              throw new ElementNotFoundException(
+                  "Mvalue key "
+                      + mvalue.getKey()
+                      + " not found in metadata "
+                      + metadataKey
+                      + " for instance "
+                      + fqcn
+                      + " in company "
+                      + companyId);
+            }
+          }
+          throw new ElementNotFoundException(
+              "Metadata key "
+                  + metadataKey
+                  + " not found for instance "
+                  + fqcn
+                  + " in company "
+                  + companyId);
+        });
+  }
+
+  /**
+   * Deletes a mvalues.
+   *
+   * @param companyId The id of the company.
+   * @param fqcn the full qualified coach name
+   * @param metadataKey The key of the metadata.
+   * @param mvalueKey The key of the mvalue.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
+   * @throws ElementNotFoundException If the metadata was not found.
+   * @throws ElementNotFoundException If the mvalue was not found.
+   */
+  @Deprecated
+  public void deleteMvalueOnAnswers(
+      String companyId, FQCN fqcn, String metadataKey, String mvalueKey) throws CacheException {
+    writeOnAnswers(
+        companyId,
+        fqcn,
+        answers -> {
+          ListIterator<Metadata> mdit = answers.getMetadata().listIterator();
+          while (mdit.hasNext()) {
+            Metadata md = mdit.next();
+            if (md.getKey().equals(metadataKey)) {
+              if (!md.getMvalue().removeIf(mv -> mv.getKey().equals(mvalueKey))) {
+                throw new ElementNotFoundException(
+                    "Mvalue key "
+                        + mvalueKey
+                        + " not found in metadata "
+                        + metadataKey
+                        + " for instance "
+                        + fqcn
+                        + " in company "
+                        + companyId);
+              }
               return null;
             }
           }
-          throw new ElementNotFoundException("Mvalue key " + mvalue.getKey()
-                + " not found in metadata " + metadataKey
-                + " for instance " + fqcn
-                + " in company " + companyId);
-        }
-      }
-      throw new ElementNotFoundException("Metadata key " + metadataKey
-            + " not found for instance " + fqcn
-            + " in company " + companyId);
-    });
-  }
-
-  /**
-   * <p>Deletes a mvalues.</p>
-   *
-   * @param companyId   The id of the company.
-   * @param fqcn        the full qualified coach name
-   * @param metadataKey The key of the metadata.
-   * @param mvalueKey   The key of the mvalue.
-   * @throws CacheNotFoundException   If the company was not found.
-   * @throws CacheNotFoundException   If the instance was not found.
-   * @throws ElementNotFoundException If the metadata was not found.
-   * @throws ElementNotFoundException If the mvalue was not found.
-   */
-  @Deprecated
-  public void deleteMvalueOnAnswers(String companyId, FQCN fqcn, String metadataKey,
-                                    String mvalueKey) throws CacheException {
-    writeOnAnswers(companyId, fqcn, answers -> {
-      ListIterator<Metadata> mdit = answers.getMetadata().listIterator();
-      while (mdit.hasNext()) {
-        Metadata md = mdit.next();
-        if (md.getKey().equals(metadataKey)) {
-          if (!md.getMvalue().removeIf(mv -> mv.getKey().equals(mvalueKey))) {
-            throw new ElementNotFoundException("Mvalue key " + mvalueKey
-                  + " not found in metadata " + metadataKey
-                  + " for instance " + fqcn
-                  + " in company " + companyId);
-          }
-          return null;
-        }
-      }
-      throw new ElementNotFoundException("Metadata key " + metadataKey
-            + " not found for instance " + fqcn
-            + " in company " + companyId);
-    });
+          throw new ElementNotFoundException(
+              "Metadata key "
+                  + metadataKey
+                  + " not found for instance "
+                  + fqcn
+                  + " in company "
+                  + companyId);
+        });
   }
 
   // ---------------------
   // ----- AUDIT LOG -----
   // ---------------------
 
-  private <R> R readOnAudits(String companyId, ICommand<Audits, R> command)
-        throws CacheException {
+  private <R> R readOnAudits(String companyId, ICommand<Audits, R> command) throws CacheException {
     return data.executeOnCompany(companyId, cache -> cache.readOnAudits(command));
   }
 
   private void writeOnAudits(String companyId, ICommand<Audits, Void> command)
-        throws CacheException {
-    data.executeOnCompany(companyId, cache -> {
-        cache.writeOnAudits(command);
-        return null;
-    });
+      throws CacheException {
+    data.executeOnCompany(
+        companyId,
+        cache -> {
+          cache.writeOnAudits(command);
+          return null;
+        });
   }
 
   /**
-   * <p>Appends a new audit object.</p>
+   * Appends a new audit object.
    *
    * @param companyId The id of the company.
-   * @param audit     The new audit object.
+   * @param audit The new audit object.
    * @throws CacheNotFoundException If the company was not found.
    */
   public void createAuditLog(String companyId, Audit audit) throws CacheException {
-    writeOnAudits(companyId, audits -> {
-      audits.getAudit().add((Audit) audit.clone());
-      return null;
-    });
+    writeOnAudits(
+        companyId,
+        audits -> {
+          audits.getAudit().add((Audit) audit.clone());
+          return null;
+        });
   }
 
   /**
-   * <p>Returns all audit logs of an user.</p>
+   * Returns all audit logs of an user.
    *
    * @param companyId The id of the company.
-   * @param username  The name of the user.
+   * @param username The name of the user.
    * @return A list of all audit logs.
    * @throws CacheNotFoundException If the company was not found.
    */
   public List<Audit> getUserAuditLogs(String companyId, String username) throws CacheException {
-    return readOnAudits(companyId, audits -> audits.getAudit().stream()
-          .filter(audit -> audit.getUser().equals(username))
-          .collect(Collectors.toList()));
+    return readOnAudits(
+        companyId,
+        audits ->
+            audits.getAudit().stream()
+                .filter(audit -> audit.getUser().equals(username))
+                .collect(Collectors.toList()));
   }
 
   /**
-   * <p>Returns all audit logs of a company.</p>
+   * Returns all audit logs of a company.
    *
    * @param companyId The id of the company
    * @return A list of all audit logs.
@@ -1003,7 +1166,7 @@ public class CacheAbstractionLayer {
   // -------------------
 
   /**
-   * <p>Returns a coach of the defined id.</p>
+   * Returns a coach of the defined id.
    *
    * @param coachId The id of the coach.
    * @return The coach if the coach was found, or <code>null</code> otherwise.
@@ -1013,7 +1176,7 @@ public class CacheAbstractionLayer {
   }
 
   /**
-   * <p>Returns a coach of the defined id and language.</p>
+   * Returns a coach of the defined id and language.
    *
    * @param coachId The id of the coach.
    * @param locale The language of the coach.
@@ -1024,7 +1187,7 @@ public class CacheAbstractionLayer {
   }
 
   /**
-   * <p>Checks if a coach is loaded.</p>
+   * Checks if a coach is loaded.
    *
    * @param coachId The id of the coach.
    * @return <code>true</code> if the coach is loaded, or <code>false</code> otherwise.
@@ -1034,7 +1197,7 @@ public class CacheAbstractionLayer {
   }
 
   /**
-   * <p>Checks if a coach is loaded.</p>
+   * Checks if a coach is loaded.
    *
    * @param coachId The id of the coach.
    * @param locale The language of the coach.
@@ -1045,93 +1208,104 @@ public class CacheAbstractionLayer {
   }
 
   /**
-   * <p>Returns all loaded coaches.</p>
+   * Returns all loaded coaches.
    *
    * @return A list of all coaches.
+   * @throws CacheException If a cache error occurs.
    */
   public List<Questionnaire> getAllCoaches() throws CacheException {
-    return coaches.readAll(null, coachLibs -> coachLibs.stream()
-          .map(coachLib -> (Questionnaire) coachLib.getFirst().clone())
-          .collect(Collectors.toList()));
+    return coaches.readAll(
+        null,
+        coachLibs ->
+            coachLibs.stream()
+                .map(coachLib -> (Questionnaire) coachLib.getFirst().clone())
+                .collect(Collectors.toList()));
   }
 
   /**
-   * <p>Returns all loaded coaches of a defined language.</p>
+   * Returns all loaded coaches of a defined language.
    *
    * @param locale The language of the coach.
    * @return A list of all coaches.
+   * @throws CacheException If a cache error occurs.
    */
   public List<Questionnaire> getAllCoaches(Locale locale) throws CacheException {
-    return coaches.readAll(locale, coachLibs -> coachLibs.stream()
-        .map(coachLib -> (Questionnaire) coachLib.getFirst().clone())
-        .collect(Collectors.toList()));
+    return coaches.readAll(
+        locale,
+        coachLibs ->
+            coachLibs.stream()
+                .map(coachLib -> (Questionnaire) coachLib.getFirst().clone())
+                .collect(Collectors.toList()));
   }
 
   /**
-   * @param companyId
-   * @return
-   * @throws CacheException
-   */
-  public List<Answers> getAllAnswers(String companyId) throws CacheException {
-    return readOnAllAnswers(companyId, entries -> new ArrayList<>(entries.values()));
-  }
-
-  /**
-   * @param companyId
-   * @return
-   * @throws CacheException
+   * Returns a dictionary of all answers of a company.
+   *
+   * @param companyId The id of the comapny.
+   * @return answer dictionary
+   * @throws CacheException If a cache error occurs.
    */
   public Map<String, Answers> getAllAnswersMap(String companyId) throws CacheException {
-    return readOnAllAnswers(companyId, map -> {
-      Map<String, Answers> result = new HashMap<>();
-      for (Map.Entry<Path, Answers> entry : map.entrySet()) {
-        result.put(FQCN.fromPath(entry.getKey()).toString(), entry.getValue());
-      }
-      return result;
-    });
+    return readOnAllAnswers(
+        companyId,
+        map -> {
+          Map<String, Answers> result = new HashMap<>();
+          for (Map.Entry<Path, Answers> entry : map.entrySet()) {
+            result.put(FQCN.fromPath(entry.getKey()).toString(), entry.getValue());
+          }
+          return result;
+        });
   }
 
   /**
-   * <p>Returns a question object</p>
+   * Returns a question object.
    *
    * @param coachId The id of the coach
-   * @param qid     The id of the question
+   * @param qid The id of the question
    * @return The question object if found, or <code>null</code> otherwise
    * @throws ElementNotFoundException if the coach was not found
    */
   public Question getQuestion(String coachId, String qid) throws CacheException {
-    return coaches.read(coachId, null, coachLib -> {
-      ListIterator<Question> it = coachLib.getFirst().getQuestions().getQuestion().listIterator();
-      while (it.hasNext()) {
-        Question question = it.next();
-        if (question.getId().equals(qid)) {
-          return (Question) question.clone();
-        }
-      }
-      return null;
-    });
+    return coaches.read(
+        coachId,
+        null,
+        coachLib -> {
+          ListIterator<Question> it =
+              coachLib.getFirst().getQuestions().getQuestion().listIterator();
+          while (it.hasNext()) {
+            Question question = it.next();
+            if (question.getId().equals(qid)) {
+              return (Question) question.clone();
+            }
+          }
+          return null;
+        });
   }
 
   /**
-   * <p>Returns a question object.</p>
+   * Returns a question object.
    *
    * @param coachId The id of the coach.
-   * @param qid     The id of the question.
-   * @param locale  The language of the coach.
+   * @param qid The id of the question.
+   * @param locale The language of the coach.
    * @return The question object if found, or <code>null</code> otherwise
    * @throws ElementNotFoundException if the coach was not found
    */
   public Question getQuestion(String coachId, String qid, Locale locale) throws CacheException {
-    return coaches.read(coachId, locale, coachLib -> {
-      ListIterator<Question> it = coachLib.getFirst().getQuestions().getQuestion().listIterator();
-      while (it.hasNext()) {
-        Question question = it.next();
-        if (question.getId().equals(qid)) {
-          return (Question) question.clone();
-        }
-      }
-      return null;
-    });
+    return coaches.read(
+        coachId,
+        locale,
+        coachLib -> {
+          ListIterator<Question> it =
+              coachLib.getFirst().getQuestions().getQuestion().listIterator();
+          while (it.hasNext()) {
+            Question question = it.next();
+            if (question.getId().equals(qid)) {
+              return (Question) question.clone();
+            }
+          }
+          return null;
+        });
   }
 
   /**
@@ -1151,74 +1325,84 @@ public class CacheAbstractionLayer {
    * @return List of defined libraries for the coach.
    */
   public Library getLibrary(String coachId, String libId) throws CacheException {
-    return coaches.read(coachId, null, coachLib -> {
-      ListIterator<Library> it = coachLib.getSecond().listIterator();
-      while (it.hasNext()) {
-        Library lib = it.next();
-        if (lib.getId().equals(libId)) {
-          return lib;
-        }
-      }
-      return null;
-    });
+    return coaches.read(
+        coachId,
+        null,
+        coachLib -> {
+          ListIterator<Library> it = coachLib.getSecond().listIterator();
+          while (it.hasNext()) {
+            Library lib = it.next();
+            if (lib.getId().equals(libId)) {
+              return lib;
+            }
+          }
+          return null;
+        });
   }
 
   /**
-   * <p>Instantiate a coach by a company.</p>
+   * Instantiate a coach by a company.
    *
    * @param companyId The id of the company.
-   * @param coach     The coach to instantiate.
-   * @throws CacheNotFoundException      If the company was not found.
+   * @param coach The coach to instantiate.
+   * @throws CacheNotFoundException If the company was not found.
    * @throws CacheAlreadyExistsException If the instance is already in use.
    */
   public void instantiateCoach(String companyId, Questionnaire coach) throws CacheException {
-    data.executeOnCompany(companyId, company -> {
-      company.instantiateCoach(null, coach, null);
-      return null;
-    });
+    data.executeOnCompany(
+        companyId,
+        company -> {
+          company.instantiateCoach(null, coach, null);
+          return null;
+        });
   }
 
   /**
-   * <p>Instantiate a sub-coach by a company.</p>
+   * Instantiate a sub-coach by a company.
    *
    * @param companyId The id of the company.
    * @param fqcn The fqcn of the calling coach.
-   * @param subCoach  The instance of the coach.
+   * @param subCoach The instance of the coach.
    * @param selectors The selectors to identify sub-coach instances.
    */
-  public void instantiateSubCoach(String companyId, FQCN fqcn, Questionnaire subCoach,
-                                  Set<String> selectors) throws CacheException {
-    data.executeOnCompany(companyId, company -> {
-      company.instantiateCoach(fqcn.toPath().getParent(), subCoach, selectors);
-      return null;
-    });
+  public void instantiateSubCoach(
+      String companyId, FQCN fqcn, Questionnaire subCoach, Set<String> selectors)
+      throws CacheException {
+    data.executeOnCompany(
+        companyId,
+        company -> {
+          company.instantiateCoach(fqcn.toPath().getParent(), subCoach, selectors);
+          return null;
+        });
   }
 
   /**
-   * <p>Removes an instantiated coach from a company.</p>
+   * Removes an instantiated coach from a company.
    *
    * @param companyId The id of the company.
-   * @param path  The instance of the coach.
+   * @param path The instance of the coach.
    * @throws CacheNotFoundException If the company was not found.
    * @throws CacheNotFoundException If the instance was not found.
    */
   public void finalizeCoach(String companyId, Path path) throws CacheException {
-    data.executeOnCompany(companyId, company -> {
-      company.deleteCoach(path);
-      return null;
-    });
+    data.executeOnCompany(
+        companyId,
+        company -> {
+          company.deleteCoach(path);
+          return null;
+        });
   }
 
   /**
-   * <p>Lists all instantiated coaches for a company.</p>
+   * Lists all instantiated coaches for a company.
    *
    * @param companyId The id of the company.
    * @return List of all instantiated coaches.
    * @throws CacheNotFoundException If the company was not found.
    */
   public List<FQCN> listInstantiatedCoaches(String companyId) throws CacheException {
-    return data.executeOnCompany(companyId, company -> company.listInstantiatedCoaches().stream()
-        .map(FQCN::fromPath))
+    return data.executeOnCompany(
+            companyId, company -> company.listInstantiatedCoaches().stream().map(FQCN::fromPath))
         .collect(Collectors.toList());
   }
 
@@ -1227,7 +1411,7 @@ public class CacheAbstractionLayer {
   // ---------------------
 
   /**
-   * <p>Zips a company and returns the *.zip archive as a file response.</p>
+   * Zips a company and returns the *.zip archive as a file response.
    *
    * @param companyId The id of the company.
    * @return <code>FileResponse</code> containing the zipped company as *.zip.
@@ -1236,30 +1420,33 @@ public class CacheAbstractionLayer {
    */
   public FileResponse zipCompany(String companyId) throws CacheException {
     // cannot use normal output stream, because of jersey StreamingOutput
-    return data.executeOnCompany(companyId, companyCache -> {
-      try {
-        Path temp = Files.createTempFile(data.path, companyId, null);
-        try {
-          companyCache.zip(temp);
-          return new FileResponse(Files.readAllBytes(temp));
-        } finally {
-          Files.delete(temp);
-        }
-      } catch (Exception e) {
-        throw new CacheException(e.getMessage());
-      }
-    });
+    return data.executeOnCompany(
+        companyId,
+        companyCache -> {
+          try {
+            Path temp = Files.createTempFile(data.path, companyId, null);
+            try {
+              companyCache.zip(temp);
+              return new FileResponse(Files.readAllBytes(temp));
+            } finally {
+              Files.delete(temp);
+            }
+          } catch (Exception e) {
+            throw new CacheException(e.getMessage());
+          }
+        });
   }
 
   /**
-   * <p>Unzips a company from a *.zip archive.</p>
+   * Unzips a company from a *.zip archive.
    *
    * @param companyId The id of the company.
    * @param inputStream The *.zip archive as <code>InputStream</code>.
    * @throws CacheAlreadyExistsException If the company already exists.
    * @throws CacheException If an error occurred.
    */
-  public void createCompanyFromArchive(String companyId, InputStream inputStream) throws CacheException {
+  public void createCompanyFromArchive(String companyId, InputStream inputStream)
+      throws CacheException {
     Path zip = data.path.resolve(companyId + ".zip");
     try {
       Files.copy(inputStream, zip, StandardCopyOption.REPLACE_EXISTING);
@@ -1270,7 +1457,7 @@ public class CacheAbstractionLayer {
   }
 
   /**
-   * <p>Creates a files response to download a resource of a company.</p>
+   * Creates a files response to download a resource of a company.
    *
    * @param companyId The id of the company.
    * @param relative The relative path of a resource.
@@ -1278,14 +1465,13 @@ public class CacheAbstractionLayer {
    * @throws CacheAlreadyExistsException If the company already exists.
    * @throws CacheException If an error occurred.
    */
-  public FileResponse createFileResponse(String companyId, Path relative)
-        throws CacheException {
+  public FileResponse createFileResponse(String companyId, Path relative) throws CacheException {
     // cannot use normal output stream, because of jersey StreamingOutput
     return data.executeOnCompany(companyId, company -> company.createFileResponse(relative));
   }
 
   /**
-   * <p>Synchronizes a resource in a company</p>
+   * Synchronizes a resource in a company.
    *
    * @param companyId The id of the company.
    * @param relative The relative path of a resource.
@@ -1294,25 +1480,30 @@ public class CacheAbstractionLayer {
    * @throws CacheException If an error occurred.
    */
   public void syncFile(String companyId, Path relative, InputStream inputStream, boolean overwrite)
-        throws CacheException {
-    data.executeOnCompany(companyId, company -> {
-      company.syncFile(relative, inputStream, overwrite);
-      return null;
-    });
+      throws CacheException {
+    data.executeOnCompany(
+        companyId,
+        company -> {
+          company.syncFile(relative, inputStream, overwrite);
+          return null;
+        });
   }
 
   /**
-   * <p>Adds or removes the company read only flag file.</p>
+   * Adds or removes the company read only flag file.
    *
    * @param companyId The id of the company.
-   * @param readonly <code>True</code> to mark the company as readonly or <code>false</code> otherwise.
+   * @param readonly <code>True</code> to mark the company as readonly or <code>false</code>
+   *     otherwise.
    * @throws CacheAlreadyExistsException If the company already exists.
    * @throws CacheException If an error occurred.
    */
   public void setCompanyReadonly(String companyId, boolean readonly) throws CacheException {
-    data.executeOnCompany(companyId, cache -> {
-      cache.setReadOnly(readonly);
-      return null;
-    });
+    data.executeOnCompany(
+        companyId,
+        cache -> {
+          cache.setReadOnly(readonly);
+          return null;
+        });
   }
 }

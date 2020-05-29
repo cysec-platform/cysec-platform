@@ -88,7 +88,7 @@ public abstract class AbstractUserAuthStrategy extends AbstractAuthStrategy {
     if (locale == null) {
       locale = user.getLocale();
       if (locale == null) {
-        locale = "en";
+        locale = "en";  // browser
       }
     }
 

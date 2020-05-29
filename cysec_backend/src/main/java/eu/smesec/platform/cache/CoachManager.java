@@ -4,7 +4,6 @@ import eu.smesec.bridge.generated.Questionnaire;
 import eu.smesec.platform.threading.FileWatcher;
 import eu.smesec.platform.threading.ThreadFactory;
 import eu.smesec.platform.utils.LocaleUtils;
-import org.glassfish.jersey.logging.LoggingFeature;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,12 +16,19 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.glassfish.jersey.logging.LoggingFeature;
+
 public class CoachManager {
-  private static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
+  private static final Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
   private final CoachCache cache;
   private final FileWatcher watcher;
   private final Mapper<Questionnaire> mapper;
 
+  /**
+   * Coach manager constructor.
+   *
+   * @param cache Coache cache object
+   */
   public CoachManager(CoachCache cache) {
     this.mapper = CacheFactory.createMapper(Questionnaire.class);
     this.cache = cache;
@@ -30,38 +36,43 @@ public class CoachManager {
   }
 
   /**
-   * <p>Traverses through the coach directory and registers all coach to the coach cache and observers each directory.
-   * The watching service is started after traversing.</p>
+   * Traverses through the coach directory and registers all coach to the coach cache and observers
+   * each directory. The watching service is started after traversing.
    */
   public void init() {
     // init current directory
     watchDirectory(this.cache.getPath());
-    visitCoachDirs(this.cache.getPath(), path -> {
-      if (Files.isDirectory(path)) {
-        watchDirectory(path);
-      } else if (path.toString().endsWith(".xml")) {
-        addCoach(path);
-      }
-    });
+    visitCoachDirs(
+        this.cache.getPath(),
+        path -> {
+          if (Files.isDirectory(path)) {
+            watchDirectory(path);
+          } else if (path.toString().endsWith(".xml")) {
+            addCoach(path);
+          }
+        });
     // register watch actions
-    watcher.registerOnCreate(path -> {
-      if (Files.isDirectory(path)) {
-        watchDirectory(path);
-      } else if (path.toString().endsWith(".xml")) {
-        addCoach(path);
-      }
-    });
-    watcher.registerOnModify(path -> {
-      if (!Files.isDirectory(path) && path.toString().endsWith(".xml")) {
-        addCoach(path);
-      }
-    });
-    watcher.registerOnDelete(path -> {
-      // directory are canceled automatically
-      if (path.toString().endsWith(".xml")) {
-        this.cache.removeCoach(path);
-      }
-    });
+    watcher.registerOnCreate(
+        path -> {
+          if (Files.isDirectory(path)) {
+            watchDirectory(path);
+          } else if (path.toString().endsWith(".xml")) {
+            addCoach(path);
+          }
+        });
+    watcher.registerOnModify(
+        path -> {
+          if (!Files.isDirectory(path) && path.toString().endsWith(".xml")) {
+            addCoach(path);
+          }
+        });
+    watcher.registerOnDelete(
+        path -> {
+          // directory are canceled automatically
+          if (path.toString().endsWith(".xml")) {
+            this.cache.removeCoach(path);
+          }
+        });
     watcher.start();
   }
 
@@ -74,8 +85,9 @@ public class CoachManager {
     try (Stream<Path> stream = Files.list(path)) {
       paths = stream.collect(Collectors.toList());
     } catch (IOException ioe) {
-      logger.log(Level.WARNING, "Error during listing files in directory " + path.toString()
-          + ": " + ioe.getMessage());
+      logger.log(
+          Level.WARNING,
+          "Error during listing files in directory " + path.toString() + ": " + ioe.getMessage());
     }
     for (Path path1 : paths) {
       command.accept(path1);
@@ -90,8 +102,8 @@ public class CoachManager {
       watcher.register(path);
       logger.log(Level.INFO, "Observing directory: " + path.toString());
     } catch (IOException e) {
-      logger.log(Level.WARNING, "Failed observing directory: " + path.toString()
-          + ": " + e.getMessage());
+      logger.log(
+          Level.WARNING, "Failed observing directory: " + path.toString() + ": " + e.getMessage());
     }
   }
 

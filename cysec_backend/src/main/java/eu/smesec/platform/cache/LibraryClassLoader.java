@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LibraryClassLoader extends ClassLoader {
-//  private static Pattern regexWord = Pattern.compile("^assets/\\w+\\.\\w+$");
+  //  private static Pattern regexWord = Pattern.compile("^assets/\\w+\\.\\w+$");
   // Hidden data members.
 
   // Map from class or resource name to contents.
@@ -29,13 +29,12 @@ public class LibraryClassLoader extends ClassLoader {
   // Exported constructors.
 
   /**
-   * Construct a new JAR class loader. The parent class loader is the system
-   * class loader.
+   * Construct a new JAR class loader. The parent class loader is the system class loader.
    *
    * @param jar Byte array with the contents of the JAR file.
    * @throws NullPointerException (unchecked exception) Thrown if <TT>jar</TT> is null.
-   * @throws IOException          Thrown if the JAR file's contents could not be extracted from the
-   *                              <TT>jar</TT> byte array.
+   * @throws IOException Thrown if the JAR file's contents could not be extracted from the
+   *     <TT>jar</TT> byte array.
    */
   public LibraryClassLoader(byte[] jar) throws IOException {
     super();
@@ -46,10 +45,10 @@ public class LibraryClassLoader extends ClassLoader {
    * Construct a new JAR class loader with the given parent class loader.
    *
    * @param parent Parent class loader.
-   * @param jar    Byte array with the contents of the JAR file.
+   * @param jar Byte array with the contents of the JAR file.
    * @throws NullPointerException (unchecked exception) Thrown if <TT>jar</TT> is null.
-   * @throws IOException          Thrown if the JAR file's contents could not be extracted from the
-   *                              <TT>jar</TT> byte array.
+   * @throws IOException Thrown if the JAR file's contents could not be extracted from the
+   *     <TT>jar</TT> byte array.
    */
   public LibraryClassLoader(ClassLoader parent, byte[] jar) throws IOException {
     super(parent);
@@ -86,8 +85,7 @@ public class LibraryClassLoader extends ClassLoader {
    * @return Class object.
    * @throws ClassNotFoundException Thrown if the class could not be found.
    */
-  protected Class<?> findClass(String name)
-            throws ClassNotFoundException {
+  protected Class<?> findClass(String name) throws ClassNotFoundException {
     String contentName = name.replace('.', '/') + ".class";
     byte[] content = contentMap.get(contentName);
     if (content == null) {
@@ -109,7 +107,7 @@ public class LibraryClassLoader extends ClassLoader {
   }
 
   /**
-   * Iterates over each resource
+   * Iterates over each resource.
    *
    * @param function consumer function
    */

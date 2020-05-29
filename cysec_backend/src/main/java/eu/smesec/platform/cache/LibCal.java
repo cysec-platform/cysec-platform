@@ -15,7 +15,7 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 
 /**
- * <p>Coach Abstraction Layer interface implementation for libraries.</p>
+ * Coach Abstraction Layer interface implementation for libraries.
  *
  * @author Claudio Seitz
  * @version 1.0
@@ -43,7 +43,7 @@ public class LibCal implements ILibCal {
 
   @Override
   public void setMetadata(FQCN fqcn, Metadata metadata) throws CacheException {
-        cal.setMetadataOnAnswers(getCompanyId(), fqcn, metadata);
+    cal.setMetadataOnAnswers(getCompanyId(), fqcn, metadata);
   }
 
   @Override
@@ -62,11 +62,14 @@ public class LibCal implements ILibCal {
   }
 
   @Override
-  public void removeMvalues(FQCN fqcn, String metadataKey, Set<String> mvalueKeys) throws CacheException {
+  public void removeMvalues(FQCN fqcn, String metadataKey, Set<String> mvalueKeys)
+      throws CacheException {
     cal.removeMvaluesFromAnswer(getCompanyId(), fqcn, metadataKey, mvalueKeys);
   }
 
   /**
+   * Deprecated method, this method will be removed in a later release.
+   *
    * @see LibCal#getAnswer(String, Object)
    */
   @Deprecated
@@ -77,7 +80,7 @@ public class LibCal implements ILibCal {
 
   @Override
   public Answer getAnswer(String coachId, Object questionId) throws CacheException {
-     return cal.getAnswer(getCompanyId(), FQCN.fromString(coachId), questionId);
+    return cal.getAnswer(getCompanyId(), FQCN.fromString(coachId), questionId);
   }
 
   @Override
@@ -86,6 +89,8 @@ public class LibCal implements ILibCal {
   }
 
   /**
+   * Deprecated method, this method will be removed in a later release.
+   *
    * @see LibCal#getCoach(String)
    */
   @Deprecated
@@ -110,15 +115,19 @@ public class LibCal implements ILibCal {
   }
 
   /**
+   * Deprecated method, this method will be removed in a later release.
+   *
    * @see LibCal#instantiateSubCoach(Questionnaire, FQCN, Set)
    */
   @Override
-  public void instantiateSubCoach(Questionnaire subCoach, Set<String> selectors) throws CacheException {
+  public void instantiateSubCoach(Questionnaire subCoach, Set<String> selectors)
+      throws CacheException {
     cal.instantiateSubCoach(getCompanyId(), getCoachContext(), subCoach, selectors);
   }
 
   @Override
-  public void instantiateSubCoach(Questionnaire subCoach, FQCN fqcn, Set<String> selectors) throws CacheException {
+  public void instantiateSubCoach(Questionnaire subCoach, FQCN fqcn, Set<String> selectors)
+      throws CacheException {
     cal.instantiateSubCoach(getCompanyId(), fqcn, subCoach, selectors);
   }
 
@@ -138,6 +147,8 @@ public class LibCal implements ILibCal {
   }
 
   /**
+   * Deprecated method, this method will be removed in a later release.
+   *
    * @see LibCal#setMetadata(FQCN, Metadata)
    */
   @Deprecated
@@ -147,6 +158,8 @@ public class LibCal implements ILibCal {
   }
 
   /**
+   * Deprecated method, this method will be removed in a later release.
+   *
    * @see LibCal#getMetadata(FQCN, String)
    */
   @Deprecated
@@ -156,6 +169,8 @@ public class LibCal implements ILibCal {
   }
 
   /**
+   * Deprecated method, this method will be removed in a later release.
+   *
    * @see LibCal#getAllMetadata(FQCN)
    */
   @Deprecated
@@ -165,6 +180,8 @@ public class LibCal implements ILibCal {
   }
 
   /**
+   * Deprecated method, this method will be removed in a later release.
+   *
    * @see LibCal#deleteMetadata(FQCN, String)
    */
   @Deprecated
@@ -174,12 +191,14 @@ public class LibCal implements ILibCal {
   }
 
   /**
+   * Deprecated method, this method will be removed in a later release.
+   *
    * @see LibCal#removeMvaluesFroCompany(String, Set)
    */
   @Deprecated
   @Override
   public void removeMvaluesFromAnswers(String metadataKey, Set<String> mvalueKeys)
-        throws CacheException {
+      throws CacheException {
     cal.removeMvaluesFromAnswer(getCompanyId(), getCoachContext(), metadataKey, mvalueKeys);
   }
 
@@ -205,7 +224,7 @@ public class LibCal implements ILibCal {
 
   @Override
   public void removeMvaluesFroCompany(String metadataKey, Set<String> mvalueKeys)
-        throws CacheException {
+      throws CacheException {
     cal.removeMvaluesFromAnswer(getCompanyId(), FQCN_COMPANY, metadataKey, mvalueKeys);
   }
 }
