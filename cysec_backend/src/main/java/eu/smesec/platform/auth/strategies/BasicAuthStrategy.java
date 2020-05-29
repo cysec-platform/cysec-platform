@@ -4,9 +4,9 @@ import eu.smesec.bridge.execptions.CacheException;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.config.Config;
 import eu.smesec.platform.utils.Validator;
+
 import java.util.Collections;
 import java.util.List;
-
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,12 +18,10 @@ import org.glassfish.jersey.internal.util.Base64;
 
 public class BasicAuthStrategy extends AbstractUserAuthStrategy {
   public static final String AUTHORIZATION_PROPERTY = "authorization";
-
   public static final Pattern regexBasic = Pattern.compile("^Basic (.+)$");
   public static final Pattern regexAuth = Pattern.compile("^(.+)/(.+):(.+)$");
 
-  public BasicAuthStrategy(CacheAbstractionLayer cal, Config config,
-                           ServletContext context) {
+  public BasicAuthStrategy(CacheAbstractionLayer cal, Config config, ServletContext context) {
     super(cal, config, context, false);
   }
 
@@ -34,7 +32,7 @@ public class BasicAuthStrategy extends AbstractUserAuthStrategy {
 
   @Override
   protected String[] extractCredentials(MultivaluedMap<String, String> header)
-        throws CacheException, ClientErrorException {
+      throws CacheException, ClientErrorException {
     logger.info("Checking Basic auth");
     String basicAuth = header.getFirst(AUTHORIZATION_PROPERTY);
     if (basicAuth != null && !basicAuth.isEmpty()) {
@@ -58,12 +56,7 @@ public class BasicAuthStrategy extends AbstractUserAuthStrategy {
         if (password == null || password.isEmpty()) {
           throw new BadRequestException("Password is null or empty");
         }
-        return new String[]{
-              companyName,
-              username,
-              password,
-              null
-        };
+        return new String[] {companyName, username, password, null};
       }
     }
     logger.log(Level.WARNING, "invalid auth header");

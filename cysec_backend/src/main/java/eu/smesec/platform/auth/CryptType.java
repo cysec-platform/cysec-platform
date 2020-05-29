@@ -1,8 +1,6 @@
 package eu.smesec.platform.auth;
 
-/**
- * <p>Enum representing all valid Crypt types to be used in CryptPasswordStorage.</p>
- */
+/** Enum representing all valid Crypt types to be used in CryptPasswordStorage. */
 public enum CryptType {
   MD5("1"),
   SHA256("5"),
@@ -15,8 +13,8 @@ public enum CryptType {
     this.id = id;
   }
 
-  /***
-   * <p>Returns the ID representing the crypt type in Crypt(3).</p>
+  /**
+   * Returns the ID representing the crypt type in Crypt(3).
    *
    * @return The string ID
    */
@@ -24,8 +22,8 @@ public enum CryptType {
     return id;
   }
 
-  /***
-   * <p>Returns the default CryptType to be used if not speciied.</p>
+  /**
+   * Returns the default CryptType to be used if not speciied.
    *
    * @return The default CryptType
    */
@@ -33,14 +31,14 @@ public enum CryptType {
     return SHA512;
   }
 
-  /***
-   * <p>Look up an algorithm by id.</p>
+  /**
+   * Look up an algorithm by id.
    *
-   * @param id     the idto be looked up
-   * @return       the algorithm or null if not known
+   * @param id the idto be looked up
+   * @return the algorithm or null if not known
    */
   public static CryptType getById(String id) {
-    for (CryptType e:values()) {
+    for (CryptType e : values()) {
       if (e.id.equals(id)) {
         return e;
       }
