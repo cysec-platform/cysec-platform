@@ -3,6 +3,12 @@ package eu.smesec.platform.messages;
 import java.util.Locale;
 
 public class UsersMsg extends Message {
+  /**
+   * Coach page messages constructor.
+   *
+   * @param locale display language
+   * @param users number of users
+   */
   public UsersMsg(Locale locale, int users) {
     super(locale);
 
@@ -11,7 +17,9 @@ public class UsersMsg extends Message {
     messages.put("addUser", i18n.tr("add user"));
     messages.put("editUser", i18n.tr("edit user"));
     messages.put("selectLocale", i18n.tr("select language"));
-    messages.put("info", i18n.tr("maybe some general information on how to obtain a new user or reset password?"));
+    messages.put(
+        "info",
+        i18n.tr("maybe some general information on how to obtain a new user or reset password?"));
     messages.put("add", i18n.tr("add"));
     messages.put("edit", i18n.tr("edit"));
 
@@ -25,6 +33,7 @@ public class UsersMsg extends Message {
     messages.put("lock", i18n.tr("lock"));
 
     messages.put("token_header", i18n.tr("Replica Token"));
-    messages.put("token_empty", i18n.tr("no replica token defined, please contact your server admin"));
+    messages.put(
+        "token_empty", i18n.tr("no replica token defined, please contact your server admin"));
   }
 }

@@ -7,20 +7,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+
 import eu.smesec.bridge.generated.Mvalue;
 import eu.smesec.bridge.generated.ObjectFactory;
 
 import java.lang.reflect.Type;
 import javax.xml.bind.JAXBElement;
 
-/**
- * Gson Mavlue adapter class to handle JAXBElement class.
- *
- * @author Claudio Seitz
- * @version 1.0
- */
+/** Gson Mavlue adapter class to handle JAXBElement class. */
 public class MValueAdapter implements JsonSerializer<Mvalue>, JsonDeserializer<Mvalue> {
-  private ObjectFactory factory;
+  private final ObjectFactory factory;
 
   public MValueAdapter() {
     factory = new ObjectFactory();
@@ -42,17 +38,18 @@ public class MValueAdapter implements JsonSerializer<Mvalue>, JsonDeserializer<M
   }
 
   @Override
-  public Mvalue deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+  public Mvalue deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+      throws JsonParseException {
     JsonObject obj = json.getAsJsonObject();
     Mvalue mvalue = new Mvalue();
     mvalue.setKey(obj.get("key").getAsString());
     mvalue.setLink(obj.get("link").getAsString());
     if (obj.has("stringValue")) {
-      mvalue.setStringValueOrBinaryValue(factory.createMvalueStringValue(obj
-          .get("stringValue").getAsString()));
+      mvalue.setStringValueOrBinaryValue(
+          factory.createMvalueStringValue(obj.get("stringValue").getAsString()));
     } else {
-      mvalue.setStringValueOrBinaryValue(factory.createMvalueBinaryValue(obj
-          .get("binaryValue").getAsString()));
+      mvalue.setStringValueOrBinaryValue(
+          factory.createMvalueBinaryValue(obj.get("binaryValue").getAsString()));
     }
 
     return mvalue;

@@ -3,12 +3,13 @@ package eu.smesec.platform.endpoints;
 import com.google.gson.Gson;
 
 import eu.smesec.bridge.FQCN;
-import eu.smesec.bridge.md.MetadataUtils;
-import eu.smesec.platform.auth.Secured;
-import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.bridge.execptions.CacheException;
 import eu.smesec.bridge.generated.Audit;
 import eu.smesec.bridge.generated.Metadata;
+import eu.smesec.bridge.md.MetadataUtils;
+import eu.smesec.bridge.md.Rating;
+import eu.smesec.platform.auth.Secured;
+import eu.smesec.platform.cache.CacheAbstractionLayer;
 
 import java.awt.geom.Rectangle2D;
 import java.time.LocalDate;
@@ -19,7 +20,6 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
 import javax.annotation.security.DenyAll;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -45,16 +45,13 @@ import org.jfree.graphics2d.svg.SVGGraphics2D;
 @Path("rest/companies")
 public class Companies {
   static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
-  @Context
-  ServletContext context;
-  @Inject
-  private CacheAbstractionLayer cal;
+  @Context ServletContext context;
+  @Inject private CacheAbstractionLayer cal;
   // Needed to wrap String in JSON
-  private Gson gson = new Gson();
-  //test
+  private final Gson gson = new Gson();
 
-  /***
-   * <p>Return the Company for which the logged in user is registered.</p>
+  /**
+   * Return the Company for which the logged in user is registered.
    *
    * @return A String containing the company ID.
    */
@@ -71,14 +68,13 @@ public class Companies {
     String company = (String) context.getAttribute("company");
     logger.info(String.format("Found company %s for user", company));
 
-    return Response.status(200)
-            .entity(gson.toJson(company))
-            .build();
+    return Response.status(200).entity(gson.toJson(company)).build();
   }
 
-  /***
-   * <p>Fetch the last couple of actions from the audit file.</p>
-   * @Param qid The coach id to filter the audit logs. Not used at the moment.
+  /**
+   * Fetch the last couple of actions from the audit file.
+   *
+   * @param qid The coach id to filter the audit logs. Not used at the moment.
    * @return The <code>User</code> representation of the requested user.
    */
   @GET
@@ -96,37 +92,33 @@ public class Companies {
       Map<String, Long> auditChartData = new TreeMap<>();
       if (audits != null) {
         // count activities per day
-        auditChartData = audits.stream()
-              .map(Audit::getTime)
-              .map(date -> LocalDate.of(date.getYear(), date.getMonth(), date.getDay()))
-              // group by day entry and map values with sum
-              .collect(Collectors.groupingBy(
-                    LocalDate::toString,
-                    Collectors.mapping(Function.identity(), Collectors.counting()))
-              );
+        auditChartData =
+            audits.stream()
+                .map(Audit::getTime)
+                .map(date -> LocalDate.of(date.getYear(), date.getMonth(), date.getDay()))
+                // group by day entry and map values with sum
+                .collect(
+                    Collectors.groupingBy(
+                        LocalDate::toString,
+                        Collectors.mapping(Function.identity(), Collectors.counting())));
       }
       int maxEntries = 7;
       // Change group name
-      auditChartData = auditChartData.entrySet().stream()
-            // only display last 7 entries
-            .skip(auditChartData.size() - maxEntries)
-            // cut year (yyyy-) e.g 5 chars from date string
-            .collect(Collectors.toMap(e -> e.getKey().substring(5), e -> e.getValue()));
+      auditChartData =
+          auditChartData.entrySet().stream()
+              // only display last 7 entries
+              .skip(auditChartData.size() - maxEntries)
+              // cut year (yyyy-) e.g 5 chars from date string
+              .collect(Collectors.toMap(e -> e.getKey().substring(5), Map.Entry::getValue));
       // Safely collect the grade and score from Metadata
-      Metadata rating = cal.getMetadataOnAnswer(company, FQCN.fromString(qid), MetadataUtils.MD_RATING);
+      Metadata md = cal.getMetadataOnAnswer(company, FQCN.fromString(qid), MetadataUtils.MD_RATING);
       // handle case there is no grade and score
       Map<String, Object> model = new HashMap<>();
-      if (rating != null) {
-        Map<String, MetadataUtils.SimpleMvalue> ratingValues = MetadataUtils
-              .parseMvalues(rating.getMvalue());
-        model.put("grade", ratingValues.containsKey(MetadataUtils.MV_MICRO_GRADE)
-              ? ratingValues.get(MetadataUtils.MV_MICRO_GRADE).getValue()
-              : "n/a"
-        );
-        model.put("score", ratingValues.containsKey(MetadataUtils.MV_MICRO_SCORE)
-              ? ratingValues.get(MetadataUtils.MV_MICRO_SCORE).getValue()
-              : "0"
-        );
+      if (md != null) {
+        Rating rating = MetadataUtils.fromMd(md, Rating.class);
+        String grade = rating.getGrade();
+        model.put("grade", grade != null ? grade : "n/a");
+        model.put("score", Double.toString(rating.getScore()));
       }
 
       String svgLineChart;
@@ -152,18 +144,15 @@ public class Companies {
    * @param dataMap A map containing String, Long pairs.
    * @return a JFree line chart object.
    */
-  private JFreeChart createLineChart(Map<String, Long> dataMap, String title,
-                                    String labelxAxis, String labelyAxis) {
+  private JFreeChart createLineChart(
+      Map<String, Long> dataMap, String title, String labelxAxis, String labelyAxis) {
 
     final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
     dataMap.forEach((key, value) -> dataSet.addValue(value, "days", key));
 
-    JFreeChart lineChart = ChartFactory.createLineChart(
-            title,
-            labelxAxis, labelyAxis,
-            dataSet,
-            PlotOrientation.VERTICAL,
-            true, true, false);
+    JFreeChart lineChart =
+        ChartFactory.createLineChart(
+            title, labelxAxis, labelyAxis, dataSet, PlotOrientation.VERTICAL, true, true, false);
 
     ChartPanel chartPanel = new ChartPanel(lineChart);
     chartPanel.setPreferredSize(new java.awt.Dimension(560, 367));
@@ -173,11 +162,11 @@ public class Companies {
   /**
    * Extracts the XML Code for an SVG from a JFreeChart.
    *
-   * @param chart  A JFree Chart.
-   * @param width  the width of the chart.
+   * @param chart A JFree Chart.
+   * @param width the width of the chart.
    * @param height the height of the chart.
-   * @param x      the x coordinate of the draw area.
-   * @param y      the y coordinate of the draw area.
+   * @param x the x coordinate of the draw area.
+   * @param y the y coordinate of the draw area.
    * @return a string representation of the SVG image based on the JFree Chart.
    */
   private String getSvgXml(JFreeChart chart, int width, int height, int x, int y) {

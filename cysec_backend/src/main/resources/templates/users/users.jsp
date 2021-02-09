@@ -36,6 +36,10 @@
             </c:choose>
             <p class="text-link-box" onclick="openAddUserModal()">
                 <a onclick="openAddUserModal()">${it.msg.addUser}</a></p>
+
+
+            <%@include file="userAdd.jsp" %>
+            <%@include file="userEdit.jsp" %>
         </div>
         <!-- tokens -->
         <div class="row table-responsive">
@@ -55,8 +59,5 @@
             <p>${it.msg.info}</p>
         </div>
     </div>
-
-    <%@include file="userAdd.jsp" %>
-    <%@include file="userEdit.jsp" %>
 </div>
 

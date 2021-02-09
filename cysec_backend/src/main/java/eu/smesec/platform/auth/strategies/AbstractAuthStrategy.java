@@ -13,24 +13,24 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.glassfish.jersey.logging.LoggingFeature;
 
-
 public abstract class AbstractAuthStrategy {
   protected Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
   protected CacheAbstractionLayer cal;
   protected Config config;
   protected ServletContext context;
-  private boolean proxyAuth;
+  private final boolean proxyAuth;
 
   /**
+   * Auth strategy base class.
    *
-   * @param cal
-   * @param config
-   * @param context
-   * @param proxyAuth
+   * @param cal The cache abstraction layer
+   * @param config The platform configuration
+   * @param context The servlet context
+   * @param proxyAuth platform has a proxy
    */
-  public AbstractAuthStrategy(CacheAbstractionLayer cal, Config config,
-                              ServletContext context, boolean proxyAuth) {
+  public AbstractAuthStrategy(
+      CacheAbstractionLayer cal, Config config, ServletContext context, boolean proxyAuth) {
     this.cal = cal;
     this.config = config;
     this.context = context;
@@ -44,5 +44,5 @@ public abstract class AbstractAuthStrategy {
   public abstract List<String> getHeaderNames();
 
   public abstract boolean authenticate(MultivaluedMap<String, String> headers, Method method)
-        throws CacheException, ClientErrorException;
+      throws CacheException, ClientErrorException;
 }

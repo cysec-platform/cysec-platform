@@ -2,11 +2,16 @@ package eu.smesec.platform.endpoints;
 
 import eu.smesec.bridge.FQCN;
 import eu.smesec.bridge.generated.Answers;
+import eu.smesec.bridge.generated.Attachment;
+import eu.smesec.bridge.generated.Attachments;
+import eu.smesec.bridge.generated.Metadata;
+import eu.smesec.bridge.generated.Mvalue;
+import eu.smesec.bridge.generated.Questionnaire;
 import eu.smesec.bridge.md.Badge;
 import eu.smesec.bridge.md.LastSelected;
+import eu.smesec.bridge.md.MetadataUtils;
 import eu.smesec.bridge.md.Rating;
 import eu.smesec.bridge.md.Recommendation;
-import eu.smesec.bridge.md.MetadataUtils;
 import eu.smesec.bridge.md.Skills;
 import eu.smesec.bridge.md.State;
 import eu.smesec.bridge.utils.Tuple;
@@ -15,14 +20,16 @@ import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.cache.LibCal;
 import eu.smesec.platform.config.CysecConfig;
 import eu.smesec.platform.helpers.dashboard.CoachHelper;
-import eu.smesec.bridge.generated.Attachment;
-import eu.smesec.bridge.generated.Attachments;
-import eu.smesec.bridge.generated.Metadata;
-import eu.smesec.bridge.generated.Questionnaire;
-
 import eu.smesec.platform.messages.DashboardMsg;
+import eu.smesec.platform.utils.LocaleUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +44,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import eu.smesec.platform.utils.LocaleUtils;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.mvc.Viewable;
 
@@ -49,13 +55,11 @@ public class Dashboard {
 
   private static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
-  @Context
-  private ServletContext context;
-  @Inject
-  private CacheAbstractionLayer cal;
+  @Context private ServletContext context;
+  @Inject private CacheAbstractionLayer cal;
 
-  /***
-   * <p>Renders the questionnaire list for a company.</p>
+  /**
+   * Renders the questionnaire list for a company.
    *
    * @return The rendered html document.
    */
@@ -67,15 +71,15 @@ public class Dashboard {
     Locale locale = LocaleUtils.fromString(context.getAttribute("locale").toString());
     String contextName = context.getContextPath().substring(1);
     try {
-      List<CoachHelper> instantiated = new ArrayList<>();
       List<CoachHelper> remaining = new ArrayList<>();
       List<Recommendation> recommendations = new ArrayList<>();
       List<Badge> badges = new ArrayList<>();
       LastSelected lastSelected = null;
       Tuple<FQCN, Skills> skills = null;
       // fetch dashboard data
-      Map<String, Questionnaire> loadedCoaches = cal.getAllCoaches(locale).stream()
-          .collect(Collectors.toMap(Questionnaire::getId, q -> q));
+      Map<String, Questionnaire> loadedCoaches =
+          cal.getAllCoaches(locale).stream()
+              .collect(Collectors.toMap(Questionnaire::getId, q -> q));
       Map<String, Answers> answersMap = cal.getAllAnswersMap(companyId);
       Map<Questionnaire, Map<FQCN, Answers>> coachAnswersMap = new HashMap<>();
       for (Map.Entry<String, Answers> answers : answersMap.entrySet()) {
@@ -88,10 +92,12 @@ public class Dashboard {
       }
       // extract company coach
       Questionnaire companyCoach = loadedCoaches.get(LibCal.FQCN_COMPANY.getCoachId());
-      Answers companyAnswers = answersMap.get(LibCal.FQCN_COMPANY.toString());
       // process company coach
-      CoachHelper coachHelper = new CoachHelper(LibCal.FQCN_COMPANY.toString(),
-            companyCoach.getReadableName(), companyCoach.getReadableClass());
+      CoachHelper coachHelper =
+          new CoachHelper(
+              LibCal.FQCN_COMPANY.toString(),
+              companyCoach.getReadableName(),
+              companyCoach.getReadableClass());
       coachHelper.setDescription(companyCoach.getDescription());
       coachHelper.setBlocks(companyCoach.getBlocks().getBlock());
       Attachments attachments = companyCoach.getAttachments();
@@ -104,6 +110,7 @@ public class Dashboard {
           }
         }
       }
+      Answers companyAnswers = answersMap.get(LibCal.FQCN_COMPANY.toString());
       for (Metadata md : companyAnswers.getMetadata()) {
         String mdKey = md.getKey();
         if (mdKey.startsWith(MetadataUtils.MD_RECOMMENDED)) {
@@ -125,12 +132,15 @@ public class Dashboard {
           skills = new Tuple<>(LibCal.FQCN_COMPANY, MetadataUtils.fromMd(md, Skills.class));
         }
       }
+      List<CoachHelper> instantiated = new ArrayList<>();
       instantiated.add(coachHelper);
-      FQCN lastSelectedFqcn = lastSelected != null ? FQCN.fromString(lastSelected.getCoachId()) : LibCal.FQCN_COMPANY;
+      FQCN lastSelectedFqcn =
+          lastSelected != null ? FQCN.fromString(lastSelected.getCoachId()) : LibCal.FQCN_COMPANY;
       // process other coaches
-      for (Questionnaire coach : loadedCoaches.values().stream()
-            .sorted(Comparator.comparingInt(Questionnaire::getOrder))
-            .collect(Collectors.toList())) {
+      for (Questionnaire coach :
+          loadedCoaches.values().stream()
+              .sorted(Comparator.comparingInt(Questionnaire::getOrder))
+              .collect(Collectors.toList())) {
         // skip already processed company coach
         if (coach.getId().equals(LibCal.FQCN_COMPANY.getCoachId())) {
           continue;
@@ -141,13 +151,13 @@ public class Dashboard {
           if (coach.getParent() == null) {
             // add coach to remaining section
             logger.info(String.format("Adding coach %s to list of remaining coaches", coachId));
-            remaining.add(new CoachHelper(coachId, coach.getReadableName(), coach.getReadableClass()));
+            remaining.add(
+                new CoachHelper(coachId, coach.getReadableName(), coach.getReadableClass()));
           }
         } else {
           for (Map.Entry<FQCN, Answers> entry : coachAnswersMap.get(coach).entrySet()) {
             FQCN fqcn = entry.getKey();
             String name = getAnswerName(fqcn, loadedCoaches);
-            Answers answers = entry.getValue();
             // installed coach
             coachHelper = new CoachHelper(fqcn.toString(), name, coach.getReadableClass());
             coachHelper.setDescription(coach.getDescription());
@@ -165,18 +175,18 @@ public class Dashboard {
             }
             // metadata
             logger.info("Start processing metadata");
+            Answers answers = entry.getValue();
             for (Metadata md : answers.getMetadata()) {
               String mdKey = md.getKey();
-              Map<String, MetadataUtils.SimpleMvalue> mvalues = MetadataUtils
-                    .parseMvalues(md.getMvalue());
+              Set<String> mvalues =
+                  md.getMvalue().stream().map(Mvalue::getKey).collect(Collectors.toSet());
               // rating
               if (mdKey.equals(MetadataUtils.MD_RATING)
-                    && mvalues.containsKey(MetadataUtils.MV_MICRO_SCORE)
-                    && mvalues.containsKey(MetadataUtils.MV_MICRO_GRADE)) {
+                  && mvalues.contains(MetadataUtils.MV_MICRO_SCORE)
+                  && mvalues.contains(MetadataUtils.MV_MICRO_GRADE)) {
                 logger.info("Adding rating");
                 coachHelper.setRating(MetadataUtils.fromMd(md, Rating.class));
-              } else if (lastSelectedFqcn.equals(fqcn)
-                    && mdKey.equals(MetadataUtils.MD_SKILLS)) {
+              } else if (lastSelectedFqcn.equals(fqcn) && mdKey.equals(MetadataUtils.MD_SKILLS)) {
                 logger.info("Adding skills");
                 skills = new Tuple<>(fqcn, MetadataUtils.fromMd(md, Skills.class));
               }
@@ -187,14 +197,16 @@ public class Dashboard {
         }
       }
       // trim recommendations and badges
-      recommendations = recommendations.stream()
-            .sorted(Comparator.comparingInt(Recommendation::getOrder))
-            .limit(CysecConfig.getDefault().getNumericValue(contextName, RECOMMENDATIONS_SIZE))
-            .collect(Collectors.toList());
+      recommendations =
+          recommendations.stream()
+              .sorted(Comparator.comparingInt(Recommendation::getOrder))
+              .limit(CysecConfig.getDefault().getNumericValue(contextName, RECOMMENDATIONS_SIZE))
+              .collect(Collectors.toList());
       badges = badges.subList(Integer.max(0, badges.size() - 3), badges.size());
 
       // add data for jsp
-      DashboardMsg msg = new DashboardMsg(locale, instantiated.size(), remaining.size(), badges.size());
+      DashboardMsg msg =
+          new DashboardMsg(locale, instantiated.size(), remaining.size(), badges.size());
       Map<String, Object> model = new HashMap<>();
       model.put("msg", msg.getMessages());
       model.put("instantiated", instantiated);
@@ -202,7 +214,9 @@ public class Dashboard {
       model.put("recommendations", recommendations);
       model.put("badges", badges);
       if (skills != null) {
-        model.put("skills", new Tuple<>(getAnswerName(skills.getFirst(), loadedCoaches), skills.getSecond()));
+        model.put(
+            "skills",
+            new Tuple<>(getAnswerName(skills.getFirst(), loadedCoaches), skills.getSecond()));
       }
       return Response.status(200).entity(new Viewable("/dashboard/dashboard", model)).build();
     } catch (Exception e) {
@@ -212,13 +226,11 @@ public class Dashboard {
   }
 
   private String getAnswerName(FQCN fqcn, Map<String, Questionnaire> coaches) {
-    String name = fqcn.coacheIds()
-          .map(cid -> coaches.get(cid).getReadableName())
-          .reduce((s, s2) -> s + "." + s2).orElse("");
-    String coachName = fqcn.getName();
-    if (!coachName.equals("default")) {
-      name += "." + coachName;
+    StringBuilder name = new StringBuilder(coaches.get(fqcn.getCoachId()).getReadableName());
+    String fileName = fqcn.getName();
+    if (!fileName.equals("default")) {
+      name.append(".").append(fileName);
     }
-    return name;
+    return name.toString();
   }
 }
