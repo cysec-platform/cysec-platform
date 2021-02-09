@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <artifactId>coach_platform</artifactId>
         <groupId>eu.smesec.platform</groupId>
+        <artifactId>coach_platform</artifactId>
         <version>0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -14,6 +14,7 @@
     <version>0.2</version>
 
     <name>SMESEC Coach Platform</name>
+
 
     <properties>
         <buildPackageType>war</buildPackageType>
@@ -375,7 +376,7 @@
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>8.13</version>
+                        <version>8.40</version>
                     </dependency>
                 </dependencies>
                 <executions>
