@@ -8,7 +8,7 @@ pipeline {
     stage ('Initialize') {
       steps {
 		script{
-			checkout
+			checkout scm
 		}
       }
     }
