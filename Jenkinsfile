@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-   docker { 
-      image 'maven:3.6.0-jdk-8-slim'
-      reuseNode true
-    }
-  }
+  agent any
   options {
     buildDiscarder(logRotator(numToKeepStr:'50'))
     disableConcurrentBuilds()
