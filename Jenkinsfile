@@ -8,7 +8,7 @@ pipeline {
     stage ('Initialize') {
       steps {
         sh 'git clean -fdx'
-        git credentialsId: 'smesec_read_only', url: 'ssh://git@gitlab.fhnw.ch/SMESEC/questionnaire-platform.git', branch: env.BRANCH_NAME
+        git branch: env.BRANCH_NAME
         sh 'git submodule update --init --recursive'
         sh 'mvn clean'
       }
