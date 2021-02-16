@@ -7,10 +7,9 @@ pipeline {
   stages {
     stage ('Initialize') {
       steps {
-        sh 'git clean -fdx'
-        git url: scm.getLocations()[0].getURL(), branch: env.BRANCH_NAME
-        sh 'git submodule update --init --recursive'
-        sh 'mvn clean'
+		script{
+			checkout
+		}
       }
     }
     stage ('Build') {
