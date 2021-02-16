@@ -15,18 +15,18 @@ pipeline {
     }
     stage ('Build') {
       steps {
-        sh 'mvn -DskipTests install'
+        sh 'mvn -DskipTests clean install'
       }
     }
     stage ('Test on JDK8') {
       steps{
-        sh 'mvn -DforkCount=0 test jacoco:report'
+        sh 'mvn clean compile test jacoco:report'
       }
     }
     
     stage ('Package all') {
       steps {
-        sh 'mvn -DskipTests -pl cysec_backend package'
+        sh 'mvn -DskipTests clean -pl cysec_backend package'
       }
     }
     /*stage('SonarQube analysis') {
