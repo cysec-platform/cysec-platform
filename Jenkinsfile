@@ -20,7 +20,8 @@ pipeline {
     }
     stage ('Test on JDK8') {
       steps{
-        sh 'mvn test jacoco:report'
+        //sh 'mvn test jacoco:report'
+		sh 'mvn test'
       }
     }
     
