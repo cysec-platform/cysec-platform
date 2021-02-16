@@ -1,8 +1,14 @@
 pipeline {
-  agent any
+  agent {
+   docker { 
+      image 'maven:3.6.0-jdk-8-slim'
+      reuseNode true
+    }
+  }
   options {
     buildDiscarder(logRotator(numToKeepStr:'50'))
     disableConcurrentBuilds()
+    timeout(time: 30, unit: 'MINUTES')
   }
   stages {
     stage ('Initialize') {
@@ -17,21 +23,11 @@ pipeline {
         sh 'mvn -DskipTests install'
       }
     }
-    /*stage ('Test on JDK8') {
-      agent {
-        docker { 
-         image 'maven:3.6.0-jdk-8-slim'
-         reuseNode true
-         }
-      }
-      options {
-        timeout(time: 30, unit: 'MINUTES')
-      }
+    stage ('Test on JDK8') {
       steps{
         sh 'mvn -DforkCount=0 test jacoco:report'
       }
-      
-    }*/
+    }
     
     stage ('Package all') {
       steps {
@@ -55,15 +51,15 @@ pipeline {
         echo "My branch is: ${env.BRANCH_NAME}"
         echo "My branch is: ${BRANCH_NAME}"
         // enable use of if(...)
-        script {
-          if(BRANCH_NAME == 'dev') {
-            sh 'yes | cp -rf cysec_backend/target/smesec-platform.war  /var/lib/tomcat8/webapps/stage.war'
-          }
-          if(BRANCH_NAME == 'integration') {
-            sh 'cp cysec_backend/target/smesec-platform.war  /var/lib/tomcat8/webapps/cysec-eauth.war'
+        //script {
+          //if(BRANCH_NAME == 'dev') {
+            //sh 'yes | cp -rf cysec_backend/target/smesec-platform.war  /var/lib/tomcat8/webapps/stage.war'
+          //}
+          //if(BRANCH_NAME == 'integration') {
+            //sh 'cp cysec_backend/target/smesec-platform.war  /var/lib/tomcat8/webapps/cysec-eauth.war'
             //sh 'cp smesec-platform.war  /var/lib/tomcat8/webapps/cysec-local.war'
-          }
-        }
+          //}
+        //}
       }
     }
   }
