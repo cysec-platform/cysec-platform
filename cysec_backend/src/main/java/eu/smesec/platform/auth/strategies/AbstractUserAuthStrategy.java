@@ -112,6 +112,7 @@ public abstract class AbstractUserAuthStrategy extends AbstractAuthStrategy {
   /**
    * Extracts the required credentials from the present headers.
    *
+   * @param header the header map
    * @return {company name, user name / email, password, locale}
    */
   protected abstract String[] extractCredentials(MultivaluedMap<String, String> header)

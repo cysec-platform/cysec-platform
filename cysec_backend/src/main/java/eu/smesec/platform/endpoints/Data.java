@@ -54,6 +54,7 @@ public class Data {
   /**
    * Delivers rating of a questionnaire in JSON format.
    *
+   * @param id question id
    * @return A JSON object that contains <code>Metadata</code> from the coach
    */
   @GET
@@ -85,6 +86,7 @@ public class Data {
   /**
    * Delivers rating of a questionnaire in JSON format.
    *
+   * @param id question id
    * @return A JSON object that contains <code>Metadata</code> from the coach
    */
   @GET
@@ -150,6 +152,7 @@ public class Data {
   /**
    * Delivers the skills of a company in JSON format.
    *
+   * @param id question id
    * @return A JSON object that contains the Skills <code>Metadata</code>
    */
   @GET

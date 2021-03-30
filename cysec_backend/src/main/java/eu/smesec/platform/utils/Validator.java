@@ -45,7 +45,7 @@ public final class Validator {
   }
 
   /**
-   * Checks if the input contains non of the characters: /><;?*!&{} .
+   * Checks if the input contains non of the characters: /&gt;&lt;;?*!&amp;{} .
    *
    * @param input input to check
    * @return <code>true</code> if the input contains non of the specified characters, or <code>false

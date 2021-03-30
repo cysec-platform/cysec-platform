@@ -41,6 +41,7 @@ public class PasswordForgottenService {
    * Creates a new token for a password reset request.
    *
    * @param email The email to the corresponding user
+   * @param companyId the id of the company
    * @return 404 If no user for the given email was found
    */
   @POST
@@ -94,6 +95,9 @@ public class PasswordForgottenService {
    * Check if a given token is valid.
    *
    * @param tokenId The token registered to a user email.
+   * @param password1 the first password
+   * @param password2 the second password
+   * @param companyId the company id
    * @return A password reset form if a token was found.
    */
   @POST

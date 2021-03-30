@@ -16,6 +16,7 @@ public final class CacheFactory {
    * Creates a mapper for a generated jaxb2 class.
    *
    * @param classOfT generated jaxb2 class
+   * @param <T> class of generated class
    * @return Mapper object
    */
   public static <T> Mapper<T> createMapper(Class<T> classOfT) {

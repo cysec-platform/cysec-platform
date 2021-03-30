@@ -183,12 +183,13 @@ public final class MetadataUtils {
   }
 
   /**
-   * <p>Casts a metadata structure into a data class.
-   * Uses reflection and metadata annotations.</p>
+   * <p>Casts a metadata structure into a data class.</p>
    *
-   * @param md The metadata structure to prase.
-   * @param classOfT The class of the data Class.
-   * @return an instance of the data class, containing the content of md.
+   * <p>Uses reflection and metadata annotations.</p>
+   *
+   * @param md The metadata structure to prase
+   * @param classOfT The class of the data Class
+   * @return an instance of the data class, containing the content of md
    */
   public static <T> T fromMd(Metadata md, Class<T> classOfT) {
     try {
@@ -225,11 +226,13 @@ public final class MetadataUtils {
   }
 
   /**
-   * <p>Casts a data class into a metadata structure.
-   * Uses reflection and metadata annotations.</p>
+   * <p>Casts a data class into a metadata structure.</p>
    *
-   * @param t data class instance.
-   * @return a metadata structure representing the data of the t.
+   * <p>Uses reflection and metadata annotations.</p>
+   *
+   * @param <T> a metadata structure type
+   * @param t data class instance
+   * @return a metadata structure representing the data of the &lt;T&gt;
    */
   public static <T> Metadata toMd(T t) {
     try {

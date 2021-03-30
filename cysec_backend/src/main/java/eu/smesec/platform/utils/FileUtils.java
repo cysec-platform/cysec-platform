@@ -186,6 +186,7 @@ public final class FileUtils {
    *
    * @param source the source directory.
    * @param dest the *.zip archive.
+   * @param exclusions the exclusions for the zip file
    * @throws IOException if an io error occurs.
    */
   public static void zip(Path source, Path dest, String... exclusions) throws IOException {

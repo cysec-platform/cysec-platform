@@ -124,6 +124,7 @@ public class CacheAbstractionLayer {
    *
    * @param email The email address of the user.
    * @return An optional of Company that has to be handled by the caller of the method.
+   * @throws CacheException on any cache error
    */
   public String getCompanyByEmail(String email) throws CacheException {
     return data.executeOnAllCompanies(
@@ -152,6 +153,7 @@ public class CacheAbstractionLayer {
    * @throws CacheException If the a general error occurs.
    * @throws ElementNotFoundException If the coach company was not found.
    * @throws CacheAlreadyExistsException If the company already exists.
+   * @throws CacheException on any cache error
    */
   public void createCompany(String companyId, String companyName, User admin)
       throws CacheException {
@@ -192,6 +194,13 @@ public class CacheAbstractionLayer {
         });
   }
 
+  /**
+   * <p>Gets the company.</p>
+   *
+   * @param companyId the company id to be looked up
+   * @return the company object
+   * @throws CacheException on any cache error
+   */
   public Company getCompany(String companyId) throws CacheException {
     return readOnUsers(companyId, company -> company);
   }

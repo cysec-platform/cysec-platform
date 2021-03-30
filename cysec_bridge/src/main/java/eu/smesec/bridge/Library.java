@@ -32,28 +32,38 @@ public interface Library {
   void init(String id, Questionnaire questionnaire, ILibCal libCal, Logger logger);
 
   /**
-   * The initial routine run by the coach when instantiated. This method is executed _ONCE_ in the lifecycle of a coach.
+   * <p>The initial routine run by the coach when instantiated. This method is executed _ONCE_ in the lifecycle of a coach.</p>
+   *
    * <p>This will invoke the onBegin logic block in the coach that usually sets up all badges and badge classes.
    * Also, it saves default values (0) for strength, knowhow and uu score and their max values (0) in metadata.</p>
+   *
+   * @param fqcn unknown? FIXME
    * @return A list of commands to execute on the frontend
    */
   List<Command> onBegin(FQCN fqcn);
 
   /**
-   * The routine invoked every time a client access a different coach.
+   * <p>The routine invoked every time a client access a different coach.</p>
+   *
    * <p>This method also takes care of recovering answers from metadata by reapplying all saved answers to
    * the onResponseChange routine</p>
+   *
    * @param questionId the Id of the question from which to resume
-   * @see #onResponseChange(Question, Answer, FQCN)
+   * @param fqcn unknown? FIXME
    * @return A list of commands to execute on the frontend
+   *
+   * @see #onResponseChange(Question, Answer, FQCN)
    */
   List<Command> onResume(String questionId, FQCN fqcn);
 
   /**
-   * A routine executed every time a client adds text to question or selects an option.
+   * <p>A routine executed every time a client adds text to question or selects an option.</p>
+   *
    * <p>The library will evaluate the question that will update scoring, add metadata or hide questions</p>
    * @param question the question that was answered
    * @param answer the answer that was given
+   * @param fqcn unknown? FIXME
+   *
    * @return A list of commands to execute on the frontend
    */
   List<Command> onResponseChange(Question question, Answer answer, FQCN fqcn);
@@ -77,15 +87,19 @@ public interface Library {
   void setId(String id);
 
   /**
-   * Ask library to (re)evaluate the current question and return the next question.
+   * <p>Ask library to (re)evaluate the current question and return the next question.</p>
+   *
    * @param question the question that should be evaluated
+   * @param fqcn the fully qualified coach name to be queried
+   *
    * @return the question that should be displayed next
    */
   Question getNextQuestion(Question question, FQCN fqcn);
 
   /**
-   * Ask the library for the current list of active questions.
-   * @param question
+   * <p>Ask the library for the current list of active questions.</p>
+   *
+   * @param question the question to look up
    * @return A list of question objects to display
    */
   List<Question> peekQuestions(Question question);
@@ -103,16 +117,19 @@ public interface Library {
   Question getFirstQuestion();
 
   /**
-   * Sets the given object as its parent.
+   * <p>Sets the given object as its parent.</p>
    *
    * <p>The Library knows this object must be type of CysecExecutorContext and perform the appropriate type cast.</p>
    * <p>It is only possible to set the parent once to avoid state changes.</p>
-   * @throws if attempted to set parent more than once or set itself as parent
+   *
+   * @param context the context to be queried
+   *
+   * @throws IllegalStateException if attempted to set parent more than once or set itself as parent
    */
   void setParent(Object context) throws IllegalStateException;
 
   /**
-   * Get the parent executor context
+   * <p>Get the parent executor context.</p>
    *
    * <p>The client must treat this object as an instance of <TT>CysecExecutorContext</TT>. However, since that class
    * is not known on platform side, it is not possible to perform the appropriate type cast.</p>
@@ -122,7 +139,7 @@ public interface Library {
   Object getParent();
 
   /**
-   * Gets the model for a *.jsp file.
+   * <p>Gets the model for a *.jsp file.</p>
    *
    * @param file The path of the *.jsp file.
    * @return The model to pass to the *.jsp file.

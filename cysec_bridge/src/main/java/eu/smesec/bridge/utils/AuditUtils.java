@@ -27,7 +27,7 @@ public final class AuditUtils {
    * @param userAction The action of this audit.
    * @param before The old value before this audit.
    * @param after The new value after this audit.
-   * @return audit
+   * @return the new audit object
    */
   public static Audit createAudit(String userId, UserAction userAction,
                                   String before, String after) {
@@ -37,12 +37,12 @@ public final class AuditUtils {
   /**
    * <p>Creates a new audit.</p>
    *
-   * @param userId The id of the current user.
-   * @param userAction The action of this audit.
-   * @param before The old value before this audit.
-   * @param after The new value after this audit.
-   * @param time The time stamp of this audit.
-   * @return audit
+   * @param userId The id of the current user
+   * @param userAction The action of this audit
+   * @param before The old value before this audit
+   * @param after The new value after this audit
+   * @param time The time stamp of this audit
+   * @return the new audit object
    */
   public static Audit createAudit(String userId, UserAction userAction, String before,
                                   String after, LocalDateTime time) {
@@ -58,7 +58,7 @@ public final class AuditUtils {
   /**
    * <p>Creates a new XmlGregorianCalendar object from now.</p>
    *
-   * @return Now
+   * @return the gregorian representation of the current point
    */
   public static XMLGregorianCalendar now() {
     return toXmlGregorianCalendar(LocalDateTime.now());
@@ -67,7 +67,8 @@ public final class AuditUtils {
   /**
    * <p>Creates a new XmlGregorianCalendar object from an instant.</p>
    *
-   * @return Instant
+   * @param instant the point in time to be converted
+   * @return  converted gregorian representation
    */
   public static XMLGregorianCalendar toXmlGregorianCalendar(LocalDateTime instant) {
     return factory.newXMLGregorianCalendar(instant.toString());
