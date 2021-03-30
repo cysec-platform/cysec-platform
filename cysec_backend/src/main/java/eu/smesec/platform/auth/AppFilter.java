@@ -1,5 +1,6 @@
 package eu.smesec.platform.auth;
 
+import eu.smesec.platform.auth.strategies.DummyAuthStrategy;
 import eu.smesec.platform.config.Config;
 import eu.smesec.platform.config.CysecConfig;
 
@@ -72,12 +73,13 @@ public class AppFilter implements Filter {
     HttpPost httpPost = new HttpPost(url);
 
     Config config = CysecConfig.getDefault();
+    boolean dummy = "dummy".equals(config.getStringValue(null, DummyAuthStrategy.AUTH_SCHEME).toLowerCase());
     String authorization = httpServletRequest.getHeader(AUTHORIZATION_PROPERTY);
     // Case distinguition OAuth/Basic
     logger.info(String.format("doFilter authorization header %s", authorization));
-    logger.info(
-        String.format(
-            "doFilter authorization header %s", httpServletRequest.getHeader("authorization")));
+    logger.info(String.format(
+            "doFilter authorization header %s",
+            httpServletRequest.getHeader("authorization")));
     logger.info(httpServletRequest.getHeader(config.getStringValue(null, OIDC_NAME)));
     logger.info(httpServletRequest.getHeader(config.getStringValue(null, OIDC_MAIL)));
     logger.info(httpServletRequest.getHeader(config.getStringValue(null, OIDC_FIRSTNAME)));
@@ -106,7 +108,7 @@ public class AppFilter implements Filter {
           httpServletRequest.getHeader(config.getStringValue(null, OIDC_COMPANY)));
     } else {
       String authHeader = httpServletRequest.getHeader("Authorization");
-      if (authHeader == null) {
+      if (authHeader == null && ! dummy) {
         logger.info("No authorization header present, triggering log in");
         httpServletResponse.setHeader("WWW-Authenticate", "Basic realm=SecuredApp");
         httpServletResponse.sendError(401, "Please login");
@@ -119,7 +121,7 @@ public class AppFilter implements Filter {
 
     int status = httpResponse.getStatusLine().getStatusCode();
     logger.info("Authentication from XML returned: " + status);
-    if (status == 200) {
+    if (status == 200 || dummy) {
       chain.doFilter(request, response);
     } else {
       // force browser pop-up

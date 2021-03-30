@@ -45,7 +45,7 @@ public class CryptPasswordStorage extends PasswordStorage {
    */
   public CryptPasswordStorage(String storageString) throws NoSuchAlgorithmException {
     super(storageString);
-    if (getType() == null) {
+    if (getType() == null && ! "".equals(storageString)) {
       throw new IllegalArgumentException("crypt type is unknown");
     }
   }
@@ -95,7 +95,7 @@ public class CryptPasswordStorage extends PasswordStorage {
   /**
    * Gets the password salt.
    *
-   * @return String repreentation of the password salt
+   * @return String representation of the password salt
    */
   public String getSalt() {
     String[] splittedStorage = storage.split("\\$");
@@ -132,8 +132,13 @@ public class CryptPasswordStorage extends PasswordStorage {
    */
   @Override
   public boolean verify(String password) throws NoSuchAlgorithmException {
-    CryptPasswordStorage t = new CryptPasswordStorage(password, getSalt(), getType());
-    return t.equals(this);
+    // accept empty passwords
+    if("".equals(storage) && password!=null && "".equals(password)) {
+      return true;
+    } else {
+      CryptPasswordStorage t = new CryptPasswordStorage(password, getSalt(), getType());
+      return t.equals(this);
+    }
   }
 
   private static String getRandomHexString() {

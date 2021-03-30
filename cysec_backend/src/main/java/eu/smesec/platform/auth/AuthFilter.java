@@ -6,7 +6,6 @@ import eu.smesec.platform.auth.strategies.HeaderAuthStrategy;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.config.Config;
 import eu.smesec.platform.config.CysecConfig;
-
 import java.lang.reflect.Method;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -24,9 +23,12 @@ import javax.ws.rs.ext.Provider;
 @Provider
 @Secured
 public class AuthFilter extends AbstractFilter implements ContainerRequestFilter {
-  @Inject private CacheAbstractionLayer cal;
-  @Context private ServletContext context;
-  @Context private ResourceInfo resourceInfo;
+  @Inject
+  private CacheAbstractionLayer cal;
+  @Context
+  private ServletContext context;
+  @Context
+  private ResourceInfo resourceInfo;
 
   /**
    * Setup strategies if enabled.
@@ -39,15 +41,19 @@ public class AuthFilter extends AbstractFilter implements ContainerRequestFilter
     if (!config.getBooleanValue(contextName, "cysec_standalone")) {
       authStrategies.add(new HeaderAuthStrategy(cal, config, context));
     }
-    /* Allow dummy auth if configured */
-    authStrategies.add(new DummyAuthStrategy(cal, config, context));
 
-    /* make basic auth if anything else fails */
-    authStrategies.add(new BasicAuthStrategy(cal, config, context));
+    if ("dummy".equals(config.getStringValue(contextName, DummyAuthStrategy.AUTH_SCHEME).toLowerCase())) {
+      /* Allow dummy auth if configured */
+      authStrategies.add(new DummyAuthStrategy(cal, config, context));
+    } else {
+      /* make basic auth if anything else fails */
+      authStrategies.add(new BasicAuthStrategy(cal, config, context));
+    }
   }
 
   /**
    * Checks user credentials.
+   *
    * @param requestContext The context of the request
    */
   @Override

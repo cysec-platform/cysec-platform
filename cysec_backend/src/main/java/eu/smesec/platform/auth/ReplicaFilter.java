@@ -29,9 +29,9 @@ public class ReplicaFilter extends AbstractFilter implements ContainerRequestFil
   // use post construct for access on injected dependencies
   public void setup() {
     Config config = CysecConfig.getDefault();
+    // authStrategies.add(new DummyAuthStrategy(cal, config, context));
     authStrategies.add(new ReplicaAuthStrategy(cal, config, context));
     authStrategies.add(new AdminAuthStrategy(cal, config, context));
-    authStrategies.add(new DummyAuthStrategy(cal, config, context));
   }
 
   /**
