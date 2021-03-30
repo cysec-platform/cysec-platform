@@ -1,6 +1,7 @@
 package eu.smesec.platform.auth;
 
 import eu.smesec.platform.auth.strategies.BasicAuthStrategy;
+import eu.smesec.platform.auth.strategies.DummyAuthStrategy;
 import eu.smesec.platform.auth.strategies.HeaderAuthStrategy;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.config.Config;
@@ -38,6 +39,10 @@ public class AuthFilter extends AbstractFilter implements ContainerRequestFilter
     if (!config.getBooleanValue(contextName, "cysec_standalone")) {
       authStrategies.add(new HeaderAuthStrategy(cal, config, context));
     }
+    /* Allow dummy auth if configured */
+    authStrategies.add(new DummyAuthStrategy(cal, config, context));
+
+    /* make basic auth if anything else fails */
     authStrategies.add(new BasicAuthStrategy(cal, config, context));
   }
 

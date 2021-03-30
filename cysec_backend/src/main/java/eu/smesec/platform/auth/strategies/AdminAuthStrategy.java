@@ -57,7 +57,7 @@ public class AdminAuthStrategy extends AbstractAuthStrategy {
         String adminPrefix = config.getStringValue(contextName, ADMIN_PREFIX);
         String companyName = authMatcher.group(1);
         if (!adminPrefix.equalsIgnoreCase(companyName)) {
-          logger.log(Level.INFO, "company " + companyName + " is not an server admin prefix");
+          logger.log(Level.INFO, "company " + companyName + " is not a server admin prefix");
           return false;
         }
         // get admin username and password

@@ -1,6 +1,7 @@
 package eu.smesec.platform.auth;
 
 import eu.smesec.platform.auth.strategies.AdminAuthStrategy;
+import eu.smesec.platform.auth.strategies.DummyAuthStrategy;
 import eu.smesec.platform.auth.strategies.ReplicaAuthStrategy;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.config.Config;
@@ -30,6 +31,7 @@ public class ReplicaFilter extends AbstractFilter implements ContainerRequestFil
     Config config = CysecConfig.getDefault();
     authStrategies.add(new ReplicaAuthStrategy(cal, config, context));
     authStrategies.add(new AdminAuthStrategy(cal, config, context));
+    authStrategies.add(new DummyAuthStrategy(cal, config, context));
   }
 
   /**

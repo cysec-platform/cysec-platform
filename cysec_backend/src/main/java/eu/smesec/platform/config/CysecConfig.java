@@ -1,5 +1,6 @@
 package eu.smesec.platform.config;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.glassfish.jersey.logging.LoggingFeature;
 
 public class CysecConfig extends Config {
@@ -56,6 +56,7 @@ public class CysecConfig extends Config {
     List<String> candidates = new ArrayList<>(4);
     candidates.add("/var/lib/cysec/");
     candidates.add("/etc/cysec/");
+    candidates.add(System.getProperty("user.home") + File.separator + ".cysec" + File.separator);
     candidates.add("./");
     String env = System.getenv("CYSEC_HOME");
     if (env != null) {
@@ -70,15 +71,15 @@ public class CysecConfig extends Config {
         finalPath = Paths.get(pathCandidate);
         break;
       } else {
-        LOGGER.info(String.format("Config file not found in \"%s\"", p));
+        LOGGER.info(String.format("Config file not found in \"%s\" (pwd: %s)", p, Paths.get("").toAbsolutePath().toString()));
       }
     }
     if (finalPath != null) {
 
       // todo doing selfcheck
       for (String i :
-          new String[] {
-            "standard login", "authentication filter config", "access to external M2M API"
+          new String[]{
+              "standard login", "authentication filter config", "access to external M2M API"
           }) {
         LOGGER.log(Level.INFO, "Checking " + i);
         try {
@@ -94,7 +95,7 @@ public class CysecConfig extends Config {
       LOGGER.warning(
           String.format(
               "No configuration file found (thats really bad... "
-              + "consider making an empty file named ./etc/cysec.conf)"));
+                  + "consider making an empty file named ./etc/cysec.conf)"));
       return null;
     }
   }

@@ -9,6 +9,10 @@
     <version>0.2.0</version>
     <packaging>pom</packaging>
 
+    <name>CySeC</name>
+    <description>The CySeC coach runtime platform.</description>
+    <url>http://cysec.cyberlab.fhnw.ch/</url>
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>

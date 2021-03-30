@@ -5,15 +5,17 @@
     <parent>
         <groupId>eu.smesec.platform</groupId>
         <artifactId>coach_platform</artifactId>
-        <version>0.2</version>
+        <version>0.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>cysec_backend</artifactId>
     <packaging>${buildPackageType}</packaging>
-    <version>0.2</version>
+    <version>0.2.0</version>
 
-    <name>SMESEC Coach Platform</name>
+    <name>CySeC Coach Platform</name>
+    <description>The CySeC Coaching platform for running generic coaches.</description>
+    <url>http://cysec.cyberlab.fhnw.ch/</url>
 
     <distributionManagement>
         <snapshotRepository>
