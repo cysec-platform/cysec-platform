@@ -73,7 +73,7 @@ public class ApplicationConfig extends ResourceConfig {
       logger.log(Level.INFO, "Checking remote hosts");
 
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.log(Level.WARNING, e, () -> "Problem when constructing " + ApplicationConfig.class.getSimpleName());
     }
   }
 
