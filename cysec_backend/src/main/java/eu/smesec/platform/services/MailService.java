@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface MailService {
 
-  void sendMail(User recipient, String cc, String bc, String subject, String body);
+  void sendMail(User recipient, String cc, String bcc, String subject, String body);
 
-  void sendMail(List<User> recipient, String cc, String bc, String subject, String body);
+  void sendMail(List<User> recipient, String cc, String bcc, String subject, String body);
 }
