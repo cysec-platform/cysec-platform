@@ -3,7 +3,6 @@ package eu.smesec.platform.threading;
 import eu.smesec.platform.utils.FileUtils;
 import org.junit.*;
 import org.junit.rules.TestName;
-import org.mockito.Mockito;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +31,7 @@ public class FileWatcherTest {
 
   @Test
   public void testCreateFile() {
+    ignoreTestOnMac();
     BlockingDeque<Path> queue = new LinkedBlockingDeque<>(1);
     Path path = Paths.get("test.text");
     try {
@@ -51,6 +51,7 @@ public class FileWatcherTest {
 
   @Test
   public void testModifyFile() {
+    ignoreTestOnMac();
     BlockingDeque<Path> queue = new LinkedBlockingDeque<>(1);
     Path path = Paths.get("test.text");
     try {
@@ -71,6 +72,7 @@ public class FileWatcherTest {
 
   @Test
   public void testDeleteFile() {
+    ignoreTestOnMac();
     BlockingDeque<Path> queue = new LinkedBlockingDeque<>(1);
     Path path = Paths.get("test.text");
     try {
@@ -91,6 +93,7 @@ public class FileWatcherTest {
 
   @Test
   public void testDir() {
+    ignoreTestOnMac();
     BlockingDeque<Path> queue = new LinkedBlockingDeque<>(2);
     Path dir = Paths.get("testdir");
     Path file = Paths.get("testdir/test.txt");
@@ -131,4 +134,18 @@ public class FileWatcherTest {
       Assert.fail();
     }
   }
+
+  /**
+   * Since there is no native implementation of a WatchService for Mac OS, a polling mechanism is used internally.
+   * As a result, the detection does not work near real-time as on Windows or Linus. There would be an option to
+   * register with SensitivityWatchEventModifier.HIGH but this enumeration is only available in the
+   * com.sun.nio.file package. Adding this to productive code which is not intended to run directly on Mac OS
+   * does not add any benefit. Therefore, we ignore these tests when run on Mac OS.
+   */
+  private void ignoreTestOnMac() {
+    final String osName = System.getProperty("os.name");
+    Assume.assumeFalse(osName.toLowerCase().contains("mac"));
+    Assume.assumeFalse(osName.toLowerCase().contains("darwin"));
+  }
+
 }
