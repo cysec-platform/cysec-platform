@@ -45,7 +45,7 @@ public class FileWatcher implements IExecutable {
       this.onModify = Collections.synchronizedList(new ArrayList<>());
       this.onDelete = Collections.synchronizedList(new ArrayList<>());
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.log(Level.WARNING, e, () -> "Problem when constructing " + FileWatcher.class.getSimpleName());
     }
   }
 
