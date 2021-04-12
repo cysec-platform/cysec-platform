@@ -507,6 +507,8 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <source>${java.version}</source>
+                    <doclint>all,-missing</doclint>
                     <excludePackageNames>*.generated</excludePackageNames>
                 </configuration>
             </plugin>
