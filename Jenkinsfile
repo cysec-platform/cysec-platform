@@ -62,7 +62,7 @@ pipeline {
   }
   post {
     always {
-      publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'target/surefire-reports', reportFiles: 'index.html', reportName: 'SMESEC platform Report', reportTitles: 'smesec-platform'])
+      publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '**/target/surefire-reports', reportFiles: 'index.html', reportName: 'CySeC platform Report', reportTitles: 'CySeC-platform'])
     }
     success {
       archiveArtifacts artifacts: 'cysec_backend/target/*.war,cysec_bridge/target/*.jar', fingerprint: true
