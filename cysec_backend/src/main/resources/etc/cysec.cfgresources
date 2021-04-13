@@ -30,4 +30,7 @@ numeric; cysec_recommend_count; 3; The number of recommendations displayed in th
 
 // cysec replica
 string; cysec_replica_host; ; remote context inclusive
-string; cysec_replica_token; ; Space separated list of comanpy/token
+string; cysec_replica_token; ; Space separated list of comanpay/token
+
+// cysec mail
+string; cysec_mail_sender_address; no-reply@example.com ; The sender address used by the mail sender
