@@ -37,7 +37,7 @@ pipeline {
     stage ('Test on JDK8') {
       steps{
         //sh 'mvn test jacoco:report'
-        sh 'mvn test'
+        sh 'mvn test surefire-report:report -Daggregate=true'
       }
     }
     
@@ -62,7 +62,7 @@ pipeline {
   }
   post {
     always {
-      publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '**/target/surefire-reports', reportFiles: 'index.html', reportName: 'CySeC platform Report', reportTitles: 'CySeC-platform'])
+      publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'target/surefire-reports', reportFiles: 'index.html', reportName: 'CySeC platform Report', reportTitles: 'CySeC-platform'])
     }
     success {
       archiveArtifacts artifacts: 'cysec_backend/target/*.war,cysec_bridge/target/*.jar', fingerprint: true
