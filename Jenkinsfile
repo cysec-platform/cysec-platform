@@ -55,8 +55,7 @@ pipeline {
       }
     }*/
     stage('Deploy') {
-        echo "My branch is: ${env.BRANCH_NAME  }"
-        echo "My branch is: ${BRANCH_NAME}"
+      sh 'mvn -DskipTests deploy'
     }
   }
   post {
