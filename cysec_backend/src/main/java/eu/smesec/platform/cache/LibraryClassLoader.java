@@ -32,9 +32,9 @@ public class LibraryClassLoader extends ClassLoader {
    * Construct a new JAR class loader. The parent class loader is the system class loader.
    *
    * @param jar Byte array with the contents of the JAR file.
-   * @throws NullPointerException (unchecked exception) Thrown if <TT>jar</TT> is null.
+   * @throws NullPointerException (unchecked exception) Thrown if <code>jar</code> is null.
    * @throws IOException Thrown if the JAR file's contents could not be extracted from the
-   *     <TT>jar</TT> byte array.
+   *     <code>jar</code> byte array.
    */
   public LibraryClassLoader(byte[] jar) throws IOException {
     super();
@@ -46,9 +46,9 @@ public class LibraryClassLoader extends ClassLoader {
    *
    * @param parent Parent class loader.
    * @param jar Byte array with the contents of the JAR file.
-   * @throws NullPointerException (unchecked exception) Thrown if <TT>jar</TT> is null.
+   * @throws NullPointerException (unchecked exception) Thrown if <code>jar</code> is null.
    * @throws IOException Thrown if the JAR file's contents could not be extracted from the
-   *     <TT>jar</TT> byte array.
+   *     <code>jar</code> byte array.
    */
   public LibraryClassLoader(ClassLoader parent, byte[] jar) throws IOException {
     super(parent);

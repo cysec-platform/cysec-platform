@@ -131,7 +131,7 @@ public interface Library {
   /**
    * <p>Get the parent executor context.</p>
    *
-   * <p>The client must treat this object as an instance of <TT>CysecExecutorContext</TT>. However, since that class
+   * <p>The client must treat this object as an instance of <code>CysecExecutorContext</code>. However, since that class
    * is not known on platform side, it is not possible to perform the appropriate type cast.</p>
    *
    * @return the requested context
@@ -146,5 +146,5 @@ public interface Library {
    */
   default Map<String, Object> getJspModel(String file) {
     return null;
-  };
+  }
 }
