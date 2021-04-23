@@ -38,7 +38,7 @@ public class MapperAuditTest {
   @Before
   public void setUp() {
     this.temp = Paths.get("src/test/resources/test-temp/AuditCache/" + name.getMethodName());
-    this.file = this.temp.resolve("xyz/audit.xml");
+    this.file = this.temp.resolve("xyz/audits.xml");
     try {
       FileUtils.copyDir(source, temp);
     } catch (Exception e) {
@@ -81,7 +81,7 @@ public class MapperAuditTest {
 
       Assert.assertNotNull(audits);
       Assert.assertEquals(3, audits.getAudit().size());
-      Assert.assertEquals("claudio.seitz", audits.getAudit().get(0).getUser());
+      Assert.assertEquals("user1", audits.getAudit().get(0).getUser());
     } catch (Exception e) {
       e.printStackTrace();
       Assert.fail();
@@ -97,7 +97,7 @@ public class MapperAuditTest {
       XMLGregorianCalendar now =
             datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
       Audit audit = new Audit();
-      audit.setUser("claudio");
+      audit.setUser("newUser");
       audit.setTime(now);
       audit.setAction(UserAction.CREATED);
       audit.setBefore("");

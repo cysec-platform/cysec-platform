@@ -85,12 +85,12 @@ public class BasicAuthStrategyTest {
   @Test
   public void testAuthenticationInvalidHeader2() {
     MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-    headers.add("authorization", "Basic Y2xhdWRpbzpwYXNzd29yZA==");
+    headers.add("authorization", "Basic dGVzdHVzZXI6cGFzc3dvcmQ=");
     try {
       authStrategy.authenticate(headers, null);
       Assert.fail();
     } catch (BadRequestException e) {
-      Assert.assertEquals("invalid auth format: claudio:password", e.getMessage());
+      Assert.assertEquals("invalid auth format: testuser:password", e.getMessage());
     } catch (CacheException e) {
       Assert.fail();
     }
