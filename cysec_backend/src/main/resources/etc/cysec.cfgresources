@@ -22,6 +22,7 @@ string; cysec_header_locale; oidc_claim_locale; The OAuth locale
 // cysec server admin
 boolean; cysec_standalone; false; True if no proxy is used, or false otherwise
 boolean; cysec_register; true; True if a new user can register, or false otherwise
+string; cysec_header_profile; https://keycloak.smesec.eu/auth/realms/SMESEC/account; Keycloak account URL
 string; cysec_header_logout; https://keycloak.smesec.eu/auth/realms/SMESEC/protocol/openid-connect/logout; Keycloak logout URL
 string; cysec_admin_prefix; _admin_; The prefix identifying all admins
 string; cysec_admin_users; admin; Space separated list of admin user names
