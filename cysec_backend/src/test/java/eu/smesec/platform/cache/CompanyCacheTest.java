@@ -541,7 +541,7 @@ public class CompanyCacheTest {
   public void testZip() {
     Path path = temp.resolve("company.zip");
     Set<String> entries = new HashSet<>(Arrays.asList(
-          "audit.xml",
+          "audits.xml",
           "users.xml",
           "lib-coach/default.xml",
           "lib-coach/lib-coach-sub/A.xml",
