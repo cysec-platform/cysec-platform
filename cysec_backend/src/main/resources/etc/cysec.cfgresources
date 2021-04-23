@@ -30,7 +30,7 @@ numeric; cysec_recommend_count; 3; The number of recommendations displayed in th
 
 // cysec replica
 string; cysec_replica_host; ; remote context inclusive
-string; cysec_replica_token; ; Space separated list of comanpay/token
+string; cysec_replica_token; ; Space separated list of company/token
 
 // cysec mail
 string; cysec_mail_smtp_host; localhost ; The host of the mail server (SMTP)
