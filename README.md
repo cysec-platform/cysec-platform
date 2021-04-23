@@ -1,6 +1,6 @@
 # CySeC Main Repository
 
-This is the main repository for the SMESEC project.
+This is the main repository for the CySeC project.
 
 
 ## Development
