@@ -18,12 +18,12 @@
             </li>
             <c:if test="${not fn:containsIgnoreCase(header['Authorization'], 'Basic')}">
                 <li>
-                    <a href="${initParam['cysec_header_profile']}" title="Profile">
+                    <a href="${initParam['header_profile_href']}" title="Profile">
                         <img src="${context}/assets/icons/icn_company.svg" width="24px" height="24px"/>
                     </a>
                 </li>
                 <li>
-                    <a href="${initParam['cysec_header_logout']}" title="Logout">
+                    <a href="${initParam['header_logout_href']}" title="Logout">
                         <img src="${context}/assets/icons/icn_logout.svg" width="24px" height="24px"/>
                     </a>
                 </li>
