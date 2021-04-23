@@ -26,7 +26,7 @@ public class CryptPasswordStorage extends PasswordStorage {
    * Initializes a new password storage with the given password and salt.
    *
    * @param password The password to be stored
-   * @param salt The salt to be used. If salt is null a random salt will be gennerated
+   * @param salt The salt to be used. If salt is null a random salt will be generated
    * @param type The crypt type to be used
    * @throws NoSuchAlgorithmException if default CryptType is illegal and type is null
    * @throws IllegalArgumentException if salt is an empty String
@@ -136,17 +136,26 @@ public class CryptPasswordStorage extends PasswordStorage {
     if("".equals(storage) && password!=null && "".equals(password)) {
       return true;
     } else {
-      CryptPasswordStorage t = new CryptPasswordStorage(password, getSalt(), getType());
-      return t.equals(this);
+      try {
+        CryptPasswordStorage t = new CryptPasswordStorage(password, getSalt(), getType());
+        return t.equals(this);
+      } catch( NullPointerException npe) {
+        // exception while verifying password layout in storage
+        return false;
+      }
     }
   }
 
-  private static String getRandomHexString() {
+  public static String getRandomHexString(int length) {
     StringBuilder sb = new StringBuilder();
-    while (sb.length() < 32) {
+    while (sb.length() < length) {
       sb.append(Integer.toHexString(random.nextInt()));
     }
 
-    return sb.toString().substring(0, 32);
+    return sb.toString().substring(0, length);
+  }
+
+  public static String getRandomHexString() {
+    return getRandomHexString(32);
   }
 }

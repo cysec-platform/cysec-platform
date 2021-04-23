@@ -1,6 +1,8 @@
 package eu.smesec.platform.auth.strategies;
 
 import eu.smesec.bridge.execptions.CacheException;
+import eu.smesec.bridge.generated.Locks;
+import eu.smesec.bridge.generated.User;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.config.Config;
 
@@ -45,4 +47,48 @@ public abstract class AbstractAuthStrategy {
 
   public abstract boolean authenticate(MultivaluedMap<String, String> headers, Method method)
       throws CacheException, ClientErrorException;
+
+  /**
+   * Verifies if either company or user are present. If the company is not present a new company and
+   * user are created. If only the user is missing, a new user is created.
+   *
+   * @param user The user logging in.
+   * @param companyId The users company
+   */
+  void setupCompany(final User user, final String companyId) {
+    logger.info("Checking oauth credentials");
+    try {
+      // Check if company exists...
+      if (cal.existsCompany(companyId)) {
+        // ... and create user if no duplicate is found
+        User duplicate = cal.getUserByName(companyId, user.getUsername());
+        if (duplicate == null) {
+          logger.info(
+              String.format(
+                  "Creating new user as %s not present in company %s.",
+                  user.getUsername(), companyId));
+          user.setLock(Locks.NONE);
+          cal.createUser(companyId, user);
+        } else {
+          logger.info("Found existing user: " + user.getUsername());
+        }
+      } else {
+        logger.info(
+            String.format(
+                "Creating first user %s in new company %s.", user.getUsername(), companyId));
+
+        // first user of a new company has to be admin
+        user.getRole().add("Admin");
+        user.setLock(Locks.NONE);
+        cal.createCompany(companyId, companyId, user);
+      }
+      logger.info(
+          String.format(
+              "Returning verified Header data: user %s, company %s, email %s",
+              user.getUsername(), companyId, user.getEmail()));
+    } catch (CacheException ce) {
+      logger.warning(ce.getMessage());
+    }
+  }
+
 }
