@@ -6,7 +6,8 @@ import eu.smesec.platform.services.MailServiceImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.FileHandler;
@@ -77,32 +78,29 @@ public class ApplicationConfig extends ResourceConfig {
     }
   }
 
-  private void attachLogFileHandler(String configLogPath, String context)
-      throws IOException, URISyntaxException {
-    // check log directory
-    Path logPath = Paths.get(configLogPath, context);
-    /*if(!Files.exists(logPath)) {
-        logger.log(Level.INFO, "Log path \"" + logPath+ "\" is missing.. creating directory");
-        logPath.toFile().mkdirs();
-    }*/
-    File contextLogFile = logPath.toFile();
-    if (contextLogFile.getParentFile().exists()) {
-      contextLogFile.createNewFile();
-      logger.log(Level.INFO, "Using log file " + contextLogFile.toString());
-    } else {
-      // Path newLogPath = null; Paths.get(this.getClass().getResource("/logs/").toURI());
-      logger.log(
-          Level.SEVERE,
-          "Path to "
-              + logPath
-              + " did not exist. You will have to look hard for instance logs of "
-              + context);
-      // logPath = newLogPath;
-      // contextLogFile = new File(logPath.toUri());
+  private void attachLogFileHandler(String logDirectory, String context)
+      throws IOException {
+
+    // create log directory if it does not exist
+    final Path logPath = Paths.get(logDirectory);
+    if (Files.notExists(logPath)) {
+        logger.log(Level.INFO, "Log directory '" + logPath+ "' does not exist and will be created");
+        Files.createDirectories(logPath);
     }
 
+    // create log file if it does not exist
+    final Path contextLogfilePath = logPath.resolve(context);
+    if (Files.notExists(contextLogfilePath)) {
+      try {
+        Files.createFile(contextLogfilePath);
+      } catch (FileAlreadyExistsException e) {
+        // ignored since log file already exists
+      }
+    }
+    logger.log(Level.INFO, "Using log file '" + contextLogfilePath + "'");
+
     // Configure logger
-    FileHandler handler = new FileHandler(contextLogFile.getPath());
+    FileHandler handler = new FileHandler(contextLogfilePath.normalize().toString());
     handler.setLevel(Level.INFO);
     handler.setFormatter(new SimpleFormatter());
     logger.addHandler(handler);
