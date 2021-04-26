@@ -18,10 +18,18 @@ public class CysecServletContextListener implements ServletContextListener {
 
   @Override
   public void contextInitialized(ServletContextEvent servletContextEvent) {
-    final Config config = CysecConfig.getDefault();
     final ServletContext servletContext = servletContextEvent.getServletContext();
-    servletContext.setInitParameter("header_profile_href", config.getStringValue(null, CONFIG_HEADER_PROFILE));
-    servletContext.setInitParameter("header_logout_href", config.getStringValue(null, CONFIG_HEADER_LOGOUT));
+    final Config config = CysecConfig.getDefault();
+
+    final String headerProfileHref = config.getStringValue(null, CONFIG_HEADER_PROFILE);
+    if (headerProfileHref != null) {
+      servletContext.setInitParameter("header_profile_href", headerProfileHref);
+    }
+
+    final String headerLogoutHref = config.getStringValue(null, CONFIG_HEADER_LOGOUT);
+    if (headerLogoutHref != null) {
+      servletContext.setInitParameter("header_logout_href", headerLogoutHref);
+    }
   }
 
   @Override
