@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -120,7 +119,7 @@ public class CompanyCacheTest {
     company.getUser().add(user2);
     company.getUser().add(user3);
     try {
-      PowerMockito.when(companyMapper.unmarshal(compDir.resolve(CompanyCache.USER_XML)))
+      PowerMockito.when(companyMapper.unmarshalWithInit(compDir.resolve(CompanyCache.USER_XML), Company.class))
           .thenReturn(company);
       Assert.assertTrue(Files.exists(compDir));
       Assert.assertTrue(Files.isDirectory(compDir));
@@ -159,7 +158,7 @@ public class CompanyCacheTest {
     Path relative = Paths.get("lib-coach/default.xml");
     try {
       Answers answers = new Answers();
-      PowerMockito.when(answersMapper.unmarshal(compDir.resolve(relative)))
+      PowerMockito.when(answersMapper.unmarshalWithInit(compDir.resolve(relative), Answers.class))
             .thenReturn(answers);
       Assert.assertTrue(Files.exists(compDir));
       Assert.assertTrue(Files.isDirectory(compDir));
@@ -182,7 +181,7 @@ public class CompanyCacheTest {
     Path relative = Paths.get("lib-coach/default.xml");
     try {
       Answers answers = new Answers();
-      PowerMockito.when(answersMapper.unmarshal(compDirRO.resolve(relative)))
+      PowerMockito.when(answersMapper.unmarshalWithInit(compDirRO.resolve(relative), Answers.class))
             .thenReturn(answers);
       Assert.assertTrue(Files.exists(compDirRO));
       Assert.assertTrue(Files.isDirectory(compDirRO));
@@ -209,11 +208,11 @@ public class CompanyCacheTest {
       Answers answers1 = new Answers();
       Answers answers2 = new Answers();
       Answers answers3 = new Answers();
-      PowerMockito.when(answersMapper.unmarshal(compDir.resolve(path1)))
+      PowerMockito.when(answersMapper.unmarshalWithInit(compDir.resolve(path1), Answers.class))
             .thenReturn(answers1);
-      PowerMockito.when(answersMapper.unmarshal(compDir.resolve(path2)))
+      PowerMockito.when(answersMapper.unmarshalWithInit(compDir.resolve(path2), Answers.class))
             .thenReturn(answers2);
-      PowerMockito.when(answersMapper.unmarshal(compDir.resolve(path3)))
+      PowerMockito.when(answersMapper.unmarshalWithInit(compDir.resolve(path3), Answers.class))
             .thenReturn(answers3);
 
       Assert.assertTrue(Files.exists(compDir));
@@ -243,7 +242,7 @@ public class CompanyCacheTest {
   public void testReadOnUsers() {
     try {
       Company company = new Company();
-      PowerMockito.when(companyMapper.unmarshal(compDir.resolve(CompanyCache.USER_XML)))
+      PowerMockito.when(companyMapper.unmarshalWithInit(compDir.resolve(CompanyCache.USER_XML), Company.class))
             .thenReturn(company);
       Assert.assertTrue(Files.exists(compDir));
       Assert.assertTrue(Files.isDirectory(compDir));
@@ -265,7 +264,7 @@ public class CompanyCacheTest {
   public void testReadOnUsersReadonly() {
     try {
       Company company = new Company();
-      PowerMockito.when(companyMapper.unmarshal(compDirRO.resolve(CompanyCache.USER_XML)))
+      PowerMockito.when(companyMapper.unmarshalWithInit(compDirRO.resolve(CompanyCache.USER_XML), Company.class))
             .thenReturn(company);
       Assert.assertTrue(Files.exists(compDirRO));
       Assert.assertTrue(Files.isDirectory(compDirRO));
@@ -287,7 +286,7 @@ public class CompanyCacheTest {
   public void testReadOnAudits() {
     try {
       Audits audits = new Audits();
-      PowerMockito.when(auditsMapper.unmarshal(compDir.resolve(CompanyCache.AUDITS_XML)))
+      PowerMockito.when(auditsMapper.unmarshalWithInit(compDir.resolve(CompanyCache.AUDITS_XML), Audits.class))
             .thenReturn(audits);
       Assert.assertTrue(Files.exists(compDir));
       Assert.assertTrue(Files.isDirectory(compDir));
@@ -309,7 +308,7 @@ public class CompanyCacheTest {
   public void testReadOnAuditsReadonly() {
     try {
       Audits audits = new Audits();
-      PowerMockito.when(auditsMapper.unmarshal(compDirRO.resolve(CompanyCache.AUDITS_XML)))
+      PowerMockito.when(auditsMapper.unmarshalWithInit(compDirRO.resolve(CompanyCache.AUDITS_XML), Audits.class))
             .thenReturn(audits);
       Assert.assertTrue(Files.exists(compDirRO));
       Assert.assertTrue(Files.isDirectory(compDirRO));
@@ -333,7 +332,7 @@ public class CompanyCacheTest {
 
     try {
       Answers answers = new Answers();
-      PowerMockito.when(answersMapper.unmarshal(compDir.resolve(relative)))
+      PowerMockito.when(answersMapper.unmarshalWithInit(compDir.resolve(relative), Answers.class))
             .thenReturn(answers);
       Assert.assertTrue(Files.exists(compDir));
       Assert.assertTrue(Files.isDirectory(compDir));
@@ -356,7 +355,7 @@ public class CompanyCacheTest {
 
     try {
       Answers answers = new Answers();
-      PowerMockito.when(answersMapper.unmarshal(compDirRO.resolve(relative)))
+      PowerMockito.when(answersMapper.unmarshalWithInit(compDirRO.resolve(relative), Answers.class))
             .thenReturn(answers);
       Assert.assertTrue(Files.exists(compDirRO));
       Assert.assertTrue(Files.isDirectory(compDirRO));
@@ -378,7 +377,7 @@ public class CompanyCacheTest {
   public void testWriteOnUsers() {
     try {
       Company company = new Company();
-      PowerMockito.when(companyMapper.unmarshal(compDir.resolve(CompanyCache.USER_XML)))
+      PowerMockito.when(companyMapper.unmarshalWithInit(compDir.resolve(CompanyCache.USER_XML), Company.class))
             .thenReturn(company);
       Assert.assertTrue(Files.exists(compDir));
       Assert.assertTrue(Files.isDirectory(compDir));
@@ -399,7 +398,7 @@ public class CompanyCacheTest {
   public void testWriteOnUsersReadonly() {
     try {
       Company company = new Company();
-      PowerMockito.when(companyMapper.unmarshal(compDirRO.resolve(CompanyCache.USER_XML)))
+      PowerMockito.when(companyMapper.unmarshalWithInit(compDirRO.resolve(CompanyCache.USER_XML), Company.class))
             .thenReturn(company);
       Assert.assertTrue(Files.exists(compDirRO));
       Assert.assertTrue(Files.isDirectory(compDirRO));
@@ -421,7 +420,7 @@ public class CompanyCacheTest {
   public void testWriteOnAudits() {
     try {
       Audits audits = new Audits();
-      PowerMockito.when(auditsMapper.unmarshal(compDir.resolve(CompanyCache.AUDITS_XML)))
+      PowerMockito.when(auditsMapper.unmarshalWithInit(compDir.resolve(CompanyCache.AUDITS_XML), Audits.class))
             .thenReturn(audits);
       Assert.assertTrue(Files.exists(compDir));
       Assert.assertTrue(Files.isDirectory(compDir));
@@ -442,7 +441,7 @@ public class CompanyCacheTest {
   public void testWriteOnAuditsReadonly() {
     try {
       Audits audits = new Audits();
-      PowerMockito.when(auditsMapper.unmarshal(compDirRO.resolve(CompanyCache.AUDITS_XML)))
+      PowerMockito.when(auditsMapper.unmarshalWithInit(compDirRO.resolve(CompanyCache.AUDITS_XML), Audits.class))
             .thenReturn(audits);
       Assert.assertTrue(Files.exists(compDirRO));
       Assert.assertTrue(Files.isDirectory(compDirRO));
@@ -465,7 +464,7 @@ public class CompanyCacheTest {
     Path relative = Paths.get("lib-coach/default.xml");
     try {
       Answers answers = new Answers();
-      PowerMockito.when(answersMapper.unmarshal(compDir.resolve(relative)))
+      PowerMockito.when(answersMapper.unmarshalWithInit(compDir.resolve(relative), Answers.class))
             .thenReturn(answers);
       CompanyCache cache = new CompanyCache(compDir);
       cache.load();
@@ -486,7 +485,7 @@ public class CompanyCacheTest {
     Path relative = Paths.get("lib-coach/default.xml");
     try {
       Answers answers = new Answers();
-      PowerMockito.when(answersMapper.unmarshal(compDir.resolve(relative)))
+      PowerMockito.when(answersMapper.unmarshalWithInit(compDir.resolve(relative), Answers.class))
             .thenReturn(answers);
       CompanyCache cache = new CompanyCache(compDir);
       cache.load();
@@ -509,11 +508,11 @@ public class CompanyCacheTest {
       Answers answers1 = new Answers();
       Answers answers2 = new Answers();
       Answers answers3 = new Answers();
-      PowerMockito.when(answersMapper.unmarshal(compDir.resolve(relative1)))
+      PowerMockito.when(answersMapper.unmarshalWithInit(compDir.resolve(relative1), Answers.class))
             .thenReturn(answers1);
-      PowerMockito.when(answersMapper.unmarshal(compDir.resolve(relative2)))
+      PowerMockito.when(answersMapper.unmarshalWithInit(compDir.resolve(relative2), Answers.class))
             .thenReturn(answers2);
-      PowerMockito.when(answersMapper.unmarshal(compDir.resolve(relative3)))
+      PowerMockito.when(answersMapper.unmarshalWithInit(compDir.resolve(relative3), Answers.class))
             .thenReturn(answers3);
       CompanyCache cache = new CompanyCache(compDir);
       cache.load();

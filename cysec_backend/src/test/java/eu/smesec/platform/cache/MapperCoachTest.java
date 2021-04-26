@@ -44,7 +44,7 @@ public class MapperCoachTest {
       Assert.assertTrue(Files.exists(file));
       Mapper<Questionnaire> mapper = new Mapper<>(Questionnaire.class);
 
-      Questionnaire coach = mapper.unmarshal(file);
+      Questionnaire coach = mapper.unmarshalWithInit(file, Questionnaire.class);
 
       Assert.assertNotNull(coach);
       Assert.assertEquals("lib-company", coach.getId());
@@ -65,7 +65,7 @@ public class MapperCoachTest {
       Assert.assertTrue(Files.exists(file));
       Mapper<Questionnaire> mapper = new Mapper<>(Questionnaire.class);
 
-      Questionnaire coach = mapper.unmarshal(file);
+      Questionnaire coach = mapper.unmarshalWithInit(file, Questionnaire.class);
 
       Assert.assertNotNull(coach);
       Assert.assertEquals("lib-company", coach.getId());

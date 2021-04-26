@@ -82,7 +82,7 @@ public class MapperUserTest {
       Assert.assertTrue(Files.exists(file));
       Mapper<Company> mapper = new Mapper<>(Company.class);
 
-      Company company = mapper.unmarshal(file);
+      Company company = mapper.unmarshalWithInit(file, Company.class);
 
       Assert.assertNotNull(company);
       Assert.assertEquals("fhnw", company.getId());

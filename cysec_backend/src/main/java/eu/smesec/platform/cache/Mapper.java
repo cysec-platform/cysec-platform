@@ -10,11 +10,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.glassfish.jersey.logging.LoggingFeature;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -23,6 +26,9 @@ import org.xml.sax.SAXParseException;
  * @param <T> Generated jaxb class.
  */
 public class Mapper<T> {
+
+  private static final Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
+
   private final Class<T> classOfT;
   private final Marshaller marshaller;
   private final Unmarshaller unmarshaller;
@@ -106,6 +112,25 @@ public class Mapper<T> {
               + ": "
               + ioe.getMessage());
     }
+  }
+
+  /**
+   * Unmarshals an object from a file with initialization using the default constructor if it does not exist yet
+   *
+   * @param path The path of the xml file the object should be unmarshalled from
+   * @return The unmarshalled object
+   * @throws MapperException If the file could not be unmarshalled or initialized
+   */
+  public T unmarshalWithInit(Path path, Class<T> clazz) throws MapperException {
+    if (Files.notExists(path)) {
+      logger.log(Level.WARNING, () -> "File '" + path + "' does not exist and will be initialized before unmarshalling");
+      try {
+        init(path, clazz.newInstance());
+      } catch (Exception e) {
+        throw new MapperException(e.getMessage());
+      }
+    }
+    return unmarshal(path);
   }
 
   /**

@@ -111,7 +111,7 @@ public class CoachManager {
     try {
       // wait for file to become available
       Thread.sleep(200);
-      Questionnaire coach = mapper.unmarshal(path);
+      Questionnaire coach = mapper.unmarshalWithInit(path, Questionnaire.class);
       String coachId = coach.getId();
       String language = coach.getLanguage();
       String parentId = coach.getParent();

@@ -325,7 +325,7 @@ class CoachCache extends Cache {
         }
 
         logger.log(Level.INFO, "Loading default coach from file " + defaultCoach.path.toString());
-        Questionnaire coach = collection.mapper.unmarshal(this.path.resolve(defaultCoach.path));
+        Questionnaire coach = collection.mapper.unmarshalWithInit(this.path.resolve(defaultCoach.path), Questionnaire.class);
         List<Library> libraries = new ArrayList<>(1);
         if (coach.getOrder() == null) {
           coach.setOrder(Integer.MAX_VALUE);
@@ -383,7 +383,7 @@ class CoachCache extends Cache {
                   + language
                   + ") from file "
                   + translation.path.toString());
-          Questionnaire coach = collection.mapper.unmarshal(this.path.resolve(translation.path));
+          Questionnaire coach = collection.mapper.unmarshalWithInit(this.path.resolve(translation.path), Questionnaire.class);
           Questionnaire reduced = new Questionnaire();
           // copy only translated text text
           coach.copyTo(new DefaultRootObjectLocator(coach), reduced, fieldCopyStrategy);

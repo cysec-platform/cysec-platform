@@ -318,7 +318,7 @@ public class CoachCacheTest {
       Library library = Mockito.mock(Library.class);
       PowerMockito.when(CacheFactory.loadLibrary(Mockito.any(ClassLoader.class), Mockito.eq(libGen)))
           .thenReturn(library);
-      Mockito.when(mapper.unmarshal(temp.resolve(companyFileEn))).thenReturn(enCoach);
+      Mockito.when(mapper.unmarshalWithInit(temp.resolve(companyFileEn), Questionnaire.class)).thenReturn(enCoach);
 
       Assert.assertTrue(Files.exists(temp));
       Assert.assertTrue(Files.isDirectory(temp));
@@ -388,8 +388,8 @@ public class CoachCacheTest {
       Library library = Mockito.mock(Library.class);
       PowerMockito.when(CacheFactory.loadLibrary(Mockito.any(ClassLoader.class), Mockito.eq(libGen)))
           .thenReturn(library);
-      Mockito.when(mapper.unmarshal(temp.resolve(companyFileEn))).thenReturn(enCoach);
-      Mockito.when(mapper.unmarshal(temp.resolve(companyFileFr))).thenReturn(frCoach);
+      Mockito.when(mapper.unmarshalWithInit(temp.resolve(companyFileEn), Questionnaire.class)).thenReturn(enCoach);
+      Mockito.when(mapper.unmarshalWithInit(temp.resolve(companyFileFr), Questionnaire.class)).thenReturn(frCoach);
       Assert.assertTrue(Files.exists(temp));
       Assert.assertTrue(Files.isDirectory(temp));
 
@@ -461,8 +461,8 @@ public class CoachCacheTest {
       Library library = Mockito.mock(Library.class);
       PowerMockito.when(CacheFactory.loadLibrary(Mockito.any(ClassLoader.class), Mockito.eq(libGen)))
           .thenReturn(library);
-      Mockito.when(mapper.unmarshal(temp.resolve(companyFileEn))).thenReturn(enCoach);
-      Mockito.when(mapper.unmarshal(temp.resolve(companyFileFr))).thenReturn(frCoach);
+      Mockito.when(mapper.unmarshalWithInit(temp.resolve(companyFileEn), Questionnaire.class)).thenReturn(enCoach);
+      Mockito.when(mapper.unmarshalWithInit(temp.resolve(companyFileFr), Questionnaire.class)).thenReturn(frCoach);
       Assert.assertTrue(Files.exists(temp));
       Assert.assertTrue(Files.isDirectory(temp));
 
@@ -494,7 +494,7 @@ public class CoachCacheTest {
             createTestOption("company-q10o1", "French option 1"),
             createTestOption("company-q10o2", "French option 2")));
     try {
-      Mockito.when(mapper.unmarshal(temp.resolve(companyFileFr))).thenReturn(frCoach);
+      Mockito.when(mapper.unmarshalWithInit(temp.resolve(companyFileFr), Questionnaire.class)).thenReturn(frCoach);
       Assert.assertTrue(Files.exists(temp));
       Assert.assertTrue(Files.isDirectory(temp));
 
@@ -547,8 +547,8 @@ public class CoachCacheTest {
           .thenReturn(library);
       PowerMockito.when(CacheFactory.loadLibrary(Mockito.eq(library.getClass().getClassLoader()),
           Mockito.eq(libSubGen))).thenReturn(subLibrary);
-      Mockito.when(mapper.unmarshal(temp.resolve(companyFile))).thenReturn(coach);
-      Mockito.when(mapper.unmarshal(temp.resolve(subFile))).thenReturn(subCoach);
+      Mockito.when(mapper.unmarshalWithInit(temp.resolve(companyFile), Questionnaire.class)).thenReturn(coach);
+      Mockito.when(mapper.unmarshalWithInit(temp.resolve(subFile), Questionnaire.class)).thenReturn(subCoach);
       Assert.assertTrue(Files.exists(temp));
       Assert.assertTrue(Files.isDirectory(temp));
 
@@ -596,7 +596,7 @@ public class CoachCacheTest {
       Library subLibrary = Mockito.mock(Library.class);
       PowerMockito.when(CacheFactory.loadLibrary(Mockito.any(ClassLoader.class),
           Mockito.eq(libSubGen))).thenReturn(subLibrary);
-      Mockito.when(mapper.unmarshal(temp.resolve(subFile))).thenReturn(subCoach);
+      Mockito.when(mapper.unmarshalWithInit(temp.resolve(subFile), Questionnaire.class)).thenReturn(subCoach);
       Assert.assertTrue(Files.exists(temp));
       Assert.assertTrue(Files.isDirectory(temp));
 

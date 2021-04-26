@@ -53,15 +53,17 @@ class CompanyCache extends Cache {
     private final Path path;
     private final Mapper<T> mapper;
     private T source;
+    private final Class<T> objectClass;
 
-    private CachedObject(Path path, Mapper<T> mapper) {
+    private CachedObject(Path path, Mapper<T> mapper, Class<T> clazz) {
       this.path = path;
       this.mapper = mapper;
+      this.objectClass = clazz;
     }
 
     private void load() throws CacheException {
       try {
-        this.source = mapper.unmarshal(path);
+        this.source = mapper.unmarshalWithInit(path, objectClass);
       } catch (MapperException me) {
         throw new CacheException(me.getMessage());
       }
@@ -378,7 +380,7 @@ class CompanyCache extends Cache {
       if (!objectCache.containsKey(path)) {
         Path path1 = this.path.resolve(path);
         CachedObject<T> cachedObject =
-            new CachedObject<>(path1, CacheFactory.createMapper(classOfT));
+            new CachedObject<>(path1, CacheFactory.createMapper(classOfT), classOfT);
         logger.log(Level.INFO, "Loading cache: " + cachedObject.path);
         cachedObject.load();
         objectCache.put(path, cachedObject);

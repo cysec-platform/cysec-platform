@@ -111,25 +111,27 @@ public class Dashboard {
         }
       }
       Answers companyAnswers = answersMap.get(LibCal.FQCN_COMPANY.toString());
-      for (Metadata md : companyAnswers.getMetadata()) {
-        String mdKey = md.getKey();
-        if (mdKey.startsWith(MetadataUtils.MD_RECOMMENDED)) {
-          // add all metadata belonging to RECOMMENDED, given:
-          // Name, Description and Order present
-          logger.info("Adding recommendations");
-          recommendations.add(MetadataUtils.fromMd(md, Recommendation.class));
-        } else if (mdKey.startsWith(MetadataUtils.MD_BADGES)) {
-          // add all metadata belonging to BADGES
-          logger.info("Adding badges");
-          badges.add(MetadataUtils.fromMd(md, Badge.class));
-        } else if (mdKey.startsWith(MetadataUtils.MD_LAST_SELECTED)) {
-          lastSelected = MetadataUtils.fromMd(md, LastSelected.class);
-        } else if (mdKey.startsWith(MetadataUtils.MD_RATING)) {
-          coachHelper.setRating(MetadataUtils.fromMd(md, Rating.class));
-        } else if (mdKey.startsWith(MetadataUtils.MD_STATE)) {
-          coachHelper.setState(MetadataUtils.fromMd(md, State.class));
-        } else if (mdKey.startsWith(MetadataUtils.MD_SKILLS)) {
-          skills = new Tuple<>(LibCal.FQCN_COMPANY, MetadataUtils.fromMd(md, Skills.class));
+      if (companyAnswers != null) {
+        for (Metadata md : companyAnswers.getMetadata()) {
+          String mdKey = md.getKey();
+          if (mdKey.startsWith(MetadataUtils.MD_RECOMMENDED)) {
+            // add all metadata belonging to RECOMMENDED, given:
+            // Name, Description and Order present
+            logger.info("Adding recommendations");
+            recommendations.add(MetadataUtils.fromMd(md, Recommendation.class));
+          } else if (mdKey.startsWith(MetadataUtils.MD_BADGES)) {
+            // add all metadata belonging to BADGES
+            logger.info("Adding badges");
+            badges.add(MetadataUtils.fromMd(md, Badge.class));
+          } else if (mdKey.startsWith(MetadataUtils.MD_LAST_SELECTED)) {
+            lastSelected = MetadataUtils.fromMd(md, LastSelected.class);
+          } else if (mdKey.startsWith(MetadataUtils.MD_RATING)) {
+            coachHelper.setRating(MetadataUtils.fromMd(md, Rating.class));
+          } else if (mdKey.startsWith(MetadataUtils.MD_STATE)) {
+            coachHelper.setState(MetadataUtils.fromMd(md, State.class));
+          } else if (mdKey.startsWith(MetadataUtils.MD_SKILLS)) {
+            skills = new Tuple<>(LibCal.FQCN_COMPANY, MetadataUtils.fromMd(md, Skills.class));
+          }
         }
       }
       List<CoachHelper> instantiated = new ArrayList<>();

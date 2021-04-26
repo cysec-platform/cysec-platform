@@ -77,7 +77,7 @@ public class MapperAuditTest {
       Assert.assertTrue(Files.exists(file));
       Mapper<Audits> mapper = new Mapper<>(Audits.class);
 
-      Audits audits = mapper.unmarshal(file);
+      Audits audits = mapper.unmarshalWithInit(file, Audits.class);
 
       Assert.assertNotNull(audits);
       Assert.assertEquals(3, audits.getAudit().size());

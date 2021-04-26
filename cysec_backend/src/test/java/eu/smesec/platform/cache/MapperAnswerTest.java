@@ -84,7 +84,7 @@ public class MapperAnswerTest {
       Assert.assertTrue(Files.exists(file));
       Mapper<Answers> mapper = new Mapper<>(Answers.class);
 
-      Answers answers = mapper.unmarshal(file);
+      Answers answers = mapper.unmarshalWithInit(file, Answers.class);
 
       Assert.assertNotNull(answers);
       Assert.assertEquals("lib-coach", answers.getQuestionnaireReference().getQuestionnaireId());
