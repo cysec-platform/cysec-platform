@@ -4,7 +4,6 @@ import eu.smesec.bridge.execptions.CacheException;
 import eu.smesec.bridge.generated.User;
 import eu.smesec.platform.cache.CacheAbstractionLayer;
 import eu.smesec.platform.config.Config;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,8 +12,12 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.MultivaluedMap;
 
+/**
+ * Provides a proxied auth strategy where all user information is extracted from header
+ * lines set by a proxy.
+ */
 public final class HeaderAuthStrategy extends AbstractUserAuthStrategy {
-  /** The OIDC parameters are the headers that contain user info from keycloak. Even thoug */
+  /* The OIDC parameters are the headers that contain user info from keycloak. Even though */
   public static final String OIDC_NAME = "cysec_header_username";
 
   public static final String OIDC_MAIL = "cysec_header_email";
@@ -28,8 +31,8 @@ public final class HeaderAuthStrategy extends AbstractUserAuthStrategy {
   /**
    * Header authentication strategy constructor.
    *
-   * @param cal The cache abstraction layer
-   * @param config The platform configuration
+   * @param cal     The cache abstraction layer
+   * @param config  The platform configuration
    * @param context The servlet context
    */
   public HeaderAuthStrategy(CacheAbstractionLayer cal, Config config, ServletContext context) {
@@ -73,9 +76,7 @@ public final class HeaderAuthStrategy extends AbstractUserAuthStrategy {
     String oauthCompany = requireNonNull(headerNames.get(2), header.getFirst(headerNames.get(2)));
     setupCompany(user, oauthCompany);
 
-    return new String[] {
-      oauthCompany, oauthName, null, oauthLocale,
-    };
+    return new String[]{oauthCompany, oauthName, null, oauthLocale};
   }
 
   private static String requireNonNull(String field, String value) {
