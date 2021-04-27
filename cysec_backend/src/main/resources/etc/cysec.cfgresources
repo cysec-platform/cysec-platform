@@ -22,7 +22,8 @@ string; cysec_header_locale; oidc_claim_locale; The OAuth locale
 // cysec server admin
 boolean; cysec_standalone; false; True if no proxy is used, or false otherwise
 boolean; cysec_register; true; True if a new user can register, or false otherwise
-string; cysec_header_logout; https://keycloak.smesec.eu/auth/realms/SMESEC/protocol/openid-connect/logout; Keycloak logout URL
+string; cysec_header_profile;; Profile URL for user profile
+string; cysec_header_logout;; Logout URL
 string; cysec_admin_prefix; _admin_; The prefix identifying all admins
 string; cysec_admin_users; admin; Space separated list of admin user names
 string; cysec_admin_passwords; $1$31XX2vnn$NrTMpstqa8SkNneiNdZch0; Space separated list of passwords for the configured admins
@@ -30,7 +31,10 @@ numeric; cysec_recommend_count; 3; The number of recommendations displayed in th
 
 // cysec replica
 string; cysec_replica_host; ; remote context inclusive
-string; cysec_replica_token; ; Space separated list of comanpay/token
+string; cysec_replica_token; ; Space separated list of company/token
 
 // cysec mail
+string; cysec_mail_smtp_host; localhost ; The host of the mail server (SMTP)
+string; cysec_mail_smtp_port; 25 ; The port of the mail server (SMTP)
+string; cysec_mail_sender_name; ; The sender name used by the mail sender
 string; cysec_mail_sender_address; no-reply@example.com ; The sender address used by the mail sender

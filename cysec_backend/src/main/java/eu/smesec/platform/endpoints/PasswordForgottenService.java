@@ -30,118 +30,109 @@ import org.glassfish.jersey.logging.LoggingFeature;
 @Path("rest/resetPassword")
 @PermitAll
 public class PasswordForgottenService {
-  private static final Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
-  private static final int tokenExpiryHours = 1;
+    private static final Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
+    private static final int tokenExpiryHours = 1;
 
-  @Context ServletContext context;
-  @Inject private CacheAbstractionLayer cal;
-  @Inject private MailServiceImpl mailService;
+    @Context ServletContext context;
+    @Inject private CacheAbstractionLayer cal;
+    @Inject private MailServiceImpl mailService;
 
-  /**
-   * Creates a new token for a password reset request.
-   *
-   * @param email The email to the corresponding user
-   * @param companyId the id of the company
-   * @return 404 If no user for the given email was found
-   */
-  @POST
-  @PermitAll
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.TEXT_HTML)
-  @Path("/create")
-  public Response createToken(
-      @QueryParam("email") String email, @QueryParam("company") String companyId) {
-    try {
-      User user = cal.getUserByEmail(companyId, email);
-      if (user == null) {
-        logger.warning("Couldn't find user with email " + email + " in company " + companyId);
-        return Response.status(404).build();
-      }
+    /**
+     * Creates a new token for a password reset request.
+     *
+     * @param email     The email to the corresponding user
+     * @param companyId the id of the company
+     * @return 404 If no user for the given email was found
+     */
+    @POST
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_HTML)
+    @Path("/create")
+    public Response createToken(
+            @QueryParam("email") String email, @QueryParam("company") String companyId) {
+        try {
+            User user = cal.getUserByEmail(companyId, email);
+            if (user == null) {
+                logger.warning("Could not find user with email " + email + " in company " + companyId);
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
 
-      // create new token for user
-      Token resetToken =
-          TokenUtils.createToken(
-              TokenUtils.TOKEN_RESET,
-              TokenUtils.generateRandomHexToken(16),
-              LocalDateTime.now().plusDays(tokenExpiryHours));
+            Token resetToken = TokenUtils.createToken(
+                    TokenUtils.TOKEN_RESET,
+                    TokenUtils.generateRandomHexToken(16),
+                    LocalDateTime.now().plusDays(tokenExpiryHours));
 
-      logger.info("Created new password reset token for " + email);
-      // send email with token
-      logger.info("Token is: " + resetToken.getId());
-      // update user
-      cal.updateUser(companyId, user);
-      // send mail with token
-      mailService.sendMail(
-          user,
-          "",
-          "",
-          "Your password reset token",
-          "Access the following website and use the token below to set a new password: https://wwwtest.smesec.eu/cysec/public/resetPassword/resetPassword.html "
-              + "\ntoken:"
-              + resetToken.getValue());
-      // 10dbe52948c0ab89d7988240a25b4802
+            logger.info("Created new password reset token for email '" + email + "': " + resetToken.getId());
+            cal.updateUser(companyId, user);
 
-      return Response.status(204).build();
-    } catch (CacheException ce) {
-      logger.log(Level.WARNING, ce.getMessage(), ce);
-      return Response.status(400).build();
-    } catch (Exception e) {
-      logger.log(Level.SEVERE, e.getMessage(), e);
+            final String mailContent = "A password reset token was requested for the account registered with your email address.\n\n" +
+                    "To set a new password, please visit the following website and enter the token:\n" +
+                    "https://wwwtest.smesec.eu/cysec/public/resetPassword/resetPassword.html\n\n" +
+                    "Token:\n" + resetToken.getValue() + "\n";
+            mailService.sendMail(user, null, null, "Your password reset token", mailContent);
+
+            return Response.status(Response.Status.NO_CONTENT).build();
+        } catch (CacheException ce) {
+            logger.log(Level.WARNING, ce.getMessage(), ce);
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
-    return Response.status(500).build();
-  }
 
-  /**
-   * Check if a given token is valid.
-   *
-   * @param tokenId The token registered to a user email.
-   * @param password1 the first password
-   * @param password2 the second password
-   * @param companyId the company id
-   * @return A password reset form if a token was found.
-   */
-  @POST
-  @PermitAll
-  @Path("verifyToken/{token}")
-  @Produces(MediaType.TEXT_HTML)
-  public Response verifyToken(
-      @PathParam("token") String tokenId,
-      @QueryParam("password1") String password1,
-      @QueryParam("password2") String password2,
-      @QueryParam("company") String companyId) {
-    try {
-      // Check password inputs
-      if ("".equals(password1) || "".equals(password2) || !password1.equals(password2)) {
-        logger.warning("Empty or non-matching passwords, returning form");
-        return Response.notModified().build();
-      }
+    /**
+     * Check if a given token is valid.
+     *
+     * @param tokenId   The token registered to a user email.
+     * @param password1 the first password
+     * @param password2 the second password
+     * @param companyId the company id
+     * @return A password reset form if a token was found.
+     */
+    @POST
+    @PermitAll
+    @Path("verifyToken/{token}")
+    @Produces(MediaType.TEXT_HTML)
+    public Response verifyToken(
+            @PathParam("token") String tokenId,
+            @QueryParam("password1") String password1,
+            @QueryParam("password2") String password2,
+            @QueryParam("company") String companyId) {
+        try {
+            // Check password inputs
+            if ("".equals(password1) || "".equals(password2) || !password1.equals(password2)) {
+                logger.warning("Empty or non-matching passwords, returning form");
+                return Response.notModified().build();
+            }
 
-      // Check for empty token
-      if ("".equals(tokenId)) {
-        logger.info("No token provided in request");
-        return Response.status(400).build();
-      }
+            // Check for empty token
+            if ("".equals(tokenId)) {
+                logger.info("No token provided in request");
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
 
-      User owner = cal.getUserByToken(companyId, tokenId);
-      if (owner == null) {
-        return Response.status(404).build();
-      }
+            User owner = cal.getUserByToken(companyId, tokenId);
+            if (owner == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
 
-      // Perform password update
-      CryptPasswordStorage passwordStorage = new CryptPasswordStorage(password1, null);
-      owner.setPassword(passwordStorage.getPasswordStorage());
-      owner.getToken().removeIf(token -> token.getId().equals("reset"));
-      cal.updateUser(companyId, owner);
-      return Response.status(204).build();
-    } catch (TokenExpiredException tee) {
-      logger.log(Level.WARNING, tee.getMessage(), tee);
-      return Response.status(401).build();
-    } catch (CacheException ce) {
-      logger.log(Level.WARNING, ce.getMessage(), ce);
-      return Response.status(400).build();
-    } catch (Exception e) {
-      logger.log(Level.SEVERE, "Error during update of password: " + e.getMessage());
+            // Perform password update
+            CryptPasswordStorage passwordStorage = new CryptPasswordStorage(password1, null);
+            owner.setPassword(passwordStorage.getPasswordStorage());
+            owner.getToken().removeIf(token -> token.getId().equals("reset"));
+            cal.updateUser(companyId, owner);
+            return Response.status(Response.Status.NO_CONTENT).build();
+        } catch (TokenExpiredException tee) {
+            logger.log(Level.WARNING, tee.getMessage(), tee);
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        } catch (CacheException ce) {
+            logger.log(Level.WARNING, ce.getMessage(), ce);
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error during update of password: " + e.getMessage());
+        }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
-    return Response.status(500).build();
-  }
 }
