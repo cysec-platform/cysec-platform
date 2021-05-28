@@ -1,10 +1,8 @@
 package eu.smesec.platform.config;
 
-import static eu.smesec.platform.config.CysecConfig.CONFIG_FOLDER;
-import static eu.smesec.platform.config.CysecConfig.CONFIG_RES;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Objects;
+import static eu.smesec.platform.config.CysecConfig.RESOURCE_FOLDER;
+import static eu.smesec.platform.config.CysecConfig.RESOURCE_FILE;
+
 import org.junit.Assert;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -24,11 +22,10 @@ public class ConfigTest {
   @BeforeClass
   public static void setUp() {
     try {
-      config = new Config("etc/cysec.cfgresources");
+      config = new Config(RESOURCE_FOLDER + "/" + RESOURCE_FILE);
     } catch (Exception e) {
       e.printStackTrace();
       Assert.fail();
-    } finally {
     }
   }
 

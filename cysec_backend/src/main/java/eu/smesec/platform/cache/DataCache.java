@@ -12,9 +12,9 @@ import eu.smesec.platform.threading.ThreadFactory;
 import eu.smesec.platform.threading.Timer;
 import eu.smesec.platform.utils.FileUtils;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,24 +29,24 @@ import java.util.stream.Stream;
  * Data cache: Handles root data directory. Thread safe read/write access.
  *
  * @author Claudio Seitz
- * @version 1.1
  */
 class DataCache extends Cache {
-  private Map<String, CompanyCache> companies;
+
+  private final Map<String, CompanyCache> companies;
 
   /**
    * Data cache constructor.
    *
    * @param path data root directory
    */
-  DataCache(Path path) throws Exception {
+  DataCache(Path path) throws CacheException, IOException {
     super(path);
     this.companies = new HashMap<>();
     if (Files.exists(path)) {
       if (!Files.isDirectory(path)) {
-        throw new CacheException(path.toString() + " is not a directory.");
+        throw new CacheException(path + " is not a directory.");
       }
-      logger.info("Loading existing cache directory " + path.toString());
+      logger.info(() -> "Loading existing cache directory " + path);
       List<Path> subDirs = new ArrayList<>();
       // use try with resources to close stream automatically
       try (Stream<Path> stream = Files.list(path)) {
@@ -59,15 +59,15 @@ class DataCache extends Cache {
           CompanyCache companyCache = CacheFactory.createCompanyCache(companyPath);
           companyCache.load();
           companies.put(childId, companyCache);
-          logger.info("Added existing company " + childId);
+          logger.info(() -> "Added existing company " + childId);
         } else {
-          logger.warning("Skipping already added company " + childId);
+          logger.warning(() -> "Skipping already added company " + childId);
         }
       }
     } else {
-      logger.info("Creating new cache directory " + path.toString());
-      Files.createDirectory(path);
-      logger.info("Created new cache directory " + path.toString());
+      logger.info(() -> "Creating new cache directory " + path);
+      Files.createDirectories(path);
+      logger.info(() -> "Created new cache directory " + path);
     }
 
     Timer timer = ThreadFactory.createTimer("Autosave", 60000);
@@ -161,7 +161,7 @@ class DataCache extends Cache {
         companyCache.load();
         companyCache.instantiateCoach(null, companyCoach, null);
         companies.put(cid, companyCache);
-        logger.info("Added new company " + cid);
+        logger.info(() -> "Added new company " + cid);
       } else {
         throw new CacheAlreadyExistsException("Company " + cid + " already exists");
       }
@@ -174,10 +174,10 @@ class DataCache extends Cache {
    * Extracts the *.zip file and populates the company.
    *
    * @param zip The path of the zip file.
-   * @throws java.io.IOException if an io error occurs.
-   * @throws CacheAlreadyExistsException if the company already exists.
+   * @throws IOException if an io error occurs.
+   * @throws CacheAlreadyExistsException if the company already exists or an io error occurs during company loading.
    */
-  void unzipCompany(Path zip) throws Exception {
+  void unzipCompany(Path zip) throws CacheException, IOException {
     writeLock.lock();
     String companyId = FileUtils.getNameExt(FileUtils.getFileName(zip))[0];
     Path companyPath = path.resolve(companyId);
@@ -220,7 +220,7 @@ class DataCache extends Cache {
   //  }
   //
   //  //todo: load/unload company
-  //
+
   /** Updates all xml files. */
   void updateXml() {
     readLock.lock();
