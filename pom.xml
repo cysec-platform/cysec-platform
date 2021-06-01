@@ -56,7 +56,7 @@
 
     <modules>
         <module>cysec_bridge</module>
-        <module>cysec_backend</module>
+        <module>cysec_core</module>
     </modules>
 
     <dependencyManagement>
