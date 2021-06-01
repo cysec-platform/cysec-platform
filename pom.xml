@@ -57,6 +57,7 @@
     <modules>
         <module>cysec_bridge</module>
         <module>cysec_core</module>
+        <module>cysec_tomcat</module>
     </modules>
 
     <dependencyManagement>
