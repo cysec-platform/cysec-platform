@@ -31,7 +31,7 @@ Since we want to protect both the API and the /webapp content with Authenticatio
 Unfortunately, the class provided in <filter> has to derive the Filter.class of `javax.servlet.Filter` and therefore implement "doFilter()". During the execution of doFilter(), the application is within the scope of Servlets, which is one layer underneath Jersey. That means there is no access to injected classes, such as CAL or Config. As a workaround, we place a Post call to the `Login` class which is an @Secured resource. That way the filter() method from the `ContainerRequestFilter` is executed.
 `<filter>
         <filter-name>AuthFilter</filter-name>
-        <filter-class>eu.smesec.platform.auth.AuthFilter</filter-class>
+        <filter-class>eu.smesec.core.auth.AuthFilter</filter-class>
     </filter>
 
     <!-- Protects app from unauthorized users -->

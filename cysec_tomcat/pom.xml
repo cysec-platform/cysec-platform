@@ -333,7 +333,7 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>eu.smesec.platform.Version</mainClass>
+                            <mainClass>eu.smesec.core.Version</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Implementation-Version>${project.version}-${git.commit.id}</Implementation-Version>
@@ -446,7 +446,7 @@
                 </executions>
                 <configuration>
                     <sourceDirectory>src/main/java/eu/smesec/platform/messages</sourceDirectory>
-                    <targetBundle>eu.smesec.platform.Messages</targetBundle>
+                    <targetBundle>eu.smesec.core.Messages</targetBundle>
                     <keysFile>cysec.pot</keysFile>
                     <poDirectory>src/main/resources/po</poDirectory>
                     <encoding>utf-8</encoding>

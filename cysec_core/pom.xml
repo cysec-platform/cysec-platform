@@ -222,7 +222,7 @@
                 </executions>
                 <configuration>
                     <sourceDirectory>src/main/java/eu/smesec/platform/messages</sourceDirectory>
-                    <targetBundle>eu.smesec.platform.Messages</targetBundle>
+                    <targetBundle>eu.smesec.core.Messages</targetBundle>
                     <keysFile>cysec.pot</keysFile>
                     <poDirectory>src/main/resources/po</poDirectory>
                     <encoding>utf-8</encoding>
