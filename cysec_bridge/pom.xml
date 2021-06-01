@@ -14,8 +14,8 @@
     <version>0.2.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>CySeC bridge</name>
-    <description>The CySeC briddge provides compile time dependencies for coaches running on the CySeC platform.</description>
+    <name>CySeC Bridge</name>
+    <description>The CySeC bridge provides compile time dependencies for coaches running on the CySeC platform.</description>
     <url>http://cysec.cyberlab.fhnw.ch/</url>
 
     <distributionManagement>
