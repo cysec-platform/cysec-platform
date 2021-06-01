@@ -16,8 +16,8 @@ public class BadgeMsg extends Message {
     messages.put(
         "unlocked",
         i18n.trn(
-            "You have unlocked fallowing achievement",
-            "You have unlocked fallowing achievements",
+            "You have unlocked following achievement",
+            "You have unlocked following achievements",
             badges));
   }
 }
