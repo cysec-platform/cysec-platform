@@ -1185,13 +1185,11 @@ public class Config {
     StringBuilder allLines = new StringBuilder();
     StringBuilder trimmedLine = new StringBuilder().append(prefix);
     for (String word : words) {
-      if (trimmedLine.length() + 1 + word.length() <= lineLength) {
-        trimmedLine.append(word).append(" ");
-      } else {
+      if (trimmedLine.length() + 1 + word.length() > lineLength) {
         allLines.append(trimmedLine).append(System.lineSeparator());
         trimmedLine = new StringBuilder().append(prefix);
-        trimmedLine.append(word).append(" ");
       }
+      trimmedLine.append(word).append(" ");
     }
     if (trimmedLine.length() > 0) {
       allLines.append(trimmedLine);
