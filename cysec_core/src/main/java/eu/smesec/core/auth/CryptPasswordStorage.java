@@ -1,9 +1,9 @@
 package eu.smesec.core.auth;
 
+import org.apache.commons.codec.digest.Crypt;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-
-import org.apache.commons.codec.digest.Crypt;
 
 /** Password storage implementation for linux type crypt passwords. */
 public class CryptPasswordStorage extends PasswordStorage {

@@ -42,7 +42,7 @@ public class ResetPasswordTest extends JerseyTest {
     mailService = Mockito.mock(MailServiceImpl.class);
 
     //test env resource config
-    ResourceConfig config = new ResourceConfig(PasswordForgottenService.class);
+    ResourceConfig config = new ResourceConfig(PasswordForgottenModel.class);
     config.register(new AbstractBinder() {
       protected void configure() {
         //inject mocks

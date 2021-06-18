@@ -47,10 +47,10 @@ class DataCache extends Cache {
         throw new CacheException(path + " is not a directory.");
       }
       logger.info(() -> "Loading existing cache directory " + path);
-      List<Path> subDirs = new ArrayList<>();
+      List<Path> subDirs;
       // use try with resources to close stream automatically
       try (Stream<Path> stream = Files.list(path)) {
-        subDirs.addAll(stream.filter(Files::isDirectory).collect(Collectors.toList()));
+        subDirs = stream.filter(Files::isDirectory).collect(Collectors.toList());
       }
       // use for loop instead of lambda for better exception handling
       for (Path companyPath : subDirs) {

@@ -1,40 +1,18 @@
 package eu.smesec.core.cache;
 
-import eu.smesec.bridge.execptions.CacheAlreadyExistsException;
-import eu.smesec.bridge.execptions.CacheException;
-import eu.smesec.bridge.execptions.CacheNotFoundException;
-import eu.smesec.bridge.execptions.CacheReadOnlyException;
-import eu.smesec.bridge.execptions.MapperException;
-import eu.smesec.bridge.generated.Answers;
-import eu.smesec.bridge.generated.Audits;
-import eu.smesec.bridge.generated.Company;
-import eu.smesec.bridge.generated.Questionnaire;
-import eu.smesec.bridge.generated.User;
-import eu.smesec.core.utils.FileResponse;
+import eu.smesec.bridge.execptions.*;
+import eu.smesec.bridge.generated.*;
 import eu.smesec.core.utils.FileUtils;
+import org.jvnet.jaxb2_commons.lang.CopyTo2;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
+import java.nio.file.*;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.jvnet.jaxb2_commons.lang.CopyTo2;
 
 /**
  * Company cache: Handles the company directory. Thread safe read/write access.
@@ -507,14 +485,14 @@ class CompanyCache extends Cache {
    * @return The file response object if the file was found, or <code>null</code> otherwise.
    * @throws CacheException If an error occurs during the response creation.
    */
-  FileResponse createFileResponse(Path relative) throws CacheException {
+  byte[] createFileResponse(Path relative) throws CacheException {
     if (relative == null) {
       throw new IllegalArgumentException("path is null");
     }
     Path file = this.path.resolve(relative);
     this.readLock.lock();
     try {
-      return new FileResponse(Files.readAllBytes(file));
+      return Files.readAllBytes(file);
     } catch (NoSuchFileException fne) {
       return null;
     } catch (Exception e) {

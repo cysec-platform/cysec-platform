@@ -85,6 +85,13 @@
             <version>1.0.13</version>
         </dependency>
 
+        <!-- Json utils -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
         <!-- crypt algorithms for passwords -->
         <dependency>
             <groupId>commons-codec</groupId>
@@ -224,7 +231,7 @@
                     <sourceDirectory>src/main/java/eu/smesec/platform/messages</sourceDirectory>
                     <targetBundle>eu.smesec.core.Messages</targetBundle>
                     <keysFile>cysec.pot</keysFile>
-                    <poDirectory>src/main/resources/po</poDirectory>
+                    <poDirectory>../cysec_tomcat/src/main/resources/po</poDirectory>
                     <encoding>utf-8</encoding>
                     <sourceLocale>en</sourceLocale>
                     <!-- class for plural support -->
@@ -277,20 +284,20 @@
                 </configuration>
             </plugin>
             <!-- signing  -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-gpg-plugin</artifactId>-->
+<!--                <version>1.6</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>sign-artifacts</id>-->
+<!--                        <phase>verify</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>sign</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
         </plugins>
     </build>

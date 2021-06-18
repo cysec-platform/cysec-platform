@@ -1,13 +1,7 @@
 package eu.smesec.core.utils;
 
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Objects;
@@ -18,10 +12,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import org.glassfish.jersey.logging.LoggingFeature;
-
 public final class FileUtils {
-  protected static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
+  protected static Logger logger = Logger.getLogger(FileUtils.class.getName());
 
   private FileUtils() {}
 

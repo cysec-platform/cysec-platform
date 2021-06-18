@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <company xmlns="https://smesec.eu" companyname="FHNW" id="fhnw">
-    <user username="admin" firstname="" surname="" password="" email="admin@example.com" id="0">
+    <user username="adminModel" firstname="" surname="" password="" email="adminModel@example.com" id="0">
         <role>Admin</role>
     </user>
     <user username="user1" firstname="FirstnameUser1" surname="SurnameUser1" password="" email="user1@example.com" id="1">

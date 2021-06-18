@@ -2,7 +2,6 @@ package eu.smesec.core.cache;
 
 import eu.smesec.bridge.execptions.CacheReadOnlyException;
 import eu.smesec.bridge.generated.*;
-import eu.smesec.core.utils.FileResponse;
 import eu.smesec.core.utils.FileUtils;
 
 import java.io.InputStream;

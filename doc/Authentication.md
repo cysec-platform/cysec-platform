@@ -55,10 +55,10 @@ Users may also login with a token from SMESEC keycloak. AuthFilter checks an inc
 - `Last name` User last name
 
 ### Admin Auth
-The `/api/AdminPage` is accessible to statically defined users in the cfgResources file. Even if a user is already authenticated (eithe via Basic or OAuth) one has to enter the admin password.
-- `cysec_admin_prefix, _admin_` The site admin identification prefix (serves as company filler)
-- `cysec_admin_users` The users eligible to authenticate as admin
-- `cysec_admin_password` The site admin password
+The `/api/AdminPage` is accessible to statically defined users in the cfgResources file. Even if a user is already authenticated (eithe via Basic or OAuth) one has to enter the adminModel password.
+- `cysec_admin_prefix, _admin_` The site adminModel identification prefix (serves as company filler)
+- `cysec_admin_users` The users eligible to authenticate as adminModel
+- `cysec_admin_password` The site adminModel password
 
 #### Configuration
 It is possible to configure the Oauth header names in a configuration file `/var/lib/cysec/etc/cysec.cfgResources.cfg` like below (TODO: add example from wwwtest)

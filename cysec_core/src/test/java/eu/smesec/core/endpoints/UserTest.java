@@ -32,7 +32,7 @@ public class UserTest extends JerseyTest {
     cal = Mockito.mock(CacheAbstractionLayer.class);
 
     //test env resource config
-    ResourceConfig config = new ResourceConfig(Users.class);
+    ResourceConfig config = new ResourceConfig(UsersModel.class);
     config.register(new AbstractBinder() {
       protected void configure() {
         //inject mocks

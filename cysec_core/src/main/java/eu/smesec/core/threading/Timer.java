@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.glassfish.jersey.logging.LoggingFeature;
+//import org.glassfish.jersey.logging.LoggingFeature;
 
 /**
  * <p>Writing thread. Writes all cached file changes to the files system.</p>
@@ -16,7 +16,7 @@ import org.glassfish.jersey.logging.LoggingFeature;
  * @version 1.0
  */
 public class Timer implements IExecutable {
-  private static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
+  private static Logger logger = Logger.getLogger(Timer.class.getName());
 
   private final String name;
   private final long interval;

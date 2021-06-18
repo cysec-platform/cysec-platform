@@ -2,7 +2,7 @@ package eu.smesec.core;
 
 import eu.smesec.core.config.ConfigTest;
 import eu.smesec.core.endpoints.ResourcesTest;
-import eu.smesec.core.endpoints.SignUpTest;
+import eu.smesec.core.endpoints.SignUpModelTest;
 import eu.smesec.core.endpoints.UserTest;
 import eu.smesec.core.json.ClassFieldsExclusionStrategyTest;
 import eu.smesec.core.json.FieldsExclusionStrategyTest;
@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
         FieldsExclusionStrategyTest.class,
         ClassFieldsExclusionStrategyTest.class,
         ResourcesTest.class,
-        SignUpTest.class,
+        SignUpModelTest.class,
         UserTest.class,
 })
 public class MainPlatformSuite {
@@ -31,7 +31,7 @@ public class MainPlatformSuite {
         s.addTest(new JUnit4TestAdapter(ClassFieldsExclusionStrategyTest.class));
         s.addTest(new JUnit4TestAdapter(ConfigTest.class));
         s.addTest(new JUnit4TestAdapter(ResourcesTest.class));
-        s.addTest(new JUnit4TestAdapter(SignUpTest.class));
+        s.addTest(new JUnit4TestAdapter(SignUpModelTest.class));
         s.addTest(new JUnit4TestAdapter(UserTest.class));
         return s;
     }

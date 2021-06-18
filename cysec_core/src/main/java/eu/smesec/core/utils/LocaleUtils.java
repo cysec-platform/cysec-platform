@@ -15,7 +15,8 @@ public final class LocaleUtils {
 
   /**
    * Parses, validates and creates a locale from a string. Returns english as fallback.
-   *
+   * Local ISO-693-1-code
+   * @see <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">Wikipedia List of 639-1 codes</a>
    * @param locale ISO-639-1-code
    * @return locale object
    */
