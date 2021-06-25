@@ -1,35 +1,20 @@
 package eu.smesec.core.threading;
 
-import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
-
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.*;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// TODO: import org.glassfish.jersey.logging.LoggingFeature;
+import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
  * File Watcher Service implementation. Each instance contains it's own WatchService. Multiple
  * directories can be registered or unregistered at runtime.
  */
 public class FileWatcher implements IExecutable {
-    private static final Logger logger =
-//          Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
-            Logger.getLogger(FileWatcher.class.getName());
+    private static final Logger logger = Logger.getLogger(FileWatcher.class.getName());
     private final AtomicBoolean cont;
     private WatchService watcher;
     private Map<WatchKey, Path> directories;

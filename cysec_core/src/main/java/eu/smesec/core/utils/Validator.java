@@ -1,7 +1,7 @@
 package eu.smesec.core.utils;
 
 import eu.smesec.bridge.generated.User;
-import eu.smesec.core.exceptions.ValidationException;
+import eu.smesec.bridge.execptions.ValidationException;
 
 import java.util.regex.Pattern;
 
@@ -61,9 +61,8 @@ public final class Validator {
      * Checks if an user object is valid.
      *
      * @param user user object
+     * @throws ValidationException Thrown during validation of user data
      */
-
-    //FIXME add UserValidationException and more specific message
     public static void validateUser(User user) throws ValidationException {
         if (!validateWord(user.getUsername())) {
             throw new ValidationException("Could not validate Username");

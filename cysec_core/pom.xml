@@ -38,9 +38,16 @@
     </licenses>
 
     <developers>
+
         <developer>
             <name>Martin Gwerder</name>
             <email>martin.gwerder@fhnw.ch</email>
+            <organization>University of Applied Sciences Northwestern Switzerland (FHNW)</organization>
+            <organizationUrl>https://www.fhnw.ch</organizationUrl>
+        </developer>
+        <developer>
+            <name>Hermann Grieder</name>
+            <email>hermann.grieder@fhnw.ch</email>
             <organization>University of Applied Sciences Northwestern Switzerland (FHNW)</organization>
             <organizationUrl>https://www.fhnw.ch</organizationUrl>
         </developer>
@@ -119,11 +126,17 @@
             <version>2.0.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>eu.smesec.platform</groupId>
+            <artifactId>cysec_bridge</artifactId>
+            <version>0.2.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <finalName>${jarFinalName}</finalName>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
+<!--        <testSourceDirectory>src/test/java</testSourceDirectory>-->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -284,20 +297,20 @@
                 </configuration>
             </plugin>
             <!-- signing  -->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-gpg-plugin</artifactId>-->
-<!--                <version>1.6</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>sign-artifacts</id>-->
-<!--                        <phase>verify</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>sign</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-gpg-plugin</artifactId>-->
+            <!--                <version>1.6</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>sign-artifacts</id>-->
+            <!--                        <phase>verify</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>sign</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
 
         </plugins>
     </build>

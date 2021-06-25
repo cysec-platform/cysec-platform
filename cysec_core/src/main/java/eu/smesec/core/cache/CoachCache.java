@@ -20,8 +20,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//import org.glassfish.jersey.logging.LoggingFeature;
-
 class CoachCache extends Cache {
     private static final Logger logger = Logger.getLogger(CoachCache.class.getName());
     // copy only objects with text fields, used for translations

@@ -5,26 +5,26 @@
 
 <div class="row">
     <div class="col-xs-8 bg-white no-margin-right" style="margin-left: -10px;">
-        <a href="${context}/../../src/main/webapp/app#" title="Home">
-            <img src="${context}/../../src/main/webapp/assets/logo/CYSEC_Logo_RGB.svg" width="106px" height="44px"/>
+        <a href="${context}/app#" title="Home">
+            <img src="${context}/assets/logo/CYSEC_Logo_RGB.svg" width="106px" height="44px"/>
         </a>
     </div>
     <div class="col-xs-4 text-right bg-lightbluegrey">
         <ul>
             <li>
-                <a href="${context}/../../src/main/webapp/app/users.jsp" title="User Management">
-                    <img src="${context}/../../src/main/webapp/assets/icons/icn_user-management.png" width="24px" height="24px"/>
+                <a href="${context}/app/users.jsp" title="User Management">
+                    <img src="${context}/assets/icons/icn_user-management.png" width="24px" height="24px"/>
                 </a>
             </li>
             <c:if test="${not fn:containsIgnoreCase(header['Authorization'], 'Basic')}">
                 <li>
                     <a href="${initParam['header_profile_href']}" title="Profile">
-                        <img src="${context}/../../src/main/webapp/assets/icons/icn_company.svg" width="24px" height="24px"/>
+                        <img src="${context}/assets/icons/icn_company.svg" width="24px" height="24px"/>
                     </a>
                 </li>
                 <li>
                     <a href="${initParam['header_logout_href']}" title="Logout">
-                        <img src="${context}/../../src/main/webapp/assets/icons/icn_logout.svg" width="24px" height="24px"/>
+                        <img src="${context}/assets/icons/icn_logout.svg" width="24px" height="24px"/>
                     </a>
                 </li>
             </c:if>

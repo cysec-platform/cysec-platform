@@ -5,13 +5,12 @@ import eu.smesec.core.cache.ResourceManager;
 import eu.smesec.core.config.Config;
 import eu.smesec.core.config.CysecConfig;
 import eu.smesec.platform.services.MailServiceImpl;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
-import java.nio.file.Paths;
-import java.util.function.Supplier;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
-
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import java.nio.file.Paths;
+import java.util.function.Supplier;
 
 public class CysecBinder extends AbstractBinder {
     private final ServletContext context;
@@ -30,8 +29,8 @@ public class CysecBinder extends AbstractBinder {
             ResourceManager resManager = ResourceManager.getInstance();
             Supplier<ResourceManager> resManagerSupplier = () -> resManager;
             Supplier<String> contextPathSupplier = context::getContextPath;
-            Supplier<String> company = () -> context.getAttribute("company").toString();
-            CacheAbstractionLayer.init(contextPathSupplier, company, resManagerSupplier, configSupplier);
+//            Supplier<String> company = () -> context.getAttribute("company").toString();
+            CacheAbstractionLayer.init(contextPathSupplier, resManagerSupplier, configSupplier);
             CacheAbstractionLayer cal = CacheAbstractionLayer.getInstance();
             MailServiceImpl mailService = new MailServiceImpl();
             // bind Singletons

@@ -34,7 +34,7 @@ public class CacheAbstractionLayer {
      * @param config      app config
      */
     private CacheAbstractionLayer(
-            Supplier<String> contextPath, Supplier<String> company, Supplier<ResourceManager> resManager, Supplier<Config> config) {
+            Supplier<String> contextPath, Supplier<ResourceManager> resManager, Supplier<Config> config) {
         String contextName = contextPath.get().substring(1);
         String basePath = config.get().getStringValue(contextName, "cysec_base_path");
         String dataPath = config.get().getStringValue(contextName, "cysec_data_path");
@@ -46,8 +46,6 @@ public class CacheAbstractionLayer {
                             dataPath.startsWith("/")
                                     ? Paths.get(dataPath)
                                     : Paths.get(basePath, dataPath, contextPath.get()));
-            CoachManager coachManager = new CoachManager(this.coaches);
-            coachManager.init(); // check call on webapp start and not in constructor
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
@@ -57,16 +55,18 @@ public class CacheAbstractionLayer {
             this.coaches =
                     new CoachCache(
                             coachPath.startsWith("/") ? Paths.get(coachPath) : Paths.get(basePath, coachPath),
-                            new LibCal(this, company.get(), resManager.get()));
+                            new LibCal(this, resManager.get()));
+            CoachManager coachManager = new CoachManager(this.coaches);
+            coachManager.init(); // check call on webapp start and not in constructor
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
     }
 
-    public static synchronized void init(final Supplier<String> contextPath, final Supplier<String> company, final Supplier<ResourceManager> resManager, final Supplier<Config> config) {
+    public static synchronized void init(final Supplier<String> contextPath, final Supplier<ResourceManager> resManager, final Supplier<Config> config) {
         class CacheAbstractionLayerFactory implements Supplier<CacheAbstractionLayer> {
-            private final CacheAbstractionLayer cacheAbstractionLayerInstance = new CacheAbstractionLayer(contextPath, company, resManager, config);
+            private final CacheAbstractionLayer cacheAbstractionLayerInstance = new CacheAbstractionLayer(contextPath, resManager, config);
 
             @Override
             public CacheAbstractionLayer get() {

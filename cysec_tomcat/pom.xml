@@ -277,7 +277,7 @@
 
     <build>
         <finalName>${warFinalName}</finalName>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
+<!--        <testSourceDirectory>src/test/java</testSourceDirectory>-->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

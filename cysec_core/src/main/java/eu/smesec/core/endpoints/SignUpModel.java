@@ -3,12 +3,12 @@ package eu.smesec.core.endpoints;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import eu.smesec.bridge.execptions.CacheException;
+import eu.smesec.bridge.execptions.ValidationException;
 import eu.smesec.bridge.generated.Locks;
 import eu.smesec.bridge.generated.User;
 import eu.smesec.core.auth.CryptPasswordStorage;
 import eu.smesec.core.cache.CacheAbstractionLayer;
 import eu.smesec.core.cache.LibCal;
-import eu.smesec.core.exceptions.ValidationException;
 import eu.smesec.core.json.FieldsExclusionStrategy;
 import eu.smesec.core.utils.Validator;
 
@@ -50,7 +50,7 @@ public class SignUpModel {
      * @param json user data as json
      * @return User ID of the newly created user
      */
-    public long createUser(String json) throws CacheException, NoSuchAlgorithmException {
+    public long createUser(String json) throws CacheException, NoSuchAlgorithmException, ValidationException {
         String company = LibCal.getCompany();
         return createUser(json, company);
     }
@@ -63,7 +63,7 @@ public class SignUpModel {
      * @return User ID of the newly created user
      */
 
-    public long createUser(String json, String companyId) throws CacheException, NoSuchAlgorithmException {
+    public long createUser(String json, String companyId) throws CacheException, NoSuchAlgorithmException, ValidationException {
         UsersModel usersModel = new UsersModel();
         return usersModel.createUser(json);
     }

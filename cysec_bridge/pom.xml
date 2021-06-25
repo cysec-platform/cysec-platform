@@ -45,6 +45,12 @@
             <organization>University of Applied Sciences Northwestern Switzerland (FHNW)</organization>
             <organizationUrl>https://www.fhnw.ch</organizationUrl>
         </developer>
+        <developer>
+            <name>Hermann Grieder</name>
+            <email>hermann.grieder@fhnw.ch</email>
+            <organization>University of Applied Sciences Northwestern Switzerland (FHNW)</organization>
+            <organizationUrl>https://www.fhnw.ch</organizationUrl>
+        </developer>
     </developers>
 
     <scm>

@@ -8,7 +8,7 @@
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
-            <param-value>eu.smesec.core.ApplicationConfig</param-value>
+            <param-value>eu.smesec.platform.ApplicationConfig</param-value>
         </init-param>
         <init-param>
             <param-name>jersey.config.server.provider.classnames</param-name>
@@ -49,14 +49,14 @@
     <!-- Customized error pages for instance-->
     <error-page>
         <error-code>401</error-code>
-        <location>/../../src/main/webapp/error/401.jsp</location>
+        <location>/error/401.jsp</location>
     </error-page>
     <error-page>
         <error-code>404</error-code>
-        <location>/../../src/main/webapp/error/404.jsp</location>
+        <location>/error/404.jsp</location>
     </error-page>
     <error-page>
         <error-code>403</error-code>
-        <location>/../../src/main/webapp/error/403.jsp</location>
+        <location>/error/403.jsp</location>
     </error-page>
 </web-app>

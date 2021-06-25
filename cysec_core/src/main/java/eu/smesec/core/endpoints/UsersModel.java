@@ -3,6 +3,7 @@ package eu.smesec.core.endpoints;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import eu.smesec.bridge.execptions.CacheException;
+import eu.smesec.bridge.execptions.ValidationException;
 import eu.smesec.bridge.generated.Company;
 import eu.smesec.bridge.generated.Locks;
 import eu.smesec.bridge.generated.User;
@@ -73,15 +74,12 @@ public class UsersModel {
      * @param json user data
      * @return ID of the newly created user
      */
-    public Long createUser(String json) throws NoSuchAlgorithmException, CacheException {
+    public Long createUser(String json) throws NoSuchAlgorithmException, CacheException, ValidationException {
 
         String companyId = LibCal.getCompany();
         User newUser = addUserGson.fromJson(json, User.class);
-        // TODO: Add a validator exception?
-//        if (Validator.validateUser(newUser)) {
-//            logger.log(Level.WARNING, "user has invalid attributes");
-//            throw new UserValidationException
-//        }
+        Validator.validateUser(newUser);
+
         logger.log(Level.INFO, "Hashing and salting the password");
         String password = newUser.getPassword();
         CryptPasswordStorage passwordStorage = new CryptPasswordStorage(password, null);
@@ -112,17 +110,11 @@ public class UsersModel {
      * @param json   The new user data, the data must contain unchanged data as well!
      * @throws CacheException Thrown if user could not be updated.
      */
-    public void updateUser(long userId, String json) throws Exception {
+    public void updateUser(long userId, String json) throws ValidationException, CacheException {
         String companyId = LibCal.getCompany();
         User updatedUser = updateUserGson.fromJson(json, User.class);
         updatedUser.setId(userId);
-        //TODO: Validator exception?
-
         Validator.validateUser(updatedUser);
-//            {
-//                logger.log(Level.WARNING, "user has invalid attributes");
-//                return Response.status(400).build();
-//            }
 
         //      if (newUser.getPassword() != null) {
         //        logger.log(Level.INFO, "Hashing and salting the password");

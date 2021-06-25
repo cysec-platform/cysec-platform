@@ -26,9 +26,9 @@ public class LibCal implements ILibCal {
     private final CacheAbstractionLayer cal;
     private final ResourceManager resManager;
 
-    LibCal(CacheAbstractionLayer cal, String company, ResourceManager resManager) {
+    LibCal(CacheAbstractionLayer cal, ResourceManager resManager) {
+//        LibCal.company = company;
         this.cal = cal;
-        LibCal.company = company;
         this.resManager = resManager;
     }
 
@@ -48,34 +48,30 @@ public class LibCal implements ILibCal {
         return company;
     }
 
-    private String getCompanyId() {
-        return company;
-    }
-
     @Override
     public void setMetadata(FQCN fqcn, Metadata metadata) throws CacheException {
-        cal.setMetadataOnAnswers(getCompanyId(), fqcn, metadata);
+        cal.setMetadataOnAnswers(getCompany(), fqcn, metadata);
     }
 
     @Override
     public Metadata getMetadata(FQCN fqcn, String metadataKey) throws CacheException {
-        return cal.getMetadataOnAnswer(getCompanyId(), fqcn, metadataKey);
+        return cal.getMetadataOnAnswer(getCompany(), fqcn, metadataKey);
     }
 
     @Override
     public List<Metadata> getAllMetadata(FQCN fqcn) throws CacheException {
-        return cal.getAllMetadataOnAnswer(getCompanyId(), fqcn);
+        return cal.getAllMetadataOnAnswer(getCompany(), fqcn);
     }
 
     @Override
     public void deleteMetadata(FQCN fqcn, String metadataKey) throws CacheException {
-        cal.deleteMetadataOnAnswers(getCompanyId(), fqcn, metadataKey);
+        cal.deleteMetadataOnAnswers(getCompany(), fqcn, metadataKey);
     }
 
     @Override
     public void removeMvalues(FQCN fqcn, String metadataKey, Set<String> mvalueKeys)
             throws CacheException {
-        cal.removeMvaluesFromAnswer(getCompanyId(), fqcn, metadataKey, mvalueKeys);
+        cal.removeMvaluesFromAnswer(getCompany(), fqcn, metadataKey, mvalueKeys);
     }
 
     /**
@@ -86,17 +82,17 @@ public class LibCal implements ILibCal {
     @Deprecated
     @Override
     public Answer getAnswer(Object questionId) throws CacheException {
-        return cal.getAnswer(getCompanyId(), getCoachContext(), questionId);
+        return cal.getAnswer(getCompany(), getCoachContext(), questionId);
     }
 
     @Override
     public Answer getAnswer(String coachId, Object questionId) throws CacheException {
-        return cal.getAnswer(getCompanyId(), FQCN.fromString(coachId), questionId);
+        return cal.getAnswer(getCompany(), FQCN.fromString(coachId), questionId);
     }
 
     @Override
     public List<Answer> getAllAnswers() throws CacheException {
-        return cal.getAllAnswers(getCompanyId(), getCoachContext());
+        return cal.getAllAnswers(getCompany(), getCoachContext());
     }
 
     /**
@@ -133,13 +129,13 @@ public class LibCal implements ILibCal {
     @Override
     public void instantiateSubCoach(Questionnaire subCoach, Set<String> selectors)
             throws CacheException {
-        cal.instantiateSubCoach(getCompanyId(), getCoachContext(), subCoach, selectors);
+        cal.instantiateSubCoach(getCompany(), getCoachContext(), subCoach, selectors);
     }
 
     @Override
     public void instantiateSubCoach(Questionnaire subCoach, FQCN fqcn, Set<String> selectors)
             throws CacheException {
-        cal.instantiateSubCoach(getCompanyId(), fqcn, subCoach, selectors);
+        cal.instantiateSubCoach(getCompany(), fqcn, subCoach, selectors);
     }
 
     @Override
@@ -165,7 +161,7 @@ public class LibCal implements ILibCal {
     @Deprecated
     @Override
     public void setMetadataOnAnswers(Metadata metadata) throws CacheException {
-        cal.setMetadataOnAnswers(getCompanyId(), getCoachContext(), metadata);
+        cal.setMetadataOnAnswers(getCompany(), getCoachContext(), metadata);
     }
 
     /**
@@ -176,7 +172,7 @@ public class LibCal implements ILibCal {
     @Deprecated
     @Override
     public Metadata getMetadataOnAnswers(String metadataKey) throws CacheException {
-        return cal.getMetadataOnAnswer(getCompanyId(), getCoachContext(), metadataKey);
+        return cal.getMetadataOnAnswer(getCompany(), getCoachContext(), metadataKey);
     }
 
     /**
@@ -187,7 +183,7 @@ public class LibCal implements ILibCal {
     @Deprecated
     @Override
     public List<Metadata> getAllMetadataOnAnswer() throws CacheException {
-        return cal.getAllMetadataOnAnswer(getCompanyId(), getCoachContext());
+        return cal.getAllMetadataOnAnswer(getCompany(), getCoachContext());
     }
 
     /**
@@ -198,7 +194,7 @@ public class LibCal implements ILibCal {
     @Deprecated
     @Override
     public void deleteMetadataOnAnswers(String metadataKey) throws CacheException {
-        cal.deleteMetadataOnAnswers(getCompanyId(), getCoachContext(), metadataKey);
+        cal.deleteMetadataOnAnswers(getCompany(), getCoachContext(), metadataKey);
     }
 
     /**
@@ -210,32 +206,32 @@ public class LibCal implements ILibCal {
     @Override
     public void removeMvaluesFromAnswers(String metadataKey, Set<String> mvalueKeys)
             throws CacheException {
-        cal.removeMvaluesFromAnswer(getCompanyId(), getCoachContext(), metadataKey, mvalueKeys);
+        cal.removeMvaluesFromAnswer(getCompany(), getCoachContext(), metadataKey, mvalueKeys);
     }
 
     @Override
     public void setMetadataOnCompany(Metadata metadata) throws CacheException {
-        cal.setMetadataOnAnswers(getCompanyId(), FQCN_COMPANY, metadata);
+        cal.setMetadataOnAnswers(getCompany(), FQCN_COMPANY, metadata);
     }
 
     @Override
     public Metadata getMetadataOnCompany(String metadataKey) throws CacheException {
-        return cal.getMetadataOnAnswer(getCompanyId(), FQCN_COMPANY, metadataKey);
+        return cal.getMetadataOnAnswer(getCompany(), FQCN_COMPANY, metadataKey);
     }
 
     @Override
     public List<Metadata> getAllMetadataOnCompany() throws CacheException {
-        return cal.getAllMetadataOnAnswer(getCompanyId(), FQCN_COMPANY);
+        return cal.getAllMetadataOnAnswer(getCompany(), FQCN_COMPANY);
     }
 
     @Override
     public void deleteMetadataOnCompany(String metadataKey) throws CacheException {
-        cal.deleteMetadataOnAnswers(getCompanyId(), FQCN_COMPANY, metadataKey);
+        cal.deleteMetadataOnAnswers(getCompany(), FQCN_COMPANY, metadataKey);
     }
 
     @Override
     public void removeMvaluesFroCompany(String metadataKey, Set<String> mvalueKeys)
             throws CacheException {
-        cal.removeMvaluesFromAnswer(getCompanyId(), FQCN_COMPANY, metadataKey, mvalueKeys);
+        cal.removeMvaluesFromAnswer(getCompany(), FQCN_COMPANY, metadataKey, mvalueKeys);
     }
 }

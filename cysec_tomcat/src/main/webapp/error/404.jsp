@@ -30,14 +30,14 @@
     <link rel="apple-touch-icon" sizes="152x152" href="${pageContext.request.contextPath}/assets/favicon/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="${pageContext.request.contextPath}/assets/favicon/apple-icon-180x180.png">
     <link rel="icon" type="image/png" sizes="192x192"  href="${pageContext.request.contextPath}/assets/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="${pageContext.request.contextPath}/../../src/main/webapp/assets/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="${pageContext.request.contextPath}/../../src/main/webapp/assets/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="${pageContext.request.contextPath}/../../src/main/webapp/assets/favicon/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="${pageContext.request.contextPath}/assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="${pageContext.request.contextPath}/assets/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="${pageContext.request.contextPath}/assets/favicon/favicon-16x16.png">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="${pageContext.request.contextPath}/assets/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="shortcut icon" href="${pageContext.request.contextPath}/../../src/main/webapp/assets/favicon/favicon.ico">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/favicon/favicon.ico">
 
     <!-- Extra CSS for additional functionality -->
     <link href="${pageContext.request.contextPath}/css/tingle.css" rel="stylesheet">
@@ -385,7 +385,7 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-left" href="/">
-            <img src="${pageContext.request.contextPath}/../../src/main/webapp/assets/logo/smesec.png" alt="The SMESEC project"/>
+            <img src="${pageContext.request.contextPath}/assets/logo/smesec.png" alt="The SMESEC project"/>
           </a>
         </div>
         <div class="clear"></div>
@@ -426,10 +426,10 @@
 	    </div>
 	  </div>
 	</div>  
-    <script src="${pageContext.request.contextPath}/../../src/main/webapp/js/jquery-1.11.1.min.js"></script>
-    <script src="${pageContext.request.contextPath}/../../src/main/webapp/js/jquery-ui.min.js"></script>
-	<script src="${pageContext.request.contextPath}/../../src/main/webapp/js/bootstrap.min.js"></script>
-    <script src="${pageContext.request.contextPath}/../../src/main/webapp/js/prettify.js"></script>
-    <script src="${pageContext.request.contextPath}/../../src/main/webapp/js/errorpage.js"></script>
+    <script src="${pageContext.request.contextPath}/js/jquery-1.11.1.min.js"></script>
+    <script src="${pageContext.request.contextPath}/js/jquery-ui.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+    <script src="${pageContext.request.contextPath}/js/prettify.js"></script>
+    <script src="${pageContext.request.contextPath}/js/errorpage.js"></script>
   </body>
 </html>
