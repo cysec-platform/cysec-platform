@@ -161,7 +161,9 @@ public class Dashboard {
             // installed coach
             coachHelper = new CoachHelper(fqcn.toString(), name, coach.getReadableClass());
             coachHelper.setDescription(coach.getDescription());
-            coachHelper.setBlocks(coach.getBlocks().getBlock());
+            if (coach.getBlocks() != null) {
+              coachHelper.setBlocks(coach.getBlocks().getBlock());
+            }
             // coach icon attachments
             attachments = coach.getAttachments();
             if (attachments != null) {
