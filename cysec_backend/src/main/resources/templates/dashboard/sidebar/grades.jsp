@@ -7,7 +7,7 @@
         <c:set var="rating" value="${coach.getRating()}" />
         <c:if test="${ rating != null }">
             <c:set var="flag" value="${ false }" />
-            <div class="row">
+            <div class="row level-row">
                 <div class="col-md-8">${ coach.getReadableName() }:</div>
                 <div class="col-md-4">${ rating.getGrade() }(${ rating.getScore() })</div>
             </div>

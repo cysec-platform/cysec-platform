@@ -62,7 +62,7 @@ body {
 .sidebar-nav > .sidebar-brand {
     min-height: 65px;
     font-size: 18px;
-    line-height: 60px;
+    line-height: 1.5em;
     margin-right: 40px;
 }
 
@@ -85,3 +85,16 @@ body {
     text-decoration: none;
 }
 
+
+.sidebar-nav .level-row {
+    padding-bottom: 0.5em;
+    padding-top: 0.5em;
+}
+
+.sidebar-nav .level-row:first-child {
+    padding-top: 0.8em;
+}
+
+.sidebar-nav .level-row:last-child {
+    padding-bottom: 0.8em;
+}
