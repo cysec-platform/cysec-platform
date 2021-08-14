@@ -4,12 +4,12 @@
 <c:set var="context" value="${pageContext.request.contextPath}"/>
 
 <div class="row">
-    <div class="col-xs-8 bg-white no-margin-right" style="margin-left: -10px;">
+    <div class="col-xs-8 no-margin-right" style="margin-left: -10px;">
         <a href="${context}/app#" title="Home">
             <img src="${context}/assets/logo/CYSEC_Logo_RGB.svg" width="106px" height="44px"/>
         </a>
     </div>
-    <div class="col-xs-4 text-right bg-lightbluegrey">
+    <div class="col-xs-4 text-right">
         <ul>
             <li>
                 <a href="${context}/app/users.jsp" title="User Management">
