@@ -38,7 +38,7 @@
     <jsp:invoke fragment="scripts"/>
 </head>
 <body>
-<header class="global-nav">
+<header class="global-nav bg-bluegrey">
     <jsp:invoke fragment="header"/>
 </header>
 <div id="wrapper" class="container">

@@ -90,12 +90,20 @@
     color: #F7F8FC;
 }
 
+.bg-bluegrey {
+    background-color: #EBEFF4;
+}
+
+.bluegrey {
+    color: #EBEFF4;
+}
+
 .bg-verylightgrey {
-    background-color: #F5F7F3; // #F2F3F4
+    background-color: #F5F7F3;
 }
 
 .verylightgrey {
-    color: #F5F7F3; // #F2F3F4
+    color: #F5F7F3;
 }
 
 .bg-lightgrey {
