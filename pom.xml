@@ -6,12 +6,12 @@
 
     <groupId>eu.smesec.platform</groupId>
     <artifactId>coach_platform</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>CySeC</name>
     <description>The CySeC coach runtime platform.</description>
-    <url>http://cysec.cyberlab.fhnw.ch/</url>
+    <url>https://cysec.cyberlab.fhnw.ch/</url>
 
     <distributionManagement>
         <snapshotRepository>
