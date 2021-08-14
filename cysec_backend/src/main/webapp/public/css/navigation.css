@@ -6,10 +6,9 @@
 
 .navbar {
     min-height: 55px;
-    margin-bottom: 0px;
-    border: 0px solid transparent;
+    margin-bottom: 0;
+    border: 0 solid transparent;
     box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    //border-bottom: 5px solid transparent;
 }
 
 .navbar, .navbar > .container {
@@ -45,7 +44,6 @@
 #navbar li:hover,
 #navbar li:active {
     background: #fff;
-    //border-bottom: 5px solid red;
 }
 
 .navbar img {
@@ -72,10 +70,10 @@
 .dropdown-menu {
     background-color: #fff;
     opacity: 0.9;
-    border: 0px solid transparent;
-    border-radius: 0px;
-    -webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.0);
-    box-shadow: 0px 0px 10px rgba(0,0,0,.0);
+    border: 0 solid transparent;
+    border-radius: 0;
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.0);
+    box-shadow: 0 0 10px rgba(0,0,0,.0);
 }
 
 .dropdown-menu ul {
@@ -89,14 +87,43 @@
     animation-name: fadeIn;
 }
 
-@-webkit-keyframes fadeIn,
-@-moz-keyframes fadeIn,
-@-o-keyframes fadeIn,
+@-webkit-keyframes fadeIn {
+    from {
+        height: auto;
+    }
+    95% {
+        height: auto;
+    }
+    to {
+        height: 0;
+    }
+}
+@-moz-keyframes fadeIn {
+    from {
+        height: auto;
+    }
+    95% {
+        height: auto;
+    }
+    to {
+        height: 0;
+    }
+}
+@-o-keyframes fadeIn {
+    from {
+        height: auto;
+    }
+    95% {
+        height: auto;
+    }
+    to {
+        height: 0;
+    }
+}
 @keyframes fadeIn {
     from {
         height: auto;
     }
-
     95% {
         height: auto;
     }
@@ -149,9 +176,9 @@
 
 .navbar-default .navbar-toggle {
     border-color: transparent;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    border-radius: 0px;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
     padding-top: 15px;
 }
 
