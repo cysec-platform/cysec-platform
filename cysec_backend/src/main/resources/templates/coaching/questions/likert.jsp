@@ -9,7 +9,7 @@
 <!-- Likert -->
 <div>
     <!-- options -->
-    <div>
+    <div class="row">
         <c:forEach var="option" items="${question.getOptions().getOption()}">
             <c:set var="oid" value="${option.getId()}"/>
             <c:set var="otext" value="${option.getText()}"/>
@@ -32,7 +32,9 @@
         <c:if test="${answer != null}">
             <c:forEach var="option" items="${question.getOptions().getOption()}">
                 <c:if test="${option.getText().equals(answer.getText())}">
-                    ${ option.comment }
+                    <div class="col-xs-12">
+                        ${ option.comment }
+                    </div>
                 </c:if>
             </c:forEach>
         </c:if>

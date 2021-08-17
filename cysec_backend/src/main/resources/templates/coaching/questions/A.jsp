@@ -9,7 +9,7 @@
 <!-- A -->
 <div>
     <!-- options -->
-    <div>
+    <div class="row">
         <c:forEach var="option" items="${question.getOptions().getOption()}">
             <c:set var="oid" value="${option.getId()}"/>
             <div class="questionnaire-answers col-xs-12">
@@ -30,7 +30,9 @@
         <c:if test="${ answer != null }">
             <c:forEach var="option" items="${question.getOptions().getOption()}">
                 <c:if test="${answer.getText().equals(option.getId())}">
-                    ${option.getComment()}
+                    <div class="col-xs-12">
+                            ${option.getComment()}
+                    </div>
                 </c:if>
             </c:forEach>
         </c:if>

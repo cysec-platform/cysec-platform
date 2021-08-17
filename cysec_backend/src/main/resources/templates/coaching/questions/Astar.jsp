@@ -9,7 +9,7 @@
 <!-- A star -->
 <div>
     <!-- options -->
-    <div>
+    <div class="row">
         <c:forEach var="option" items="${question.getOptions().getOption()}">
             <c:set var="oid" value="${option.getId()}" />
             <div class="questionnaire-answers col-xs-12">
@@ -41,7 +41,9 @@
         <c:forEach var="option" items="${question.getOptions().getOption()}">
             <c:if test="${option.getComment() != null}">
                 <div id="comment-${option.getId()}" class="row" style="display: ${answer != null ? 'block' : 'none'}" >
-                    ${option.getComment()}
+                    <div class="col-xs-12">
+                        ${option.getComment()}
+                    </div>
                 </div>
             </c:if>
         </c:forEach>

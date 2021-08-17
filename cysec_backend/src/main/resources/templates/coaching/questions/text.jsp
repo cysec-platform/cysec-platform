@@ -7,10 +7,11 @@
 <c:set var="qid" value="${question.getId()}"/>
 
 <!-- Text -->
-<div class="col-xs-12 no-padding-left">
-    <c:set var="content" value="${answer != null ? answer.getText() : '' }" />
-    <textarea name="${qid}" style="padding: 5px; margin: 15px;" rows="8" cols="70"
-              onchange="updateAnswer(event)">${content}
-    </textarea>
+<div class="row">
+    <div class="col-xs-12 no-padding-left">
+        <c:set var="content" value="${answer != null ? answer.getText() : '' }" />
+        <textarea name="${qid}" style="padding: 5px; margin: 15px;" rows="8" cols="70"
+                  onchange="updateAnswer(event)">${content}
+        </textarea>
+    </div>
 </div>
-
