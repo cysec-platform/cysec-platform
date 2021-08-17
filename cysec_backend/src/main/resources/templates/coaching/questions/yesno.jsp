@@ -39,7 +39,9 @@
         <c:if test="${answer != null}">
             <c:forEach var="option" items="${options}">
                 <c:if test="${option.getId().equals(answer.getText())}">
-                    ${option.getComment()}
+                    <div class="col-xs-12">
+                        ${option.getComment()}
+                    </div>
                 </c:if>
             </c:forEach>
         </c:if>

@@ -44,7 +44,9 @@
         <c:forEach var="option" items="${question.getOptions().getOption()}">
             <c:if test="${option.getComment()}">
                 <div id="comment-${option.getId()}" class="row" style="display: ${answer != null ? 'block' : 'none'}">
-                    ${option.comment}
+                    <div class="col-xs-12">
+                        ${option.comment}
+                    </div>
                 </div>
             </c:if>
         </c:forEach>
