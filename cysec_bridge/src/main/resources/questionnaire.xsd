@@ -114,15 +114,16 @@
             <xs:sequence>
                 <xs:element ref="text"/>
                 <xs:element ref="readMore" minOccurs="0"/>
-                <xs:element ref="attachments"/>
+                <xs:element ref="attachments" minOccurs="0"/>
                 <xs:element ref="options" minOccurs="0"/>
-                <xs:element ref="listeners"/>
+                <xs:element ref="listeners" minOccurs="0"/>
                 <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element ref="instruction"/>
+                <xs:element ref="instruction" minOccurs="0"/>
             </xs:sequence>
             <xs:attribute name="id" type="xs:ID" use="required"/>
             <xs:attribute name="type" type="xs:string" use="required"/>
             <xs:attribute name="hidden" type="xs:boolean" default="true"/>
+            <xs:attribute name="extRef" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 
@@ -149,7 +150,7 @@
             <xs:sequence>
                 <xs:element ref="text"/>
                 <xs:element ref="comment" minOccurs="0"/>
-                <xs:element ref="attachments"/>
+                <xs:element ref="attachments" minOccurs="0"/>
             </xs:sequence>
             <xs:attribute name="id" type="xs:ID" use="required"/>
             <xs:attribute name="short" type="xs:string"/>
@@ -232,7 +233,7 @@
     <xs:element name="blocks">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="listeners"/>
+                <xs:element ref="listeners" minOccurs="0"/>
                 <xs:element ref="block" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
@@ -246,8 +247,8 @@
     <xs:element name="block">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="listeners"/>
-                <xs:element ref="instruction"/>
+                <xs:element ref="listeners" minOccurs="0"/>
+                <xs:element ref="instruction" minOccurs="0"/>
                 <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="title" type="xs:string" use="required"/>
