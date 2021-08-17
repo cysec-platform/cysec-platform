@@ -42,7 +42,7 @@
                                 -->
                             </c:when>
                             <c:otherwise>
-                                <h4>0</h4>
+                                <h4>&mdash;</h4>
                                 <h5>score</h5>
                             </c:otherwise>
                         </c:choose>
