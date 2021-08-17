@@ -34,7 +34,6 @@ class CoachCache extends Cache {
       new FieldCopyStrategy(
           "id",
           "readableName",
-          "readableClass",
           "questions",
           "question",
           "options",
