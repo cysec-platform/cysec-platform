@@ -9,7 +9,7 @@
 <!-- A star exclusive -->
 <div>
     <!-- options -->
-    <div>
+    <div class="row">
         <c:forEach var="option" items="${question.getOptions().getOption()}">
             <c:set var="oid" value="${option.getId()}" />
             <div class="questionnaire-answers col-xs-12">
