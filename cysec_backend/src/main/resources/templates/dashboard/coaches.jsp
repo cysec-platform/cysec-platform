@@ -16,9 +16,6 @@
                         </div>
                     </c:if>
                     <div class="padding-top-small questionnaire-summary-title">
-                        <!--
-                        <h5>${ coach.getReadableClass() }</h5>
-                        -->
                         <h4 class="no-margin-bottom">
                             <a href="javascript:;" onclick="resume('${coachId}')">${ coach.getReadableName() }</a>
                             <div class="questionnaire-info"><img src="${context}/assets/icons/icn_info.png" width="24"

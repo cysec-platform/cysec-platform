@@ -24,7 +24,6 @@
             <xs:attribute name="version" type="xs:int" use="required"/>
             <xs:attribute name="filename" type="xs:string"/>
             <xs:attribute name="readableName" type="xs:string"/>
-            <xs:attribute name="readableClass" type="xs:string"/>
             <xs:attribute name="order" type="xs:int"/>
             <xs:attribute name="parent" type="xs:string"/>
             <xs:attribute name="language" type="xs:language"/>
@@ -35,11 +34,9 @@
     <!-- A list of attachments, which may be empty. -->
     <xs:element name="attachments">
         <xs:complexType>
-
             <xs:sequence>
                 <xs:element ref="attachment" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
-
         </xs:complexType>
     </xs:element>
 
@@ -103,7 +100,7 @@
         <xs:complexType>
             <xs:sequence>
                 <!-- If there are any questions, there is at least one question -->
-                <xs:element ref="question" minOccurs="1" maxOccurs="unbounded"/>
+                <xs:element ref="question" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -162,7 +159,7 @@
     <xs:element name="answers">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="questionnaireReference" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="questionnaireReference" minOccurs="0"/>
                 <xs:element ref="answer" maxOccurs="unbounded"/>
                 <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
@@ -295,7 +292,7 @@
     <xs:element name="user">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="role" minOccurs="1" maxOccurs="unbounded"/>
+                <xs:element ref="role" maxOccurs="unbounded"/><!-- at least one role is required-->
                 <xs:element ref="token" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="id" type="xs:unsignedInt"/>

@@ -93,7 +93,7 @@ public class CoachCacheTest {
     return lib;
   }
 
-  private Questionnaire createTestCoach(String id, String parent, String name, String className, Locale locale,
+  private Questionnaire createTestCoach(String id, String parent, String name, Locale locale,
                                         int order, eu.smesec.bridge.generated.Library lib, Question... questions) {
     Questionnaire coach = new Questionnaire();
     List<eu.smesec.bridge.generated.Library> libraries = coach.getLibrary();
@@ -103,7 +103,6 @@ public class CoachCacheTest {
     coach.setId(id);
     coach.setParent(parent);
     coach.setReadableName(name);
-    coach.setReadableClass(className);
     coach.setOrder(order);
     coach.setLanguage(locale != null ? locale.getLanguage().toLowerCase() : null);
     Questions questions1 = new Questions();
@@ -112,9 +111,9 @@ public class CoachCacheTest {
     return coach;
   }
 
-  private Questionnaire createTestCoach(String id, String parent, String name, String className,
+  private Questionnaire createTestCoach(String id, String parent, String name,
                                         int order, eu.smesec.bridge.generated.Library lib, Question... questions) {
-    return createTestCoach(id, parent, name, className, null, order, lib, questions);
+    return createTestCoach(id, parent, name, null, order, lib, questions);
   }
 
   @Test
@@ -300,7 +299,7 @@ public class CoachCacheTest {
     eu.smesec.bridge.generated.Library libGen = createTestLib(libId);
     Path companyFileEn = Paths.get("lib-company/lib-company.xml");
     Questionnaire enCoach = createTestCoach("lib-company", null,
-        "Company", "CySec", 1, libGen,
+        "Company", 1, libGen,
         createTestQuestion("company-q10", "A", "Question 1",
             createTestOption("company-q10o1", "Option 1"),
             createTestOption("company-q10o2", "Option 2")
@@ -349,7 +348,7 @@ public class CoachCacheTest {
     Path companyFileEn = Paths.get("lib-company/lib-company.xml");
     Path companyFileFr = Paths.get("lib-company/lib-company_fr.xml");
     Questionnaire enCoach = createTestCoach(companyId, null,
-        "Company", "CySec", 1, libGen,
+        "Company", 1, libGen,
         createTestQuestion("company-q10", "A", "English question 1",
             createTestOption("company-q10o1", "English option 1"),
             createTestOption("company-q10o2", "English option 2")
@@ -361,7 +360,7 @@ public class CoachCacheTest {
             createTestOption("company-q30o2", "English option 2")
         ));
     Questionnaire frCoach = createTestCoach(companyId, null,
-        "Entreprise", "CySec", Locale.FRENCH, 0, null,
+        "Entreprise", Locale.FRENCH, 0, null,
         createTestQuestion("company-q10", null, "French question 1",
             createTestOption("company-q10o1", "French option 1"),
             createTestOption("company-q10o2", "French option 2")
@@ -373,7 +372,7 @@ public class CoachCacheTest {
             createTestOption("company-q30o2", "French option 2")
         ));
     Questionnaire result = createTestCoach(companyId, null,
-        "Entreprise", "CySec", 1, null,
+        "Entreprise", 1, null,
         createTestQuestion("company-q10", "A", "French question 1",
             createTestOption("company-q10o1", "French option 1"),
             createTestOption("company-q10o2", "French option 2")
@@ -419,7 +418,7 @@ public class CoachCacheTest {
     Path companyFileEn = Paths.get("lib-company/lib-company.xml");
     Path companyFileFr = Paths.get("lib-company/lib-company_fr.xml");
     Questionnaire enCoach = createTestCoach(companyId, null,
-        "Company", "CySec", 1, libGen,
+        "Company", 1, libGen,
         createTestQuestion("company-q10", "A", "English question 1",
             createTestOption("company-q10o1", "English option 1"),
             createTestOption("company-q10o2", "English option 2")
@@ -432,7 +431,7 @@ public class CoachCacheTest {
             createTestOption("company-q40o2", "English option 2")
         ));
     Questionnaire frCoach = createTestCoach(companyId, null,
-        "Entreprise", "CySec", Locale.FRENCH, 0, null,
+        "Entreprise", Locale.FRENCH, 0, null,
         createTestQuestion("company-q10", null, "French question 1",
             createTestOption("company-q10o1", "French option 1"),
             createTestOption("company-q10o2", "French option 2")
@@ -445,7 +444,7 @@ public class CoachCacheTest {
             createTestOption("company-q30o2", "French option 2")
         ));
     Questionnaire result = createTestCoach(companyId, null,
-        "Entreprise", "CySec", 1, null,
+        "Entreprise", 1, null,
         createTestQuestion("company-q10", "A", "French question 1",
             createTestOption("company-q10o1", "French option 1"),
             createTestOption("company-q10o2", "French option 2")
@@ -489,7 +488,7 @@ public class CoachCacheTest {
     String companyId = "lib-company";
     Path companyFileFr = Paths.get("lib-company/lib-company_fr.xml");
     Questionnaire frCoach = createTestCoach(companyId, null,
-        "Entreprise", "CySec", Locale.FRENCH, 0, null,
+        "Entreprise", Locale.FRENCH, 0, null,
         createTestQuestion("company-q10", null, "French question 1",
             createTestOption("company-q10o1", "French option 1"),
             createTestOption("company-q10o2", "French option 2")));
@@ -523,9 +522,9 @@ public class CoachCacheTest {
     Path companyFile = Paths.get("lib-company/lib-company.xml");
     Path subFile = Paths.get("lib-company/lib-demo-sub/lib-demo-sub.xml");
     Questionnaire coach = createTestCoach(companyId, null,
-        "Company", "CySec", 1, libGen);
+        "Company", 1, libGen);
     Questionnaire subCoach = createTestCoach(subId, companyId,
-        "Demo", "CySec", 1, libSubGen,
+        "Demo", 1, libSubGen,
         createTestQuestion("company-q10", "A", "English question 1",
             createTestOption("company-q10o1", "English option 1"),
             createTestOption("company-q10o2", "English option 2")
@@ -580,7 +579,7 @@ public class CoachCacheTest {
     eu.smesec.bridge.generated.Library libSubGen = createTestLib(libSubId);
     Path subFile = Paths.get("lib-company/lib-demo-sub/lib-demo-sub.xml");
     Questionnaire subCoach = createTestCoach(subId, companyId,
-        "Demo", "CySec", 1, libSubGen,
+        "Demo", 1, libSubGen,
         createTestQuestion("company-q10", "A", "English question 1",
             createTestOption("company-q10o1", "English option 1"),
             createTestOption("company-q10o2", "English option 2")

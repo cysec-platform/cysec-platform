@@ -96,8 +96,7 @@ public class Dashboard {
       CoachHelper coachHelper =
           new CoachHelper(
               LibCal.FQCN_COMPANY.toString(),
-              companyCoach.getReadableName(),
-              companyCoach.getReadableClass());
+              companyCoach.getReadableName());
       coachHelper.setDescription(companyCoach.getDescription());
       coachHelper.setBlocks(companyCoach.getBlocks().getBlock());
       Attachments attachments = companyCoach.getAttachments();
@@ -152,14 +151,14 @@ public class Dashboard {
             // add coach to remaining section
             logger.info(String.format("Adding coach %s to list of remaining coaches", coachId));
             remaining.add(
-                new CoachHelper(coachId, coach.getReadableName(), coach.getReadableClass()));
+                new CoachHelper(coachId, coach.getReadableName()));
           }
         } else {
           for (Map.Entry<FQCN, Answers> entry : coachAnswersMap.get(coach).entrySet()) {
             FQCN fqcn = entry.getKey();
             String name = getAnswerName(fqcn, loadedCoaches);
             // installed coach
-            coachHelper = new CoachHelper(fqcn.toString(), name, coach.getReadableClass());
+            coachHelper = new CoachHelper(fqcn.toString(), name);
             coachHelper.setDescription(coach.getDescription());
             if (coach.getBlocks() != null) {
               coachHelper.setBlocks(coach.getBlocks().getBlock());

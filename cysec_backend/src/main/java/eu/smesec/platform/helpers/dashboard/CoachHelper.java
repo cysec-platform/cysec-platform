@@ -12,7 +12,6 @@ import java.util.List;
 public class CoachHelper {
   private String id;
   private String readableName;
-  private String readableClass;
   private String description;
   private String icon;
   private State state;
@@ -25,12 +24,10 @@ public class CoachHelper {
    *
    * @param id The id of the coach
    * @param readableName The name of the coach
-   * @param readableClass The class of the coach
    */
-  public CoachHelper(String id, String readableName, String readableClass) {
+  public CoachHelper(String id, String readableName) {
     this.id = id;
     this.readableName = readableName;
-    this.readableClass = readableClass;
   }
 
   public Skills getSkills() {
@@ -59,10 +56,6 @@ public class CoachHelper {
 
   public String getReadableName() {
     return readableName;
-  }
-
-  public String getReadableClass() {
-    return readableClass != null ? readableClass : "";
   }
 
   public String getDescription() {
