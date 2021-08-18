@@ -127,29 +127,29 @@ public class Mapper<T> {
             "Xml parse error during unmarshalling "
                 + classOfT.getName()
                 + " from file "
-                + path.toString()
+                + path
                 + " in line "
                 + spe.getLineNumber()
                 + ":"
                 + spe.getColumnNumber()
                 + ": "
-                + spe.getMessage());
+                + spe.getMessage(), spe);
       }
       throw new MapperException(
           "General error during unmarshalling "
               + classOfT.getName()
               + " from file "
-              + path.toString()
+              + path
               + ": "
-              + je.getMessage());
+              + je.getMessage(), je);
     } catch (IOException ioe) {
       throw new MapperException(
           "IO error during unmarshalling "
               + classOfT.getName()
               + " from file "
-              + path.toString()
+              + path
               + ": "
-              + ioe.getMessage());
+              + ioe.getMessage(), ioe);
     }
   }
 }
