@@ -46,8 +46,8 @@ const updateAnswer = (event) => {
     });
 };
 
-const readMore = (event) => {
-    const elem = $(".readmore");
+const toggleReadMore = (event) => {
+    const elem = $(".readmore-box");
     elem.css('visibility', elem.css('visibility') === 'hidden' ? 'visible' : 'hidden');
 };
 

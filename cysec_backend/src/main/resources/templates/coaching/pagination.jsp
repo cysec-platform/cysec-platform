@@ -20,8 +20,8 @@
 
     <div id="pagination-next" class="col-xs-4 text-right">
         <h4 id="next-question" class="next-question">
-            <a href="${baseUrl}${it.next}" style="cursor: pointer;">${it.msg.next}
-                <img src="${baseUrl}/assets/arrow_blue.png" width="36px" height="36px"/>
+            <a href="${baseUrl}${it.next}">${it.msg.next}
+                <img src="${baseUrl}/assets/arrow_blue.png"/>
             </a>
         </h4>
     </div>

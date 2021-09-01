@@ -12,10 +12,10 @@
         <%@include file="remaining.jsp"%>
     </div>
     <div id="sidebar-wrapper" class="col-xs-4 bg-lightbluegrey">
-        <ul class="sidebar-nav sidebar-content" id="sidebar-nav sidebar-content">
+        <div class="sidebar-nav sidebar-content">
             <%@include file="sidebar/skillboard.jsp"%>
             <%@include file="sidebar/grades.jsp"%>
             <%@include file="sidebar/badges.jsp"%>
-        </ul>
+        </div>
     </div>
 </div>

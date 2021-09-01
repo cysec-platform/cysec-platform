@@ -8,7 +8,7 @@
         <c:choose>
             <c:when test="${ not empty recommendations }">
                 <c:forEach var="item" items="${ recommendations }">
-                    <div class="col-xs-4 col-sm-4 ">
+                    <div class="col-sm-12 col-md-6 col-lg-4">
                         <c:set var="link" value="${item.getLink()}" />
                         <c:set var="prefix" value="ext" />
                         <c:set var="url" value="${link.startsWith('ext ')
@@ -30,7 +30,7 @@
                 </c:forEach>
             </c:when>
             <c:otherwise>
-                <div class="col-xs-4 col-sm-4 ">
+                <div class="col-sm-12 col-md-6 col-lg-4">
                     <a class="recommended-action-wrapper" href="">
                         <div class="recommended-action">
                             <img src="../assets/recommendation_bulb.png" class="recommended-action-icon">
