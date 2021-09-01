@@ -1,5 +1,5 @@
 <h4 class="text-center padding-top-large">
-    <a id="sidebar-title" href="#">${it.msg.achievedLevels}</a>
+    ${it.msg.achievedLevels}
 </h4>
 <li class="sidebar-brand bg-white margin-bottom-large">
     <c:set var="flag" value="${ true }" />

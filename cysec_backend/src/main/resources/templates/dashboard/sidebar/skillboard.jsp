@@ -8,9 +8,7 @@
 
 <li class="sidebar-brand">
     <h4 class="text-center">
-        <a id="sidebar-title" href="#">
-            <c:out value="${it.skills.getFirst()} ${it.msg.skills}"/>
-        </a>
+        <c:out value="${it.skills.getFirst()} ${it.msg.skills}"/>
     </h4>
     <div class="skillboard">
         <div class="padding-top-small padding-bottom-medium">

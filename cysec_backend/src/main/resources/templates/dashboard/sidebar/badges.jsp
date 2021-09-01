@@ -1,5 +1,5 @@
 <h4 class="text-center padding-top-large">
-    <a id="sidebar-title" href="#">${it.msg.latestAchievements}</a>
+    ${it.msg.latestAchievements}
 </h4>
 <li class="sidebar-brand bg-white padding-top-small">
     <!-- Badge -->
@@ -20,7 +20,6 @@
             </c:otherwise>
         </c:choose>
     </div>
-
     <!-- END Badge -->
     <div class="text-right textlink">
     <a href="${pageContext.request.contextPath}/app/badges.jsp">${it.msg.showAll}
