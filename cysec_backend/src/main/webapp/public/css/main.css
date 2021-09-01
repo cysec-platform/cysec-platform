@@ -345,9 +345,8 @@ body {
     right: 0;
 }
 
-.recommended-action-arrow {
-    bottom: 15px;
-    right: 15px;
+.recommended-action-description {
+    margin-bottom: 38px;
 }
 
 .recommended-action-link {

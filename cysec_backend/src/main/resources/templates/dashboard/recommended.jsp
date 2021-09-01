@@ -19,7 +19,7 @@
                                 <img src="../assets/recommendation_bulb.png" class="recommended-action-icon">
                                 <h5>${it.msg.recommendation}</h5>
                                 <h3>${item.getTitle()}</h3>
-                                <p>${item.getDescription()}</p>
+                                <p class="recommended-action-description">${item.getDescription()}</p>
                                     <%-- Might have to be changed to x-forwarded-proto and x-forwarded-host on prod server--%>
                                 <div class="recommended-action-link">
                                     <img src="../assets/arrow_blue.png" width="28px" height="18px"/>
@@ -36,7 +36,7 @@
                             <img src="../assets/recommendation_bulb.png" class="recommended-action-icon">
                             <h5>${it.msg.recommendation}</h5>
                             <h3>${it.msg.noRecommendation}</h3>
-                            <p>${it.msg.noRecommendationInfo}.</p>
+                            <p class="recommended-action-description">${it.msg.noRecommendationInfo}.</p>
                                 <%-- Might have to be changed to x-forwarded-proto and x-forwarded-host on prod server--%>
                             <div class="recommended-action-link">
                                 <img src="../assets/arrow_blue.png" width="28px" height="18px"/>
