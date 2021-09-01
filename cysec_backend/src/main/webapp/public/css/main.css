@@ -194,7 +194,7 @@ body {
 
 /* questionnaire blocks */
 #blocks {
-    padding: 40px 80px 0 60px;
+    padding: 40px 65px 0 45px;
     height: calc(100vh - 220px);
     overflow-y: auto;
 }
@@ -884,9 +884,12 @@ body {
     max-width: 250px;
 }
 
-.readmore {
+.readmore-container {
+    padding-top: 20px;
+}
+
+.readmore-box {
     padding: 10px;
-    width: 90%;
     border: 1px solid #007EA7;
     visibility: hidden;
 }

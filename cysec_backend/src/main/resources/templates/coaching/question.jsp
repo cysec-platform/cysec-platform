@@ -6,27 +6,25 @@
 
 <div id="blocks">
     <div class="col-xs-12 container question panel" id="${ question.getId() }}">
-        <!-- question attachment -->
-        <h1 class="row panel-heading">${ question.getText() }</h1>
+        <h1 class="panel-heading">${ question.getText() }</h1>
         <c:set var="qAttachments" value="${ question.getAttachments() }"/>
         <c:if test="${ qAttachments != null }">
+            <div class="row">
             <c:forEach var="qAttachment" items="${ qAttachments.getAttachment() }">
                 <div class="col-lg-6">
                     <img src="data:${ qAttachment.getMime() };base64, ${ qAttachment.getContent().getValue() }"
                          width="50"/>
                 </div>
             </c:forEach>
+            </div>
         </c:if>
-        <!-- answer layout -->
-        <div class="row">
+        <div>
             <jsp:include page="questions/${ question.getType() }.jsp"/>
         </div>
-        <!-- read more -->
         <c:if test="${ question.getReadMore() != null}">
-            <div class="row">
-                <!-- Bootstrap collapse wont work -->
-                <a href="javascript:;" onclick="readMore()">${it.msg.readmore}</a>
-                <div class="readmore">
+            <div class="readmore-container">
+                <a href="#" onclick="toggleReadMore()">${it.msg.readmore}</a>
+                <div class="readmore-box">
                         ${ question.getReadMore() }
                 </div>
             </div>
