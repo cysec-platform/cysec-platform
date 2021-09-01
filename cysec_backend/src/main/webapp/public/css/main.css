@@ -721,13 +721,11 @@ body {
     font-size: 1.8em;
     font-weight: normal;
     color: #007EA7;
+    cursor: pointer;
 }
 
-#pagination .next-question a::after {
-    content: "";
-    background-image: url(../assets/next.png);
-    height: 48px;
-    width: 48px;
+#pagination .next-question a img {
+    max-height: 0.8em;
 }
 
 #pagination .next-question a:hover {
