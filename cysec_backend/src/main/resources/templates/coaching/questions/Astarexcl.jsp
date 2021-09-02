@@ -42,14 +42,13 @@
     <!-- option comment -->
     <div>
         <c:forEach var="option" items="${question.getOptions().getOption()}">
-            <c:if test="${option.getComment()}">
-                <div id="comment-${option.getId()}" class="row" style="display: ${answer != null ? 'block' : 'none'}">
-                    <div class="col-xs-12">
-                        ${option.comment}
+            <c:if test="${answer != null && answer.getAidList().contains(option.getId()) && option.getComment() != null}">
+                <div id="comment-${option.getId()}" class="row">
+                    <div class="col-xs-12 padding-top-small">
+                        ${option.getComment()}
                     </div>
                 </div>
             </c:if>
         </c:forEach>
     </div>
 </div>
-

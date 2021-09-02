@@ -26,15 +26,15 @@
     </div>
 
     <!-- option comment -->
-    <div id="comment" class="row" style="display: ${answer != null ? 'block' : 'none'}">
-        <c:if test="${ answer != null }">
+    <c:if test="${answer != null}">
+        <div id="comment" class="row padding-top-small">
             <c:forEach var="option" items="${question.getOptions().getOption()}">
                 <c:if test="${answer.getText().equals(option.getId())}">
                     <div class="col-xs-12">
-                            ${option.getComment()}
+                        ${option.getComment()}
                     </div>
                 </c:if>
             </c:forEach>
-        </c:if>
-    </div>
+        </div>
+    </c:if>
 </div>
