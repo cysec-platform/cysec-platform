@@ -1,7 +1,6 @@
-<div class="row col-xs-12 col-sm-12">
+<div class="col-xs-12">
     <h4 class="text-center padding-top-large">${it.msg.remaining}</h4>
-    <div class="all-remaining ">
-        <!-- remaining coaches -->
+    <div class="row">
         <c:set var="remaining" value="${it.remaining}"/>
         <c:choose>
             <c:when test="${ not empty remaining }">
@@ -20,6 +19,5 @@
                 <div>${it.msg.noRemaining}</div>
             </c:otherwise>
         </c:choose>
-        <!-- END remaining coaches -->
     </div>
 </div>

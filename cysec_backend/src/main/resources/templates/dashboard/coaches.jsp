@@ -1,11 +1,11 @@
 <c:set var="context" value="${pageContext.request.contextPath}"/>
 
-<div class="row col-xs-12 col-sm-12">
-    <h4 class="row text-center padding-top-large no-margin-bottom">${it.msg.coaches}</h4>
-    <div class="all-questionnaires padding-bottom-medium">
-        <c:forEach var="coach" items="${it.instantiated}">
-            <div class="row questionnaire-summary">
-                <div class="col-xs-9 col-sm-10 no-padding-left">
+<div class="col-xs-12 padding-bottom-medium">
+    <h4 class="text-center padding-top-large no-margin-bottom">${it.msg.coaches}</h4>
+    <c:forEach var="coach" items="${it.instantiated}">
+        <div class="questionnaire-summary">
+            <div class="row">
+                <div class="col-xs-9 col-sm-10">
                     <c:set var="coachId" value="${ coach.getId() }"/>
                     <c:set var="icon" value="${ coach.getIcon() }"/>
                     <c:if test="${ icon != null }">
@@ -49,6 +49,6 @@
                     </div>
                 </div>
             </div>
-        </c:forEach>
-    </div>
+        </div>
+    </c:forEach>
 </div>
