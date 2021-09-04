@@ -28,25 +28,13 @@
                 </c:forEach>
             </c:when>
             <c:otherwise>
-                <div class="col-sm-12 col-md-6 col-lg-4">
-                    <a class="recommended-action-wrapper" href="">
-                        <div class="recommended-action">
-                            <img src="../assets/recommendation_bulb.png" class="recommended-action-icon">
-                            <h5>${it.msg.recommendation}</h5>
-                            <h3>${it.msg.noRecommendation}</h3>
-                            <p class="recommended-action-description">${it.msg.noRecommendationInfo}.</p>
-                                <%-- Might have to be changed to x-forwarded-proto and x-forwarded-host on prod server--%>
-                            <div class="recommended-action-link">
-                                <img src="../assets/arrow_blue.png" width="28px" height="18px"/>
-                            </div>
-                        </div>
-                    </a>
+                <div class="col-xs-12">
+                    <div class="alert bg-lightbluegrey">
+                        <p><strong>${it.msg.noRecommendation}</strong></p>
+                        <p>${it.msg.noRecommendationInfo}</p>
+                    </div>
                 </div>
-                <!--
-                <div class="text-center">Nothing recommended</div>
-                -->
             </c:otherwise>
         </c:choose>
-        <!-- END Recommendations -->
     </div>
 </div>
