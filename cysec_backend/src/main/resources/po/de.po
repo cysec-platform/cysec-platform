@@ -75,22 +75,22 @@ msgid "next"
 msgstr "nächste"
 
 #: DashboardMsg.java:9 DashboardMsg.java:10
-msgid "recommendation"
-msgid_plural "recommendations"
+msgid "Recommendation"
+msgid_plural "Recommendations"
 msgstr[0] "Empfehlung"
 msgstr[1] "Empfehlungen"
 
 #: DashboardMsg.java:11
-msgid "no recommendations to display"
-msgstr "keine Empfehlungen anzuzeigen"
+msgid "No recommendations available"
+msgstr "Keine Empfehlungen vorhanden"
 
 #: DashboardMsg.java:12
-msgid "Later you will see recommended next steps displayed here"
-msgstr "Später sehen Sie hier die nächsten empfohlenen Schritte"
+msgid "If there are recommended next steps, they will be displayed here."
+msgstr "Hier werden die nächsten empfohlenen Schritte angezeigt, falls es solche gibt."
 
 #: DashboardMsg.java:13
-msgid "coach"
-msgid_plural "coaches"
+msgid "Coach"
+msgid_plural "Coaches"
 msgstr[0] "Trainer"
 msgstr[1] "Trainer"
 
@@ -103,14 +103,14 @@ msgid "continue"
 msgstr "weitermachen"
 
 #: DashboardMsg.java:16
-msgid "remaining coach"
-msgid_plural "remaining coaches"
-msgstr[0] "ausstehender Trainer"
-msgstr[1] "ausstehende Trainer"
+msgid "Remaining coach"
+msgid_plural "Remaining coaches"
+msgstr[0] "Ausstehender Trainer"
+msgstr[1] "Ausstehende Trainer"
 
 #: DashboardMsg.java:17
-msgid "All coaches done"
-msgstr "Alle Trainer erledigt"
+msgid "All available coaches started."
+msgstr "Alle verfügbaren Trainer wurden bereits gestartet."
 
 #: DashboardMsg.java:18
 msgid "skills"
