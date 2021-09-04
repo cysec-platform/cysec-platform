@@ -7,9 +7,11 @@
 
 <div class="row dashboard-wrapper bg-lightbluegrey">
     <div id="page-content-wrapper" class="col-xs-8 bg-white">
-        <%@include file="recommended.jsp"%>
-        <%@include file="coaches.jsp"%>
-        <%@include file="remaining.jsp"%>
+        <div class="row">
+            <%@include file="recommended.jsp"%>
+            <%@include file="coaches.jsp"%>
+            <%@include file="remaining.jsp"%>
+        </div>
     </div>
     <div id="sidebar-wrapper" class="col-xs-4 bg-lightbluegrey">
         <div class="sidebar-nav sidebar-content">

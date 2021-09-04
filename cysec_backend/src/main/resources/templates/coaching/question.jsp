@@ -4,7 +4,7 @@
 <c:set var="question" value="${ it.question }"/>
 <c:set var="answer" value="${ it.answer }"/>
 
-<div id="blocks">
+<div id="blocks" class="row">
     <div class="col-xs-12 container question panel" id="${ question.getId() }}">
         <h1 class="panel-heading">${ question.getText() }</h1>
         <c:set var="qAttachments" value="${ question.getAttachments() }"/>
