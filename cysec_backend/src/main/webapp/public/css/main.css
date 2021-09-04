@@ -590,65 +590,22 @@ body {
     display: none;
 }
 
-#pagination  {
-    bottom: 0;
-    font-size: 3em;
-    padding: 0 80px 0 60px;
-    margin-right: auto;
+#pagination {
+    padding-top: 30px;
     height: 190px;
 }
 
-
-#pagination-pages > div {
-    font-size: 0.5em;
-    width: 20px;
-    padding-top: 5px;
-}
-
-.pagination-img {
-    width: 16px;
-}
-
-.pagination-text, .pagination-img {
-    margin-left: calc(100% - 10px);
-}
-
-.pagination-text {
-    display: none;
-}
-
-.pagination-current {
-    background: transparent;
-    width: 34px;
+.pagination-element {
+    display: inline-block;
+    text-decoration: none;
 }
 
 .pagination-img {
     width: 22px;
-    margin-left: -12px;
 }
 
-.pagination-current > .pagination-img {
-    width: 30px;
-    margin-left: -16px;
-}
-
-.pagination-current > .pagination-text {
-    margin-left: -12px;
-}
-
-#pagination-next i {
-    float: right;
-    cursor: pointer;
-}
-
-#pagination-previous i {
-    float: left;
-    cursor: pointer;
-}
-
-#pagination-pages {
-    margin: 0 -20px 0 15px;
-    padding-left: 0;
+.pagination-text {
+    display: none;
 }
 
 #progress {
@@ -664,12 +621,8 @@ body {
     padding-top: 10px;
 }
 
-#pagination-pages, #progress, #pagination-next {
-    margin-top: 40px;
-}
-
-#pagination-next {
-    padding-right: 0;
+#pagination a:hover {
+    text-decoration: none;
 }
 
 #pagination .next-question {
@@ -689,7 +642,6 @@ body {
 }
 
 #pagination .next-question a:hover {
-    text-decoration: none;
     color: #007EA7;
 }
 
