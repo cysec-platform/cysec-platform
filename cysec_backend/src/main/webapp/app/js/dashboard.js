@@ -1,5 +1,3 @@
-const maxCountRecommendations = 4;
-
 /**
  * Retrieves the rendered dashboard from the backend
  */
