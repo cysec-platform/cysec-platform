@@ -20,7 +20,10 @@
                            checked="checked"
                     </c:if>
                     >
-                    <span>${ option.getText() }</span>
+                    <span class="questionnaire-answers-text">
+                        <span>${ option.getText() }</span>
+                    </span>
+                    <span class="questionnaire-answers-checkmark"></span>
                 </label>
 
                 <c:set var="oAttachments" value="${option.getAttachments()}"/>
