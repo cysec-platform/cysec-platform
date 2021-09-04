@@ -14,17 +14,17 @@ public class DashboardMsg extends Message {
   public DashboardMsg(Locale locale, int instantiated, int remaining, int badges) {
     super(locale);
 
-    messages.put("recommendations", i18n.trn("recommendation", "recommendations", 2L));
-    messages.put("recommendation", i18n.tr("recommendation"));
-    messages.put("noRecommendation", i18n.tr("no recommendations to display"));
+    messages.put("recommendations", i18n.trn("Recommendation", "Recommendations", 2L));
+    messages.put("recommendation", i18n.tr("Recommendation"));
+    messages.put("noRecommendation", i18n.tr("No recommendations available"));
     messages.put(
         "noRecommendationInfo",
-        i18n.tr("Later you will see recommended next steps displayed here"));
-    messages.put("coaches", i18n.trn("coach", "coaches", instantiated));
+        i18n.tr("If there are recommended next steps, they will be displayed here."));
+    messages.put("coaches", i18n.trn("Coach", "Coaches", instantiated));
     messages.put("coachRestart", i18n.tr("restart"));
     messages.put("coachContinue", i18n.tr("continue"));
-    messages.put("remaining", i18n.trn("remaining coach", "remaining coaches", remaining));
-    messages.put("noRemaining", i18n.tr("All coaches done"));
+    messages.put("remaining", i18n.trn("Remaining coach", "Remaining coaches", remaining));
+    messages.put("noRemaining", i18n.tr("All available coaches started."));
     messages.put("skills", i18n.tr("skills"));
     messages.put("strength", i18n.tr("strength"));
     messages.put("knowHow", i18n.tr("know-how"));
