@@ -240,10 +240,14 @@ body {
 .questionnaire-answers-text {
     text-align:left;
     font-size: 0.9em;
-    padding: 15px 50px 10px 20px;
+    padding: 15px 20px 10px 20px;
     display: block;
     font-weight: normal;
     letter-spacing: 1px;
+}
+
+.text-with-checkmark-padding {
+    padding-right: 50px;
 }
 
 .questionnaire-answers label input {
