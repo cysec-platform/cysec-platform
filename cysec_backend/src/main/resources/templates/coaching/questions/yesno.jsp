@@ -19,7 +19,7 @@
                             checked="checked"
                         </c:if>
                 />
-                <span>Yes</span>
+                <span class="questionnaire-answers-text">Yes</span>
             </label>
         </div>
         <div class="questionnaire-answers col-xs-6">
@@ -30,7 +30,7 @@
                             checked="checked"
                         </c:if>
                 />
-                <span>No</span>
+                <span class="questionnaire-answers-text">No</span>
             </label>
         </div>
     </div>

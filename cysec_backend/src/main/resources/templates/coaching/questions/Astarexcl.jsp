@@ -20,8 +20,8 @@
                            checked="checked"
                     </c:if>
                     >
-                    <span class="questionnaire-answers-text">
-                        <span>${ option.getText() }</span>
+                    <span class="questionnaire-answers-text text-with-checkmark-padding">
+                        ${ option.getText() }
                     </span>
                     <c:if test="${!oid.contains('oNone')}">
                         <span class="questionnaire-answers-checkmark"></span>

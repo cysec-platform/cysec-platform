@@ -19,7 +19,9 @@
                            checked="checked"
                     </c:if>
                     >
-                    <span>${option.getText()}</span>
+                    <span class="questionnaire-answers-text">
+                        ${option.getText()}
+                    </span>
                 </label>
             </div>
         </c:forEach>
