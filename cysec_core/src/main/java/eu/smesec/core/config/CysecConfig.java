@@ -17,8 +17,8 @@ public class CysecConfig extends Config {
 
     private static final String CONFIG_FOLDER = "etc";
     private static final String CONFIG_FILE = "cysec.conf";
-    static final String RESOURCE_FOLDER = "etc";
-    static final String RESOURCE_FILE = "cysec.cfgresources";
+    public static final String RESOURCE_FOLDER = "etc";
+    public static final String RESOURCE_FILE = "cysec.cfgresources";
 
     private static Config config = null;
 

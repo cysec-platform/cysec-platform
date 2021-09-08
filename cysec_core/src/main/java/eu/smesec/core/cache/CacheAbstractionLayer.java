@@ -18,7 +18,6 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-
 /**
  * Cache abstraction layer. Provides cache API.
  */
@@ -36,26 +35,21 @@ public class CacheAbstractionLayer {
     private CacheAbstractionLayer(
             Supplier<String> contextPath, Supplier<ResourceManager> resManager, Supplier<Config> config) {
         String contextName = contextPath.get().substring(1);
-        String basePath = config.get().getStringValue(contextName, "cysec_base_path");
-        String dataPath = config.get().getStringValue(contextName, "cysec_data_path");
-        String coachPath = config.get().getStringValue(contextName, "cysec_coach_path");
+        String basePathStr = config.get().getStringValue(contextName, "cysec_base_path");
+        String dataPathStr = config.get().getStringValue(contextName, "cysec_data_path");
+        String coachPathStr = config.get().getStringValue(contextName, "cysec_coach_path");
+        Path dataPath = dataPathStr.startsWith("/") ? Paths.get(dataPathStr) : Paths.get(basePathStr, dataPathStr, contextPath.get());
+        Path coachPath = coachPathStr.startsWith("/") ? Paths.get(coachPathStr) : Paths.get(basePathStr, coachPathStr);
 
         try {
-            this.data =
-                    new DataCache(
-                            dataPath.startsWith("/")
-                                    ? Paths.get(dataPath)
-                                    : Paths.get(basePath, dataPath, contextPath.get()));
+            this.data = new DataCache(dataPath);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
 
         try {
-            this.coaches =
-                    new CoachCache(
-                            coachPath.startsWith("/") ? Paths.get(coachPath) : Paths.get(basePath, coachPath),
-                            new LibCal(this, resManager.get()));
+            this.coaches = new CoachCache(coachPath, new LibCal(this, resManager.get()));
             CoachManager coachManager = new CoachManager(this.coaches);
             coachManager.init(); // check call on webapp start and not in constructor
         } catch (Exception e) {
@@ -254,11 +248,9 @@ public class CacheAbstractionLayer {
                             company -> {
                                 String username = user.getUsername();
                                 String email = user.getEmail();
-                                if (company.getUser().stream()
-                                        .anyMatch(
-                                                user1 ->
-                                                        user1.getUsername().equals(username)
-                                                                || user1.getEmail().equals(email))) {
+                                if (company.getUser().stream().filter(existingUser -> existingUser.getUsername() != null && existingUser.getEmail() != null)
+                                        .anyMatch(existingUser ->
+                                                existingUser.getUsername().equals(username) || existingUser.getEmail().equals(email))) {
                                     throw new ElementAlreadyExistsException(
                                             "User with username "
                                                     + username

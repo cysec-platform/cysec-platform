@@ -29,7 +29,7 @@ public class SignUpModel {
                             new FieldsExclusionStrategy("id", "lock", "roles", "token"))
                     .create();
 
-    private CacheAbstractionLayer cal = CacheAbstractionLayer.getInstance();
+    private final CacheAbstractionLayer cal = CacheAbstractionLayer.getInstance();
 
     /**
      * Returns a model containing all the company IDs

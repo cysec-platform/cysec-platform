@@ -1,7 +1,7 @@
 package eu.smesec.core.utils;
 
-import eu.smesec.bridge.generated.User;
 import eu.smesec.bridge.execptions.ValidationException;
+import eu.smesec.bridge.generated.User;
 
 import java.util.regex.Pattern;
 
@@ -58,12 +58,13 @@ public final class Validator {
     }
 
     /**
-     * Checks if an user object is valid.
+     * Checks if a user object is valid.
      *
      * @param user user object
      * @throws ValidationException Thrown during validation of user data
      */
     public static void validateUser(User user) throws ValidationException {
+        if(user == null) throw new ValidationException("No user provided");
         if (!validateWord(user.getUsername())) {
             throw new ValidationException("Could not validate Username");
         }

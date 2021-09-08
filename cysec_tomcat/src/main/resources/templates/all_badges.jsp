@@ -4,7 +4,7 @@
 <c:set var="api" value="${pageContext.request.contextPath}/api/rest/resources/"/>
 
 <div class="badge-content-wrapper scrollable">
-    <main>
+    <eu.smesec.totalcross.main>
         <div class="row">
             <div class="col-xs-12">
                 <h1>${it.msg.title}</h1>
@@ -29,5 +29,5 @@
                 </c:choose>
             </div>
         </div>
-    </main>
+    </eu.smesec.totalcross.main>
 </div>

@@ -17,7 +17,7 @@ pipeline {
       steps {
         script {
           switch(BRANCH_NAME) {
-            case 'main':
+            case 'eu.smesec.totalcross.main':
               sh 'mvn -DskipTests versions:set -DremoveSnapshot=true'
               sh 'mvn -DskipTests versions:use-latest-releases versions:commit'
             case 'integration':

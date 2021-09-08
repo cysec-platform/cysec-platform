@@ -46,6 +46,7 @@ public class Dashboard {
 
         int recommendationLimit = CysecConfig.getDefault().getNumericValue(contextName, RECOMMENDATIONS_SIZE);
 
+
         try {
             Map<String, Object> model = new DashboardModel(recommendationLimit, locale).getModel();
             return Response.status(200).entity(new Viewable("/dashboard/dashboard", model)).build();

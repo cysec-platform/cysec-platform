@@ -2,10 +2,7 @@ package eu.smesec.platform.endpoints;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import eu.smesec.bridge.execptions.CacheException;
-import eu.smesec.bridge.execptions.CacheNotFoundException;
-import eu.smesec.bridge.execptions.ElementAlreadyExistsException;
-import eu.smesec.bridge.execptions.ElementNotFoundException;
+import eu.smesec.bridge.execptions.*;
 import eu.smesec.core.cache.CacheAbstractionLayer;
 import eu.smesec.core.endpoints.UsersModel;
 import eu.smesec.core.json.FieldsExclusionStrategy;
@@ -93,10 +90,13 @@ public class Users {
         } catch (CacheException ce) {
             logger.log(Level.WARNING, ce.getMessage(), ce);
             return Response.status(400).build();
+        } catch (ValidationException ve) {
+            logger.log(Level.SEVERE, ve.getMessage(), ve);
+            return Response.status(400).build();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Failed to create user", e);
+            return Response.status(500).build();
         }
-        return Response.status(500).build();
     }
 
     /**

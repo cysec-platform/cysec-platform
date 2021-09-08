@@ -397,7 +397,7 @@ public class Config {
      * @param ressourceFile filename of the resource file
      * @throws IOException if an error happens while reading the file
      */
-    protected Config(String ressourceFile) throws IOException {
+    public Config(String ressourceFile) throws IOException {
         this();
         if (ressourceFile != null) {
             readRessources(ressourceFile);

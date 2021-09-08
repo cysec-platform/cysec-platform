@@ -18,7 +18,7 @@ The following table lists the supported question types and their properties:
 
 
 ## Attributes
-The platform identifies the question based on its "id" attribute (see above table). In addition, like blocks a question can be enriched with documentation and images on the coach view. Use the "instruction" attribute for the documentation and "attachment" for pictures.
+The platform identifies the question based on its "id" attribute (see above table). In addition, like blocks a question can be enriched with documentation and images on the coach eu.smesec.totalcross.controllers.views. Use the "instruction" attribute for the documentation and "attachment" for pictures.
  ```
  <xs:sequence>
       <xs:element ref="text"/>

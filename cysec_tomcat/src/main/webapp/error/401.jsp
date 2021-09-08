@@ -385,7 +385,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-left" href="/">
-                <img src="${pageContext.request.contextPath}/../../../../../platform/src/main/webapp/assets/logo/smesec.png" alt="The SMESEC project"/>
+                <img src="${pageContext.request.contextPath}/../../../../../platform/src/eu.smesec.totalcross.main/webapp/assets/logo/smesec.png" alt="The SMESEC project"/>
             </a>
         </div>
         <div class="clear"></div>
@@ -415,7 +415,7 @@
                 401
             </div>
             <div class="context primary-text-color">
-                <p>Seems like you are not authorized to view this page without valid credentials. Get in touch with the administrator of your CySec account.
+                <p>Seems like you are not authorized to eu.smesec.totalcross.controllers.views this page without valid credentials. Get in touch with the administrator of your CySec account.
             </div>
             <div class="buttons-container">
                 <a class="border-button" href="/"><span class="fa fa-home"></span> Home page</a>
@@ -424,11 +424,11 @@
         </div>
     </div>
 </div>
-<script src="${pageContext.request.contextPath}/../../../../../platform/src/main/webapp/js/jquery-1.11.1.min.js"></script>
-<script src="${pageContext.request.contextPath}/../../../../../platform/src/main/webapp/js/jquery-ui.min.js"></script>
-<script src="${pageContext.request.contextPath}/../../../../../platform/src/main/webapp/js/bootstrap.min.js"></script>
-<script src="${pageContext.request.contextPath}/../../../../../platform/src/main/webapp/js/prettify.js"></script>
-<script src="${pageContext.request.contextPath}/../../../../../platform/src/main/webapp/js/errorpage.js"></script>
+<script src="${pageContext.request.contextPath}/../../../../../platform/src/eu.smesec.totalcross.main/webapp/js/jquery-1.11.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/../../../../../platform/src/eu.smesec.totalcross.main/webapp/js/jquery-ui.min.js"></script>
+<script src="${pageContext.request.contextPath}/../../../../../platform/src/eu.smesec.totalcross.main/webapp/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/../../../../../platform/src/eu.smesec.totalcross.main/webapp/js/prettify.js"></script>
+<script src="${pageContext.request.contextPath}/../../../../../platform/src/eu.smesec.totalcross.main/webapp/js/errorpage.js"></script>
 </body>
 </html>
 

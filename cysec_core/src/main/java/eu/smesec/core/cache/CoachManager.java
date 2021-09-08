@@ -16,8 +16,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-//import org.glassfish.jersey.logging.LoggingFeature;
-
 public class CoachManager {
     private static final Logger logger = Logger.getLogger(CoachManager.class.getName());
     private final CoachCache cache;

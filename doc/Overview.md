@@ -4,15 +4,15 @@
 
 ```
 src/
-   main/
+   eu.smesec.totalcross.main/
        java/
        resources/
        webapp/
    test/
 ```
 
-The folder `java` contains the main application code.
-The folder `webapp` contains the jsp pages, static content and additional configuration files for both the web front-end and the main application.
+The folder `java` contains the eu.smesec.totalcross.main application code.
+The folder `webapp` contains the jsp pages, static content and additional configuration files for both the web front-end and the eu.smesec.totalcross.main application.
 `resources` contains templates, questionnaires, logs etc.
 
 ## Structure of the Java code
@@ -27,7 +27,7 @@ Each of the classes is annotated with the path that they cover, as are all the m
 ### Hooks
 This class represents the various events that occur while a questionnaire is being filled out by a user. Generally, these methods simply relay the call to the appropriate library for a given questionnaire. The methods here will typically return a list of commands to the front-end which works through them to update its state. The list of potential commands is defined in the `Commands` enum.
 It has two helper methods, getQuestionByID (self-explanatory) and buildAnswer, which takes strings describing an answer and returns them as an object of type Answer.
-onBegin is called when a questionnaire is started from the main page and the first question should be loaded.
+onBegin is called when a questionnaire is started from the eu.smesec.totalcross.main page and the first question should be loaded.
 onResume is used when another question is accessed through a direct link.
 onResponseChange is called when a question is answered or the answer is changed.
 

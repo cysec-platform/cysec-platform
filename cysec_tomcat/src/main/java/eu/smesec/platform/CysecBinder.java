@@ -19,7 +19,6 @@ public class CysecBinder extends AbstractBinder {
         this.context = context;
     }
 
-    // TODO: Don't know if this will work with the suppliers.
     @Override
     protected void configure() {
         try {
@@ -29,13 +28,13 @@ public class CysecBinder extends AbstractBinder {
             ResourceManager resManager = ResourceManager.getInstance();
             Supplier<ResourceManager> resManagerSupplier = () -> resManager;
             Supplier<String> contextPathSupplier = context::getContextPath;
-//            Supplier<String> company = () -> context.getAttribute("company").toString();
             CacheAbstractionLayer.init(contextPathSupplier, resManagerSupplier, configSupplier);
             CacheAbstractionLayer cal = CacheAbstractionLayer.getInstance();
             MailServiceImpl mailService = new MailServiceImpl();
             // bind Singletons
             bind(cal).to(CacheAbstractionLayer.class);
             bind(resManager).to(ResourceManager.class);
+            // bind mailService
             bind(mailService).to(MailServiceImpl.class);
         } catch (Exception e) {
             throw new RuntimeException("Error in binding configuration");

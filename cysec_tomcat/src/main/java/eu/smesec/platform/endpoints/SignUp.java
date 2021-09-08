@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import eu.smesec.bridge.execptions.CacheNotFoundException;
 import eu.smesec.bridge.execptions.ElementAlreadyExistsException;
+import eu.smesec.bridge.execptions.ValidationException;
 import eu.smesec.core.endpoints.SignUpModel;
 import eu.smesec.core.json.FieldsExclusionStrategy;
 import eu.smesec.platform.services.MailServiceImpl;
@@ -79,10 +80,9 @@ public class SignUp {
         try {
             Long userID = usersModel.createUser(json);
             // Get company admins and send notification email
-//            List<User> admins = cal.getAllAdminUsers(companyId);
+            //  List<User> admins = cal.getAllAdminUsers(companyId);
             // enable on production
-            // mailService.sendMail(admins, "", "",
-            //        "New user request", "Approve user: " + user.getUsername());
+            // mailService.sendMail(admins, "", "", "New user request", "Approve user: " + user.getUsername());
             return Response.status(200).entity(userID).build();
         } catch (CacheNotFoundException nfe) {
             logger.log(Level.WARNING, nfe.getMessage(), nfe);
@@ -90,10 +90,13 @@ public class SignUp {
         } catch (ElementAlreadyExistsException aee) {
             logger.log(Level.WARNING, aee.getMessage(), aee);
             return Response.status(409).build();
+        } catch (ValidationException ve) {
+            logger.log(Level.SEVERE, "Failed to create user", ve);
+            return Response.status(400).build();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Failed to create user", e);
+            return Response.status(500).build();
         }
-        return Response.status(500).build();
     }
 
     /**

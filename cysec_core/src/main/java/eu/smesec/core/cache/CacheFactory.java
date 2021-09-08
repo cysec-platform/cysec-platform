@@ -56,7 +56,7 @@ public final class CacheFactory {
    * @return concrete library
    * @throws LibraryException if an error occurs during loading or instantiating the library
    */
-  static Library loadLibrary(ClassLoader parent, eu.smesec.bridge.generated.Library lib)
+  public static Library loadLibrary(ClassLoader parent, eu.smesec.bridge.generated.Library lib)
       throws LibraryException {
     try {
       byte[] decoded = Base64.getDecoder().decode(lib.getValue());

@@ -385,7 +385,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-left" href="/">
-                <img src="${pageContext.request.contextPath}/../../../../../platform/src/main/webapp/assets/logo/smesec.png" alt="The SMESEC project"/>
+                <img src="${pageContext.request.contextPath}/../../../../../platform/src/eu.smesec.totalcross.main/webapp/assets/logo/smesec.png" alt="The SMESEC project"/>
             </a>
         </div>
         <div class="clear"></div>
@@ -429,11 +429,11 @@
         </div>
     </div>
 </div>
-<script src="${pageContext.request.contextPath}/../../../../../platform/src/main/webapp/js/jquery-1.11.1.min.js"></script>
-<script src="${pageContext.request.contextPath}/../../../../../platform/src/main/webapp/js/jquery-ui.min.js"></script>
-<script src="${pageContext.request.contextPath}/../../../../../platform/src/main/webapp/js/bootstrap.min.js"></script>
-<script src="${pageContext.request.contextPath}/../../../../../platform/src/main/webapp/js/prettify.js"></script>
-<script src="${pageContext.request.contextPath}/../../../../../platform/src/main/webapp/js/errorpage.js"></script>
+<script src="${pageContext.request.contextPath}/../../../../../platform/src/eu.smesec.totalcross.main/webapp/js/jquery-1.11.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/../../../../../platform/src/eu.smesec.totalcross.main/webapp/js/jquery-ui.min.js"></script>
+<script src="${pageContext.request.contextPath}/../../../../../platform/src/eu.smesec.totalcross.main/webapp/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/../../../../../platform/src/eu.smesec.totalcross.main/webapp/js/prettify.js"></script>
+<script src="${pageContext.request.contextPath}/../../../../../platform/src/eu.smesec.totalcross.main/webapp/js/errorpage.js"></script>
 </body>
 </html>
 

@@ -3,7 +3,7 @@
 <div class="row">
     <!-- left side -->
     <div id="page-content-wrapper" class="col-xs-7">
-        <main>
+        <eu.smesec.totalcross.main>
             <div class="row">
                 <div class="col-lg-12">
                     <!-- question -->
@@ -12,7 +12,7 @@
                     <c:import url="pagination.jsp"/>
                 </div>
             </div>
-        </main>
+        </eu.smesec.totalcross.main>
     </div>
     <!-- rights side -->
     <div id="documentation-wrapper" class="col-xs-5 bg-lightbluegrey">

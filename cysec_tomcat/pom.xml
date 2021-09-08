@@ -44,6 +44,12 @@
             <organization>University of Applied Sciences Northwestern Switzerland (FHNW)</organization>
             <organizationUrl>https://www.fhnw.ch</organizationUrl>
         </developer>
+        <developer>
+            <name>Hermann Grieder</name>
+            <email>hermann.grieder@fhnw.ch</email>
+            <organization>University of Applied Sciences Northwestern Switzerland (FHNW)</organization>
+            <organizationUrl>https://www.fhnw.ch</organizationUrl>
+        </developer>
     </developers>
 
     <scm>
@@ -277,7 +283,7 @@
 
     <build>
         <finalName>${warFinalName}</finalName>
-<!--        <testSourceDirectory>src/test/java</testSourceDirectory>-->
+        <!--        <testSourceDirectory>src/test/java</testSourceDirectory>-->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

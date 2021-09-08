@@ -1,6 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<%--<%@taglib prefix="t" tagdir="/../../src/main/webapp/WEB-INF/tags" %>--%>
+<%--<%@taglib prefix="t" tagdir="/../../src/eu.smesec.totalcross.main/webapp/WEB-INF/tags" %>--%>
 
 <t:layout>
     <jsp:attribute name="scripts">

@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  *
  * @author Claudio Seitz
  */
-class DataCache extends Cache {
+public class DataCache extends Cache {
 
   private final Map<String, CompanyCache> companies;
 
@@ -39,7 +39,7 @@ class DataCache extends Cache {
    *
    * @param path data root directory
    */
-  DataCache(Path path) throws CacheException, IOException {
+  public DataCache(Path path) throws CacheException, IOException {
     super(path);
     this.companies = new HashMap<>();
     if (Files.exists(path)) {
@@ -81,7 +81,7 @@ class DataCache extends Cache {
    * @param companyId the id of the company
    * @param command the command object
    */
-  <R> R executeOnCompany(String companyId, ICommand<CompanyCache, R> command)
+  public <R> R executeOnCompany(String companyId, ICommand<CompanyCache, R> command)
       throws CacheException {
     readLock.lock();
     try {
@@ -116,7 +116,7 @@ class DataCache extends Cache {
    *
    * @return Set of company ids
    */
-  Collection<String> getCompanyIds() {
+  public Collection<String> getCompanyIds() {
     readLock.lock();
     try {
       return new ArrayList<>(companies.keySet());
@@ -131,7 +131,7 @@ class DataCache extends Cache {
    * @param id the id of the company
    * @return <code>true</code> if the company id exists, or <code>false</code> otherwise
    */
-  boolean existsCompany(String id) {
+  public boolean existsCompany(String id) {
     readLock.lock();
     try {
       return companies.containsKey(id.toLowerCase());
@@ -146,7 +146,7 @@ class DataCache extends Cache {
    * @param id the id of the company
    * @param name the name of the company
    */
-  void addCompany(String id, String name, User admin, Questionnaire companyCoach)
+  public void addCompany(String id, String name, User admin, Questionnaire companyCoach)
       throws CacheException {
     writeLock.lock();
     String cid = id.toLowerCase();

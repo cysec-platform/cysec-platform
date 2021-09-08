@@ -1,6 +1,6 @@
 # CySeC Main Repository
 
-This is the main repository for the CySeC project.
+This is the eu.smesec.totalcross.main repository for the CySeC project.
 
 
 ## Development

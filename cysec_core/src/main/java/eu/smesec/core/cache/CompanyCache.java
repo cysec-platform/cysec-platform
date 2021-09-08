@@ -20,12 +20,12 @@ import java.util.stream.Stream;
  * @author Claudio Seitz
  * @version 1.2
  */
-class CompanyCache extends Cache {
-  static final String USER_XML = "users.xml";
-  static final String AUDITS_XML = "audits.xml";
-  static final String DEFAULT_ANSWERS_XML = "default.xml";
-  static final String REPLICA_TOKEN_FILE = "replica_token";
-  static final String READ_ONLY_FILE = "readonly";
+public class CompanyCache extends Cache {
+  public static final String USER_XML = "users.xml";
+  public static final String AUDITS_XML = "audits.xml";
+  public static final String DEFAULT_ANSWERS_XML = "default.xml";
+  public static final String REPLICA_TOKEN_FILE = "replica_token";
+  public static final String READ_ONLY_FILE = "readonly";
 
   private static class CachedObject<T> {
     private final Path path;
@@ -76,7 +76,7 @@ class CompanyCache extends Cache {
    * @param replicaToken Replica token value.
    * @throws CacheException If an error occurs during the company installation
    */
-  void install(Company company, Audits audits, String replicaToken) throws CacheException {
+  public void install(Company company, Audits audits, String replicaToken) throws CacheException {
     if (company == null || replicaToken == null || replicaToken.isEmpty()) {
       throw new IllegalArgumentException("company or replica token is invalid");
     }
@@ -115,7 +115,7 @@ class CompanyCache extends Cache {
    *
    * @throws CacheException If an io error occurs during the company loading.
    */
-  void load() throws CacheException {
+  public void load() throws CacheException {
     writeLock.lock();
     try {
       readOnly = Files.exists(this.path.resolve(READ_ONLY_FILE));
@@ -187,7 +187,7 @@ class CompanyCache extends Cache {
    * @return The result of the read command.
    * @throws CacheException If an error occurs during the command execution.
    */
-  <R> R readOnUsers(ICommand<Company, R> command) throws CacheException {
+  public <R> R readOnUsers(ICommand<Company, R> command) throws CacheException {
     return readOnCache(Paths.get(USER_XML), Company.class, command);
   }
 
@@ -199,7 +199,7 @@ class CompanyCache extends Cache {
    * @return The result of the read command.
    * @throws CacheException If an error occurs during the command execution.
    */
-  <R> R readOnAudits(ICommand<Audits, R> command) throws CacheException {
+  public <R> R readOnAudits(ICommand<Audits, R> command) throws CacheException {
     return readOnCache(Paths.get(AUDITS_XML), Audits.class, command);
   }
 
@@ -212,7 +212,7 @@ class CompanyCache extends Cache {
    * @return The result of the read command.
    * @throws CacheException If an error occurs during the command execution.
    */
-  <R> R readOnAnswers(Path relative, ICommand<Answers, R> command) throws CacheException {
+  public <R> R readOnAnswers(Path relative, ICommand<Answers, R> command) throws CacheException {
     return readOnCache(relative, Answers.class, command);
   }
 
@@ -239,7 +239,7 @@ class CompanyCache extends Cache {
    * @return The result of the read command.
    * @throws CacheException If an error occurs during the command execution.
    */
-  <R> R readOnAllAnswers(ICommand<Map<Path, Answers>, R> command) throws CacheException {
+  public <R> R readOnAllAnswers(ICommand<Map<Path, Answers>, R> command) throws CacheException {
     readLock.lock();
     try {
       Map<Path, Answers> map = new TreeMap<>();
@@ -304,7 +304,7 @@ class CompanyCache extends Cache {
    * @param command The write command to execute.
    * @throws CacheException If an error occurs during the command execution.
    */
-  void writeOnUsers(ICommand<Company, Void> command) throws CacheException {
+  public void writeOnUsers(ICommand<Company, Void> command) throws CacheException {
     writeOnCache(Paths.get(USER_XML), Company.class, command);
   }
 
@@ -314,7 +314,7 @@ class CompanyCache extends Cache {
    * @param command The write command to execute.
    * @throws CacheException If an error occurs during the command execution.
    */
-  void writeOnAudits(ICommand<Audits, Void> command) throws CacheException {
+  public void writeOnAudits(ICommand<Audits, Void> command) throws CacheException {
     writeOnCache(Paths.get(AUDITS_XML), Audits.class, command);
   }
 
@@ -325,7 +325,7 @@ class CompanyCache extends Cache {
    * @param command The write command to execute.
    * @throws CacheException If an error occurs during the command execution.
    */
-  void writeOnAnswers(Path relative, ICommand<Answers, Void> command) throws CacheException {
+  public void writeOnAnswers(Path relative, ICommand<Answers, Void> command) throws CacheException {
     writeOnCache(relative, Answers.class, command);
   }
 
@@ -373,7 +373,7 @@ class CompanyCache extends Cache {
    *
    * <p>Ignores failed operations.
    */
-  void saveCachedObjects() {
+  public void saveCachedObjects() {
     writeLock.lock();
     try {
       // no synchronized necessary because of write lock
@@ -397,7 +397,7 @@ class CompanyCache extends Cache {
    *
    * @param path relative path to source object
    */
-  void saveCachedObject(Path path) {
+  public void saveCachedObject(Path path) {
     if (path == null) {
       throw new IllegalArgumentException("path is null");
     }
@@ -417,7 +417,7 @@ class CompanyCache extends Cache {
     }
   }
 
-  void updateXml() {
+  public void updateXml() {
     writeLock.lock();
     try {
       logger.log(Level.FINE, "Saving company " + this.id);
@@ -449,7 +449,7 @@ class CompanyCache extends Cache {
    * @throws CacheException if the file already exists and can not be overwritten, or the
    *     synchronization fails.
    */
-  void syncFile(Path relative, InputStream inputStream, boolean overwrite) throws CacheException {
+  public void syncFile(Path relative, InputStream inputStream, boolean overwrite) throws CacheException {
     if (relative == null || inputStream == null) {
       throw new IllegalArgumentException("path or input is null");
     }
@@ -485,7 +485,7 @@ class CompanyCache extends Cache {
    * @return The file response object if the file was found, or <code>null</code> otherwise.
    * @throws CacheException If an error occurs during the response creation.
    */
-  byte[] createFileResponse(Path relative) throws CacheException {
+  public byte[] createFileResponse(Path relative) throws CacheException {
     if (relative == null) {
       throw new IllegalArgumentException("path is null");
     }
@@ -509,7 +509,7 @@ class CompanyCache extends Cache {
    * @param value <code>true</code> to mark the company as readonly, or <code>false</code> to mark
    *     the company as readwrite.
    */
-  void setReadOnly(boolean value) {
+  public void setReadOnly(boolean value) {
     this.writeLock.lock();
     try {
       this.readOnly = value;
@@ -531,7 +531,7 @@ class CompanyCache extends Cache {
    * @param dest The path of the new zip file.
    * @throws CacheException If an error during the zipping occurs.
    */
-  void zip(Path dest) throws CacheException {
+  public void zip(Path dest) throws CacheException {
     this.readLock.lock();
     try {
       FileUtils.zip(this.path, dest, REPLICA_TOKEN_FILE, READ_ONLY_FILE);
@@ -560,7 +560,7 @@ class CompanyCache extends Cache {
    * @throws CacheAlreadyExistsException if the coach directory already exists.
    * @throws CacheException If an io error or mapper error occurs during the instantiation.
    */
-  void instantiateCoach(Path parent, Questionnaire coach, Set<String> names) throws CacheException {
+  public void instantiateCoach(Path parent, Questionnaire coach, Set<String> names) throws CacheException {
     if (coach == null) {
       throw new IllegalArgumentException("path or coach is null");
     }
@@ -599,7 +599,7 @@ class CompanyCache extends Cache {
    * @param coach The coach path to delete, relative to the company directory.
    * @throws CacheException If the coach path is a directory or an io error occurs.
    */
-  void deleteCoach(Path coach) throws CacheException {
+  public void deleteCoach(Path coach) throws CacheException {
     if (coach == null) {
       throw new IllegalArgumentException("Path is null");
     }
@@ -625,7 +625,7 @@ class CompanyCache extends Cache {
    * @param relative The path of the answer xml file, relative to the company directory.
    * @return <code>true</code> if the coach file is present, or <code>false</code> otherwise.
    */
-  boolean isCoachInstantiated(Path relative) {
+  public boolean isCoachInstantiated(Path relative) {
     readLock.lock();
     try {
       return Files.exists(this.path.resolve(relative));
@@ -640,7 +640,7 @@ class CompanyCache extends Cache {
    * @return list of all answers xml file paths.
    * @throws CacheException If an io error occurs.
    */
-  List<Path> listInstantiatedCoaches() throws CacheException {
+  public List<Path> listInstantiatedCoaches() throws CacheException {
     readLock.lock();
     try {
       List<Path> names = new ArrayList<>();

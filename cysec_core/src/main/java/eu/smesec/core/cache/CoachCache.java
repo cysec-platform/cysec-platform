@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class CoachCache extends Cache {
+public class CoachCache extends Cache {
     private static final Logger logger = Logger.getLogger(CoachCache.class.getName());
     // copy only objects with text fields, used for translations
     private static final CopyStrategy2 fieldCopyStrategy =
@@ -88,7 +88,7 @@ class CoachCache extends Cache {
     private final ILibCal libCal;
     private final Map<String, CoachCollection> objectCache;
 
-    CoachCache(Path dir, ILibCal libCal) throws Exception {
+    public CoachCache(Path dir, ILibCal libCal) throws Exception {
         super(dir);
         this.libCal = libCal;
         this.objectCache = new HashMap<>();
@@ -113,7 +113,7 @@ class CoachCache extends Cache {
      * @param language The language of the coach.
      * @param path     The file path of the coach.
      */
-    void addCoach(String coachId, String parentId, String language, Path path) {
+    public void addCoach(String coachId, String parentId, String language, Path path) {
         writeLock.lock();
         try {
             if (coachId == null || coachId.isEmpty()) {
@@ -189,7 +189,7 @@ class CoachCache extends Cache {
      *
      * @param path The coach identifier of the coach, which should be removed.
      */
-    void removeCoach(Path path) {
+    public void removeCoach(Path path) {
         readLock.lock();
         try {
             // quick access using file name

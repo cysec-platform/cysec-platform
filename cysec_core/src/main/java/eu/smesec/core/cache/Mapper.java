@@ -2,7 +2,12 @@ package eu.smesec.core.cache;
 
 import eu.smesec.bridge.execptions.MapperException;
 import eu.smesec.core.utils.FileUtils;
+import org.xml.sax.SAXParseException;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -10,12 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
-import org.xml.sax.SAXParseException;
 
 /**
  * Wrapper class to handle Jaxb marshalling and Unmarshalling.
@@ -27,7 +26,7 @@ public class Mapper<T> {
   private final Marshaller marshaller;
   private final Unmarshaller unmarshaller;
 
-  Mapper(Class<T> classOfT) {
+  public Mapper(Class<T> classOfT) {
     this.classOfT = classOfT;
     try {
       // create JAXB objects

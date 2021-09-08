@@ -48,7 +48,7 @@ public class UsersModel {
     /**
      * Creates the user model
      *
-     * @param locale
+     * @param locale Locale
      * @return User model
      * @throws CacheException Thrown during cache operations
      */
