@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.Library;
+import eu.smesec.bridge.CoachLibrary;
 import eu.smesec.cysec.platform.core.utils.FileResponse;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class ResourceManager {
    *
    * @param library library object
    */
-  public void registerLibResources(Library library) {
+  public void registerLibResources(CoachLibrary library) {
     Path dir = resourcePath.resolve(library.getQuestionnaire().getId() + "/" + library.getId());
     LibraryClassLoader classloader = (LibraryClassLoader) library.getClass().getClassLoader();
     classloader.forEachResource(

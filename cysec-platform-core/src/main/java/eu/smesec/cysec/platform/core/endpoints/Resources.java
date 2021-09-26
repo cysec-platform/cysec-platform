@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core.endpoints;
 
-import eu.smesec.bridge.Library;
+import eu.smesec.bridge.CoachLibrary;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.cache.ResourceManager;
 import eu.smesec.cysec.platform.core.utils.FileResponse;
@@ -60,7 +60,7 @@ public class Resources {
       String mime = Files.probeContentType(relative);
       if (sb.toString().endsWith(".jsp")) {
         // render jsp file from query params
-        Library lib = cache.getLibrary(coachId, libId);
+        CoachLibrary lib = cache.getLibrary(coachId, libId);
         Map<String, Object> model = lib.getJspModel(relative.getParent().toString());
         return Response.status(200)
               .entity(new Viewable("/res_coaches/" + relative.toString(), model))

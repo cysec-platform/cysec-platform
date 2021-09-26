@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.Library;
+import eu.smesec.bridge.CoachLibrary;
 import eu.smesec.bridge.execptions.LibraryException;
 import eu.smesec.bridge.generated.Answers;
 import eu.smesec.bridge.generated.Questionnaire;
@@ -56,7 +56,7 @@ public final class CacheFactory {
    * @return concrete library
    * @throws LibraryException if an error occurs during loading or instantiating the library
    */
-  static Library loadLibrary(ClassLoader parent, eu.smesec.bridge.generated.Library lib)
+  static CoachLibrary loadLibrary(ClassLoader parent, eu.smesec.bridge.generated.Library lib)
       throws LibraryException {
     try {
       byte[] decoded = Base64.getDecoder().decode(lib.getValue());
@@ -64,7 +64,7 @@ public final class CacheFactory {
       // The id of the library must be the FQCN of the class
       Class<?> libraryClass = loader.findClass(lib.getId());
       // Instantiate the class and give it a reference to the questionnaire
-      return (Library) libraryClass.newInstance();
+      return (CoachLibrary) libraryClass.newInstance();
     } catch (Exception e) {
       throw new LibraryException(lib, e.getMessage());
     }

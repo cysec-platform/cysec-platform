@@ -50,7 +50,7 @@ public interface ILibCal {
 
   Questionnaire getCoach(String coachId) throws CacheException;
 
-  List<Library> getLibraries(String coachId) throws CacheException;
+  List<CoachLibrary> getLibraries(String coachId) throws CacheException;
 
   List<Questionnaire> getAllCoaches() throws CacheException;
 
@@ -76,7 +76,7 @@ public interface ILibCal {
   void removeMvaluesFroCompany(String metadataKey, Set<String> mvalueKeys)
         throws CacheException;
 
-  void registerResources(Library library) throws IOException;
+  void registerResources(CoachLibrary library) throws IOException;
 
   boolean checkResource(String coachId, String libId, String path);
 

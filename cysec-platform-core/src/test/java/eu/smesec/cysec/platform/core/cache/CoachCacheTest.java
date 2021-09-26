@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import eu.smesec.bridge.ILibCal;
-import eu.smesec.bridge.Library;
+import eu.smesec.bridge.CoachLibrary;
 import eu.smesec.bridge.execptions.CacheNotFoundException;
 import eu.smesec.bridge.generated.*;
 import eu.smesec.cysec.platform.core.threading.ThreadFactory;
@@ -314,7 +314,7 @@ public class CoachCacheTest {
     enCoach.copyTo(result);
     result.getLibrary().clear();
     try {
-      Library library = Mockito.mock(Library.class);
+      CoachLibrary library = Mockito.mock(CoachLibrary.class);
       PowerMockito.when(CacheFactory.loadLibrary(Mockito.any(ClassLoader.class), Mockito.eq(libGen)))
           .thenReturn(library);
       Mockito.when(mapper.unmarshal(temp.resolve(companyFileEn))).thenReturn(enCoach);
@@ -384,7 +384,7 @@ public class CoachCacheTest {
             createTestOption("company-q30o2", "French option 2")
         ));
     try {
-      Library library = Mockito.mock(Library.class);
+      CoachLibrary library = Mockito.mock(CoachLibrary.class);
       PowerMockito.when(CacheFactory.loadLibrary(Mockito.any(ClassLoader.class), Mockito.eq(libGen)))
           .thenReturn(library);
       Mockito.when(mapper.unmarshal(temp.resolve(companyFileEn))).thenReturn(enCoach);
@@ -457,7 +457,7 @@ public class CoachCacheTest {
             createTestOption("company-q40o2", "English option 2")
         ));
     try {
-      Library library = Mockito.mock(Library.class);
+      CoachLibrary library = Mockito.mock(CoachLibrary.class);
       PowerMockito.when(CacheFactory.loadLibrary(Mockito.any(ClassLoader.class), Mockito.eq(libGen)))
           .thenReturn(library);
       Mockito.when(mapper.unmarshal(temp.resolve(companyFileEn))).thenReturn(enCoach);
@@ -540,8 +540,8 @@ public class CoachCacheTest {
     subCoach.copyTo(result);
     result.getLibrary().clear();
     try {
-      Library library = Mockito.mock(Library.class);
-      Library subLibrary = Mockito.mock(Library.class);
+      CoachLibrary library = Mockito.mock(CoachLibrary.class);
+      CoachLibrary subLibrary = Mockito.mock(CoachLibrary.class);
       PowerMockito.when(CacheFactory.loadLibrary(Mockito.any(ClassLoader.class), Mockito.eq(libGen)))
           .thenReturn(library);
       PowerMockito.when(CacheFactory.loadLibrary(Mockito.eq(library.getClass().getClassLoader()),
@@ -592,7 +592,7 @@ public class CoachCacheTest {
             createTestOption("company-q40o2", "English option 2")
         ));
     try {
-      Library subLibrary = Mockito.mock(Library.class);
+      CoachLibrary subLibrary = Mockito.mock(CoachLibrary.class);
       PowerMockito.when(CacheFactory.loadLibrary(Mockito.any(ClassLoader.class),
           Mockito.eq(libSubGen))).thenReturn(subLibrary);
       Mockito.when(mapper.unmarshal(temp.resolve(subFile))).thenReturn(subCoach);

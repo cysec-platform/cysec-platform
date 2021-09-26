@@ -1,7 +1,7 @@
 package eu.smesec.cysec.platform.core.cache;
 
 import eu.smesec.bridge.FQCN;
-import eu.smesec.bridge.Library;
+import eu.smesec.bridge.CoachLibrary;
 import eu.smesec.bridge.execptions.CacheAlreadyExistsException;
 import eu.smesec.bridge.execptions.CacheException;
 import eu.smesec.bridge.execptions.CacheNotFoundException;
@@ -1323,7 +1323,7 @@ public class CacheAbstractionLayer {
    * @param coachId The queried coach.
    * @return List of defined libraries for the coach.
    */
-  public List<Library> getLibrariesForQuestionnaire(String coachId) throws CacheException {
+  public List<CoachLibrary> getLibrariesForQuestionnaire(String coachId) throws CacheException {
     return coaches.read(coachId, null, Tuple::getSecond);
   }
 
@@ -1333,14 +1333,14 @@ public class CacheAbstractionLayer {
    * @param coachId The queried coach.
    * @return List of defined libraries for the coach.
    */
-  public Library getLibrary(String coachId, String libId) throws CacheException {
+  public CoachLibrary getLibrary(String coachId, String libId) throws CacheException {
     return coaches.read(
         coachId,
         null,
         coachLib -> {
-          ListIterator<Library> it = coachLib.getSecond().listIterator();
+          ListIterator<CoachLibrary> it = coachLib.getSecond().listIterator();
           while (it.hasNext()) {
-            Library lib = it.next();
+            CoachLibrary lib = it.next();
             if (lib.getId().equals(libId)) {
               return lib;
             }

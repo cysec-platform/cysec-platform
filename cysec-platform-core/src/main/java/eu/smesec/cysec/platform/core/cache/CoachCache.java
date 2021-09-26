@@ -1,7 +1,7 @@
 package eu.smesec.cysec.platform.core.cache;
 
 import eu.smesec.bridge.ILibCal;
-import eu.smesec.bridge.Library;
+import eu.smesec.bridge.CoachLibrary;
 import eu.smesec.bridge.execptions.CacheException;
 import eu.smesec.bridge.execptions.CacheNotFoundException;
 import eu.smesec.bridge.execptions.LibraryException;
@@ -69,7 +69,7 @@ class CoachCache extends Cache {
     private String parent;
     private Coach defaultCoach;
     private final Mapper<Questionnaire> mapper;
-    private final List<Library> libraries;
+    private final List<CoachLibrary> libraries;
     private final Map<String, Coach> translations;
 
     CoachCollection(String id) {
@@ -306,7 +306,7 @@ class CoachCache extends Cache {
     return collection;
   }
 
-  private Tuple<Questionnaire, List<Library>> getDefault(String coachId) throws CacheException {
+  private Tuple<Questionnaire, List<CoachLibrary>> getDefault(String coachId) throws CacheException {
     CoachCollection collection = getCollection(coachId);
     Coach defaultCoach = collection.defaultCoach;
     // load default coach and libraries if not loaded yet
@@ -319,13 +319,13 @@ class CoachCache extends Cache {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (collection.parent != null) {
           // load parent coach libs
-          Tuple<Questionnaire, List<Library>> parent = getDefault(collection.parent);
+          Tuple<Questionnaire, List<CoachLibrary>> parent = getDefault(collection.parent);
           classLoader = parent.getSecond().get(0).getClass().getClassLoader();
         }
 
         logger.log(Level.INFO, "Loading default coach from file " + defaultCoach.path.toString());
         Questionnaire coach = collection.mapper.unmarshal(this.path.resolve(defaultCoach.path));
-        List<Library> libraries = new ArrayList<>(1);
+        List<CoachLibrary> libraries = new ArrayList<>(1);
         if (coach.getOrder() == null) {
           coach.setOrder(Integer.MAX_VALUE);
         }
@@ -336,7 +336,7 @@ class CoachCache extends Cache {
           logger.log(
               Level.INFO,
               "Loading library " + l.getId() + " inside coach " + defaultCoach.path.toString());
-          Library concreteLibrary = CacheFactory.loadLibrary(classLoader, l);
+          CoachLibrary concreteLibrary = CacheFactory.loadLibrary(classLoader, l);
           // Run coach initialization routines
           concreteLibrary.init(l.getId(), coach, this.libCal, logger);
           libraries.add(concreteLibrary);
@@ -408,9 +408,9 @@ class CoachCache extends Cache {
     return emptyCoach;
   }
 
-  private Tuple<Questionnaire, List<Library>> getCoachLibs(String coachId, String language)
+  private Tuple<Questionnaire, List<CoachLibrary>> getCoachLibs(String coachId, String language)
       throws CacheException {
-    Tuple<Questionnaire, List<Library>> defaultCoach = getDefault(coachId);
+    Tuple<Questionnaire, List<CoachLibrary>> defaultCoach = getDefault(coachId);
     Questionnaire translation = getTranslation(coachId, language);
     Questionnaire result = new Questionnaire();
     // merge translated texts into default copy
@@ -454,12 +454,12 @@ class CoachCache extends Cache {
    * @throws CacheException if the coach could not be loaded.
    */
   public <R> R read(
-      String coachId, Locale locale, ICommand<Tuple<Questionnaire, List<Library>>, R> command)
+      String coachId, Locale locale, ICommand<Tuple<Questionnaire, List<CoachLibrary>>, R> command)
       throws CacheException {
     readLock.lock();
     try {
       String language = getLanguage(locale);
-      Tuple<Questionnaire, List<Library>> coachLibs = getCoachLibs(coachId, language);
+      Tuple<Questionnaire, List<CoachLibrary>> coachLibs = getCoachLibs(coachId, language);
       return command.execute(coachLibs);
     } finally {
       readLock.unlock();
@@ -476,12 +476,12 @@ class CoachCache extends Cache {
    * @throws CacheException if a coach could not be loaded.
    */
   public <R> R readAll(
-      Locale locale, ICommand<List<Tuple<Questionnaire, List<Library>>>, R> command)
+      Locale locale, ICommand<List<Tuple<Questionnaire, List<CoachLibrary>>>, R> command)
       throws CacheException {
     readLock.lock();
     try {
       String language = getLanguage(locale);
-      List<Tuple<Questionnaire, List<Library>>> coachLibList = new ArrayList<>();
+      List<Tuple<Questionnaire, List<CoachLibrary>>> coachLibList = new ArrayList<>();
       for (String coachId : objectCache.keySet()) {
         coachLibList.add(getCoachLibs(coachId, language));
       }

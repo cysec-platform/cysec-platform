@@ -2,7 +2,7 @@ package eu.smesec.cysec.platform.core.cache;
 
 import eu.smesec.bridge.FQCN;
 import eu.smesec.bridge.ILibCal;
-import eu.smesec.bridge.Library;
+import eu.smesec.bridge.CoachLibrary;
 import eu.smesec.bridge.execptions.CacheException;
 import eu.smesec.bridge.generated.Answer;
 import eu.smesec.bridge.generated.Metadata;
@@ -105,7 +105,7 @@ public class LibCal implements ILibCal {
   }
 
   @Override
-  public List<Library> getLibraries(String coachId) throws CacheException {
+  public List<CoachLibrary> getLibraries(String coachId) throws CacheException {
     return cal.getLibrariesForQuestionnaire(coachId);
   }
 
@@ -132,7 +132,7 @@ public class LibCal implements ILibCal {
   }
 
   @Override
-  public void registerResources(Library library) throws IOException {
+  public void registerResources(CoachLibrary library) throws IOException {
     resManager.registerLibResources(library);
   }
 

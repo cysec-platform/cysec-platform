@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import eu.smesec.bridge.FQCN;
-import eu.smesec.bridge.Library;
+import eu.smesec.bridge.CoachLibrary;
 import eu.smesec.bridge.execptions.CacheException;
 import eu.smesec.bridge.execptions.ElementAlreadyExistsException;
 import eu.smesec.bridge.execptions.ElementNotFoundException;
@@ -77,7 +77,7 @@ public class Coaches {
       if (coach != null) {
         cal.instantiateCoach(companyId, coach);
         // set context for answer file per company
-        Library library = cal.getLibrariesForQuestionnaire(id).get(0);
+        CoachLibrary library = cal.getLibrariesForQuestionnaire(id).get(0);
         library.onBegin(FQCN.fromString(id));
         return Response.status(200).build();
       }
@@ -105,7 +105,7 @@ public class Coaches {
     try {
       context.setAttribute("fqcn", id);
       FQCN fqcn = FQCN.fromString(id);
-      Library library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+      CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
       library.onResume(fqcn.getCoachId(), fqcn);
       // update last selected
       LastSelected lastSelected = new LastSelected(fqcn.toString());
@@ -132,7 +132,7 @@ public class Coaches {
   public Response getFirst(@PathParam("id") String id) {
     try {
       FQCN fqcn = FQCN.fromString(id);
-      Library library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+      CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
       Question first = library.getFirstQuestion();
       return Response.status(200).entity(gson.toJson(first)).build();
     } catch (CacheException ce) {
@@ -156,7 +156,7 @@ public class Coaches {
   public Response getLast(@PathParam("id") String id) {
     try {
       FQCN fqcn = FQCN.fromString(id);
-      Library library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+      CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
       Question last = library.getLastQuestion();
       return Response.status(200).entity(gson.toJson(last)).build();
     } catch (CacheException ce) {
@@ -181,7 +181,7 @@ public class Coaches {
     String companyId = context.getAttribute("company").toString();
     try {
       FQCN fqcn = FQCN.fromString(id);
-      Library library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+      CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
       Question question = library.getFirstQuestion();
       Metadata md = cal.getMetadataOnAnswer(companyId, fqcn, MetadataUtils.MD_STATE);
       if (md != null) {
@@ -221,7 +221,7 @@ public class Coaches {
         logger.warning("cannot find coach " + coachId);
         return Response.status(404).build();
       }
-      Library library = cal.getLibrariesForQuestionnaire(coachId).get(0);
+      CoachLibrary library = cal.getLibrariesForQuestionnaire(coachId).get(0);
       // validate response
       if (!Validator.validateAnswer(value)) {
         logger.warning("response value is invalid");
@@ -340,7 +340,7 @@ public class Coaches {
     try {
       FQCN fqcn = FQCN.fromString(id);
       context.setAttribute("fqcn", id);
-      Library library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+      CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
       Question question = cal.getQuestion(fqcn.getCoachId(), questionId, locale);
       if (question == null) {
         return Response.status(404).build();

@@ -1,13 +1,10 @@
 package eu.smesec.bridge;
 
 import eu.smesec.bridge.generated.Answer;
-import eu.smesec.bridge.generated.Block;
 import eu.smesec.bridge.generated.Question;
 import eu.smesec.bridge.generated.Questionnaire;
 
-import eu.smesec.bridge.md.MetadataUtils;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -17,7 +14,7 @@ import java.util.logging.Logger;
  * <p>The library offers methods to trigger Scoring, Adding/Removing of Metadata and Hiding/Showing questions.
  * Apart from that, the some lifecycle methods</p>
  */
-public interface Library {
+public interface CoachLibrary {
 
   Questionnaire questionnaire = null;
 

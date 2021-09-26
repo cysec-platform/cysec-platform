@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.Library;
+import eu.smesec.bridge.CoachLibrary;
 import eu.smesec.cysec.platform.core.utils.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -49,7 +49,7 @@ public class LibraryTest {
       lib.setId(libId);
       lib.setValue(libEnc);
 
-      Library concreteLibrary = CacheFactory.loadLibrary(classLoader, lib);
+      CoachLibrary concreteLibrary = CacheFactory.loadLibrary(classLoader, lib);
 
       Assert.assertNotNull(concreteLibrary);
       Assert.assertEquals(libId, concreteLibrary.getClass().getName());
