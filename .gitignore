@@ -1,13 +1,9 @@
 .gitignore
 *.iml
 .idea/
-target/
 out/
 lib/
 cysec.conf
-src/main/webapp/SMESEC-App/js/jquery-ui-1.12.1/
-*.iml
-/etcsrc/main/webapp/META-INF/
 /cysec-platform-bridge/src/main/java/eu/smesec/bridge/generated/*
 src/test/resources/test-temp/
 *.jar
@@ -16,7 +12,7 @@ src/test/resources/test-temp/
 ansible/roles/ssh/files/user.pub
 *.episode
 submodules/
-src/main/java/eu/smesec/platform/**/generated/*.java
+src/main/java/eu/smesec/cysec/platform/core/**/generated/*.java
 /CySeC.ipr
 /CySeC.iws
 /CySeCTestPlan.jmx

@@ -43,7 +43,7 @@ pipeline {
     
     stage ('Package all') {
       steps {
-        sh 'mvn -DskipTests clean -pl cysec_backend package'
+        sh 'mvn -DskipTests clean -pl cysec-platform-core package'
       }
     }
     /*stage('SonarQube analysis') {

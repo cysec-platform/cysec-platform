@@ -125,7 +125,7 @@
               <version>2.8.1</version>
               <configuration>
                 <includes>
-                  <include>eu.smesec.platform:*</include>
+                  <include>eu.smesec.cysec.platform:*</include>
                 </includes>
               </configuration>
             </plugin>
