@@ -8,7 +8,7 @@ cysec.conf
 src/main/webapp/SMESEC-App/js/jquery-ui-1.12.1/
 *.iml
 /etcsrc/main/webapp/META-INF/
-/cysec_bridge/src/main/java/eu/smesec/bridge/generated/*
+/cysec-platform-bridge/src/main/java/eu/smesec/bridge/generated/*
 src/test/resources/test-temp/
 *.jar
 .vagrant/

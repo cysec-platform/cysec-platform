@@ -5,14 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>eu.smesec.platform</groupId>
-        <artifactId>coach_platform</artifactId>
-        <version>0.2.1-SNAPSHOT</version>
+        <groupId>eu.smesec.cysec.platform</groupId>
+        <artifactId>cysec-platform-parent</artifactId>
+        <version>0.2.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>cysec_backend</artifactId>
+    <artifactId>cysec-platform-core</artifactId>
+    <version>0.2.2-SNAPSHOT</version>
+
     <packaging>${buildPackageType}</packaging>
-    <version>0.2.1-SNAPSHOT</version>
 
     <name>CySeC Coach Platform</name>
     <description>The CySeC Coaching platform for running generic coaches.</description>
@@ -88,9 +89,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>eu.smesec.platform</groupId>
-            <artifactId>cysec_bridge</artifactId>
-            <version>0.2.1-SNAPSHOT</version>
+            <groupId>eu.smesec.cysec.platform</groupId>
+            <artifactId>cysec-platform-bridge</artifactId>
+            <version>0.2.2-SNAPSHOT</version>
         </dependency>
 
         <!-- base -->
