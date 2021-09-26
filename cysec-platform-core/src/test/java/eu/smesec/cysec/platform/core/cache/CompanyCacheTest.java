@@ -1,7 +1,11 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.execptions.CacheReadOnlyException;
-import eu.smesec.bridge.generated.*;
+import eu.smesec.cysec.platform.bridge.execptions.CacheReadOnlyException;
+import eu.smesec.cysec.platform.bridge.generated.Answers;
+import eu.smesec.cysec.platform.bridge.generated.Audits;
+import eu.smesec.cysec.platform.bridge.generated.Company;
+import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
+import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.core.utils.FileResponse;
 import eu.smesec.cysec.platform.core.utils.FileUtils;
 

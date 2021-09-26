@@ -1,12 +1,12 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.FQCN;
-import eu.smesec.bridge.ILibCal;
-import eu.smesec.bridge.CoachLibrary;
-import eu.smesec.bridge.execptions.CacheException;
-import eu.smesec.bridge.generated.Answer;
-import eu.smesec.bridge.generated.Metadata;
-import eu.smesec.bridge.generated.Questionnaire;
+import eu.smesec.cysec.platform.bridge.FQCN;
+import eu.smesec.cysec.platform.bridge.ILibCal;
+import eu.smesec.cysec.platform.bridge.CoachLibrary;
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
+import eu.smesec.cysec.platform.bridge.generated.Answer;
+import eu.smesec.cysec.platform.bridge.generated.Metadata;
+import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
 
 import java.io.IOException;
 import java.util.List;

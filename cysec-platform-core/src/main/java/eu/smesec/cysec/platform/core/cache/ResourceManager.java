@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.CoachLibrary;
+import eu.smesec.cysec.platform.bridge.CoachLibrary;
 import eu.smesec.cysec.platform.core.utils.FileResponse;
 
 import java.io.IOException;

@@ -1,10 +1,10 @@
 package eu.smesec.cysec.platform.core.helpers.dashboard;
 
-import eu.smesec.bridge.generated.Block;
+import eu.smesec.cysec.platform.bridge.generated.Block;
 
-import eu.smesec.bridge.md.Rating;
-import eu.smesec.bridge.md.Skills;
-import eu.smesec.bridge.md.State;
+import eu.smesec.cysec.platform.bridge.md.Rating;
+import eu.smesec.cysec.platform.bridge.md.Skills;
+import eu.smesec.cysec.platform.bridge.md.State;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core.endpoints;
 
-import eu.smesec.bridge.utils.AuditUtils;
+import eu.smesec.cysec.platform.bridge.utils.AuditUtils;
 import java.time.LocalDateTime;
 import static org.mockito.Mockito.when;
 
@@ -17,10 +17,10 @@ import javax.ws.rs.core.Response;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.services.MailService;
 import eu.smesec.cysec.platform.core.services.MailServiceImpl;
-import eu.smesec.bridge.execptions.CacheException;
-import eu.smesec.bridge.generated.Locks;
-import eu.smesec.bridge.generated.Token;
-import eu.smesec.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
+import eu.smesec.cysec.platform.bridge.generated.Locks;
+import eu.smesec.cysec.platform.bridge.generated.Token;
+import eu.smesec.cysec.platform.bridge.generated.User;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;

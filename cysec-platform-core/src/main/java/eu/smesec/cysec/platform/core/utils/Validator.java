@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core.utils;
 
-import eu.smesec.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.generated.User;
 
 import java.util.regex.Pattern;
 

@@ -1,10 +1,11 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.CoachLibrary;
-import eu.smesec.bridge.execptions.LibraryException;
-import eu.smesec.bridge.generated.Answers;
-import eu.smesec.bridge.generated.Questionnaire;
-import eu.smesec.bridge.generated.QuestionnaireReference;
+import eu.smesec.cysec.platform.bridge.CoachLibrary;
+import eu.smesec.cysec.platform.bridge.execptions.LibraryException;
+import eu.smesec.cysec.platform.bridge.generated.Answers;
+import eu.smesec.cysec.platform.bridge.generated.Library;
+import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
+import eu.smesec.cysec.platform.bridge.generated.QuestionnaireReference;
 
 import java.nio.file.Path;
 import java.util.Base64;
@@ -56,7 +57,7 @@ public final class CacheFactory {
    * @return concrete library
    * @throws LibraryException if an error occurs during loading or instantiating the library
    */
-  static CoachLibrary loadLibrary(ClassLoader parent, eu.smesec.bridge.generated.Library lib)
+  static CoachLibrary loadLibrary(ClassLoader parent, Library lib)
       throws LibraryException {
     try {
       byte[] decoded = Base64.getDecoder().decode(lib.getValue());

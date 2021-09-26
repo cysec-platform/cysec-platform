@@ -1,8 +1,8 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.generated.Audit;
-import eu.smesec.bridge.generated.Audits;
-import eu.smesec.bridge.generated.UserAction;
+import eu.smesec.cysec.platform.bridge.generated.Audit;
+import eu.smesec.cysec.platform.bridge.generated.Audits;
+import eu.smesec.cysec.platform.bridge.generated.UserAction;
 import eu.smesec.cysec.platform.core.utils.FileUtils;
 
 import java.io.BufferedInputStream;

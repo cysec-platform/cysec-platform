@@ -1,7 +1,7 @@
 package eu.smesec.cysec.platform.core.auth;
 
-import eu.smesec.bridge.execptions.CacheException;
-import eu.smesec.bridge.execptions.LockedExpetion;
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
+import eu.smesec.cysec.platform.bridge.execptions.LockedExpetion;
 import eu.smesec.cysec.platform.core.auth.strategies.AbstractAuthStrategy;
 
 import java.lang.reflect.Method;

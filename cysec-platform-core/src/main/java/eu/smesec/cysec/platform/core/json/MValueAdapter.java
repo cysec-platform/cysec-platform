@@ -8,8 +8,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import eu.smesec.bridge.generated.Mvalue;
-import eu.smesec.bridge.generated.ObjectFactory;
+import eu.smesec.cysec.platform.bridge.generated.Mvalue;
+import eu.smesec.cysec.platform.bridge.generated.ObjectFactory;
 
 import java.lang.reflect.Type;
 import javax.xml.bind.JAXBElement;

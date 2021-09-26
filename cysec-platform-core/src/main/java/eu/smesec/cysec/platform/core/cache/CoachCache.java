@@ -1,13 +1,14 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.ILibCal;
-import eu.smesec.bridge.CoachLibrary;
-import eu.smesec.bridge.execptions.CacheException;
-import eu.smesec.bridge.execptions.CacheNotFoundException;
-import eu.smesec.bridge.execptions.LibraryException;
-import eu.smesec.bridge.execptions.MapperException;
-import eu.smesec.bridge.generated.Questionnaire;
-import eu.smesec.bridge.utils.Tuple;
+import eu.smesec.cysec.platform.bridge.ILibCal;
+import eu.smesec.cysec.platform.bridge.CoachLibrary;
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
+import eu.smesec.cysec.platform.bridge.execptions.CacheNotFoundException;
+import eu.smesec.cysec.platform.bridge.execptions.LibraryException;
+import eu.smesec.cysec.platform.bridge.execptions.MapperException;
+import eu.smesec.cysec.platform.bridge.generated.Library;
+import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
+import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.jaxb.FieldCopyStrategy;
 import eu.smesec.cysec.platform.core.jaxb.GetterMergeStrategy;
 
@@ -329,7 +330,7 @@ class CoachCache extends Cache {
         if (coach.getOrder() == null) {
           coach.setOrder(Integer.MAX_VALUE);
         }
-        for (eu.smesec.bridge.generated.Library l : coach.getLibrary()) {
+        for (Library l : coach.getLibrary()) {
           // We encode base64binary (and return a string) because in most cases t
           // his is more useful to us.
           // In *this* instance however, we need the decoded value, so we do that here.

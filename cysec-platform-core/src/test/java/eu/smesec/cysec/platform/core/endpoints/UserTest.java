@@ -1,9 +1,9 @@
 package eu.smesec.cysec.platform.core.endpoints;
 
-import eu.smesec.bridge.execptions.CacheNotFoundException;
-import eu.smesec.bridge.execptions.ElementNotFoundException;
-import eu.smesec.bridge.generated.Locks;
-import eu.smesec.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.execptions.CacheNotFoundException;
+import eu.smesec.cysec.platform.bridge.execptions.ElementNotFoundException;
+import eu.smesec.cysec.platform.bridge.generated.Locks;
+import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;

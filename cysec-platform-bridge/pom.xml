@@ -100,7 +100,7 @@
                 </executions>
                 <configuration>
                     <generateDirectory>target/generated-sources</generateDirectory>
-                    <generatePackage>eu.smesec.bridge.generated</generatePackage>
+                    <generatePackage>eu.smesec.cysec.platform.bridge.generated</generatePackage>
                     <extension>true</extension>
                     <args>
                         <arg>-XtoString</arg>

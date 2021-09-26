@@ -5,10 +5,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import eu.smesec.bridge.ILibCal;
-import eu.smesec.bridge.CoachLibrary;
-import eu.smesec.bridge.execptions.CacheNotFoundException;
-import eu.smesec.bridge.generated.*;
+import eu.smesec.cysec.platform.bridge.ILibCal;
+import eu.smesec.cysec.platform.bridge.CoachLibrary;
+import eu.smesec.cysec.platform.bridge.execptions.CacheNotFoundException;
+import eu.smesec.cysec.platform.bridge.generated.Library;
+import eu.smesec.cysec.platform.bridge.generated.Option;
+import eu.smesec.cysec.platform.bridge.generated.Options;
+import eu.smesec.cysec.platform.bridge.generated.Question;
+import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
+import eu.smesec.cysec.platform.bridge.generated.Questions;
 import eu.smesec.cysec.platform.core.threading.ThreadFactory;
 import eu.smesec.cysec.platform.core.utils.FileUtils;
 import org.junit.*;
@@ -87,16 +92,16 @@ public class CoachCacheTest {
     return createTestQuestion(id, type, text, null, options);
   }
 
-  private eu.smesec.bridge.generated.Library createTestLib(String id) {
-    eu.smesec.bridge.generated.Library lib = new eu.smesec.bridge.generated.Library();
+  private Library createTestLib(String id) {
+    Library lib = new Library();
     lib.setId(id);
     return lib;
   }
 
   private Questionnaire createTestCoach(String id, String parent, String name, Locale locale,
-                                        int order, eu.smesec.bridge.generated.Library lib, Question... questions) {
+                                        int order, Library lib, Question... questions) {
     Questionnaire coach = new Questionnaire();
-    List<eu.smesec.bridge.generated.Library> libraries = coach.getLibrary();
+    List<Library> libraries = coach.getLibrary();
     if (lib != null) {
       libraries.add(lib);
     }
@@ -112,7 +117,7 @@ public class CoachCacheTest {
   }
 
   private Questionnaire createTestCoach(String id, String parent, String name,
-                                        int order, eu.smesec.bridge.generated.Library lib, Question... questions) {
+                                        int order, Library lib, Question... questions) {
     return createTestCoach(id, parent, name, null, order, lib, questions);
   }
 
@@ -296,7 +301,7 @@ public class CoachCacheTest {
   public void testReadDefaultCoach() {
     String companyId = "lib-company";
     String libId = "first lib";
-    eu.smesec.bridge.generated.Library libGen = createTestLib(libId);
+    Library libGen = createTestLib(libId);
     Path companyFileEn = Paths.get("lib-company/lib-company.xml");
     Questionnaire enCoach = createTestCoach("lib-company", null,
         "Company", 1, libGen,
@@ -344,7 +349,7 @@ public class CoachCacheTest {
   public void testReadFrenchCoachFullyConnected() {
     String companyId = "lib-company";
     String libId = "first lib";
-    eu.smesec.bridge.generated.Library libGen = createTestLib(libId);
+    Library libGen = createTestLib(libId);
     Path companyFileEn = Paths.get("lib-company/lib-company.xml");
     Path companyFileFr = Paths.get("lib-company/lib-company_fr.xml");
     Questionnaire enCoach = createTestCoach(companyId, null,
@@ -414,7 +419,7 @@ public class CoachCacheTest {
   public void testReadFrenchCoachDifferentIds() {
     String companyId = "lib-company";
     String libId = "first lib";
-    eu.smesec.bridge.generated.Library libGen = createTestLib(libId);
+    Library libGen = createTestLib(libId);
     Path companyFileEn = Paths.get("lib-company/lib-company.xml");
     Path companyFileFr = Paths.get("lib-company/lib-company_fr.xml");
     Questionnaire enCoach = createTestCoach(companyId, null,
@@ -517,8 +522,8 @@ public class CoachCacheTest {
     String subId = "lib-demo-sub";
     String libId = "first lib";
     String libSubId = "second lib";
-    eu.smesec.bridge.generated.Library libGen = createTestLib(libId);
-    eu.smesec.bridge.generated.Library libSubGen = createTestLib(libSubId);
+    Library libGen = createTestLib(libId);
+    Library libSubGen = createTestLib(libSubId);
     Path companyFile = Paths.get("lib-company/lib-company.xml");
     Path subFile = Paths.get("lib-company/lib-demo-sub/lib-demo-sub.xml");
     Questionnaire coach = createTestCoach(companyId, null,
@@ -576,7 +581,7 @@ public class CoachCacheTest {
     String companyId = "lib-company";
     String subId = "lib-demo-sub";
     String libSubId = "second lib";
-    eu.smesec.bridge.generated.Library libSubGen = createTestLib(libSubId);
+    Library libSubGen = createTestLib(libSubId);
     Path subFile = Paths.get("lib-company/lib-demo-sub/lib-demo-sub.xml");
     Questionnaire subCoach = createTestCoach(subId, companyId,
         "Demo", 1, libSubGen,

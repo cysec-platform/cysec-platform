@@ -1,8 +1,8 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.execptions.CacheNotFoundException;
-import eu.smesec.bridge.generated.Questionnaire;
-import eu.smesec.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.execptions.CacheNotFoundException;
+import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
+import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.core.threading.ThreadFactory;
 import eu.smesec.cysec.platform.core.threading.Timer;
 import eu.smesec.cysec.platform.core.utils.FileUtils;

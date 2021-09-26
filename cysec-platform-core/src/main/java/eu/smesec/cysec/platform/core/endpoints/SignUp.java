@@ -3,10 +3,10 @@ package eu.smesec.cysec.platform.core.endpoints;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import eu.smesec.bridge.execptions.CacheNotFoundException;
-import eu.smesec.bridge.execptions.ElementAlreadyExistsException;
-import eu.smesec.bridge.generated.Locks;
-import eu.smesec.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.execptions.CacheNotFoundException;
+import eu.smesec.cysec.platform.bridge.execptions.ElementAlreadyExistsException;
+import eu.smesec.cysec.platform.bridge.generated.Locks;
+import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.utils.Validator;
 import eu.smesec.cysec.platform.core.auth.CryptPasswordStorage;

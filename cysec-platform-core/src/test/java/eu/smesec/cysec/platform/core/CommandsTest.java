@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core;
 
-import eu.smesec.bridge.Commands;
+import eu.smesec.cysec.platform.bridge.Commands;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;

@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core.helpers.dashboard;
 
-import eu.smesec.bridge.generated.Audit;
+import eu.smesec.cysec.platform.bridge.generated.Audit;
 
 import java.util.Map;
 

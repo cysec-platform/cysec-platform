@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core.auth.strategies;
 
-import eu.smesec.bridge.execptions.CacheException;
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.config.Config;
 import eu.smesec.cysec.platform.core.auth.CryptPasswordStorage;

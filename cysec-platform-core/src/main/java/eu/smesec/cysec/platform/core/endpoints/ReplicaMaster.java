@@ -1,7 +1,7 @@
 package eu.smesec.cysec.platform.core.endpoints;
 
-import eu.smesec.bridge.execptions.CacheException;
-import eu.smesec.bridge.execptions.ConfigException;
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
+import eu.smesec.cysec.platform.bridge.execptions.ConfigException;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.config.Config;
 import eu.smesec.cysec.platform.core.config.CysecConfig;

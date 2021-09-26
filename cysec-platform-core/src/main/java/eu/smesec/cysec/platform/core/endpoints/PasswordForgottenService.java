@@ -1,10 +1,10 @@
 package eu.smesec.cysec.platform.core.endpoints;
 
-import eu.smesec.bridge.execptions.CacheException;
-import eu.smesec.bridge.execptions.TokenExpiredException;
-import eu.smesec.bridge.generated.Token;
-import eu.smesec.bridge.generated.User;
-import eu.smesec.bridge.utils.TokenUtils;
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
+import eu.smesec.cysec.platform.bridge.execptions.TokenExpiredException;
+import eu.smesec.cysec.platform.bridge.generated.Token;
+import eu.smesec.cysec.platform.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.utils.TokenUtils;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.auth.CryptPasswordStorage;
 import eu.smesec.cysec.platform.core.services.MailServiceImpl;

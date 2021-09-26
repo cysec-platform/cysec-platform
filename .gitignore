@@ -4,7 +4,6 @@
 out/
 lib/
 cysec.conf
-/cysec-platform-bridge/src/main/java/eu/smesec/bridge/generated/*
 src/test/resources/test-temp/
 *.jar
 .vagrant/
@@ -12,11 +11,6 @@ src/test/resources/test-temp/
 ansible/roles/ssh/files/user.pub
 *.episode
 submodules/
-src/main/java/eu/smesec/cysec/platform/core/**/generated/*.java
-/CySeC.ipr
-/CySeC.iws
-/CySeCTestPlan.jmx
-/CySeCTestPlan.log
 
 # Maven
 target/

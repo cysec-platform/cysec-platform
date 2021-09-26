@@ -1,7 +1,7 @@
 package eu.smesec.cysec.platform.core.auth.strategies;
 
-import eu.smesec.bridge.execptions.CacheException;
-import eu.smesec.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
+import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.config.Config;
 

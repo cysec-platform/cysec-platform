@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core.endpoints;
 
-import eu.smesec.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.services.MailServiceImpl;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;

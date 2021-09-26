@@ -6,7 +6,7 @@
     <jaxb:bindings schemaLocation="questionnaire.xsd" node="/xs:schema" >
         <jaxb:globalBindings choiceContentProperty="true">
             <xjc:javaType name="java.lang.String" xmlType="xs:base64Binary"
-                          adapter="eu.smesec.bridge.bindings.Base64Adapter" />
+                          adapter="eu.smesec.cysec.platform.bridge.bindings.Base64Adapter" />
         </jaxb:globalBindings>
     </jaxb:bindings>
 </jaxb:bindings>

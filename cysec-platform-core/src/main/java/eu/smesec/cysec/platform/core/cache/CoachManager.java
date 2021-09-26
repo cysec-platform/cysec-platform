@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.generated.Questionnaire;
+import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
 import eu.smesec.cysec.platform.core.utils.LocaleUtils;
 import eu.smesec.cysec.platform.core.threading.FileWatcher;
 import eu.smesec.cysec.platform.core.threading.ThreadFactory;

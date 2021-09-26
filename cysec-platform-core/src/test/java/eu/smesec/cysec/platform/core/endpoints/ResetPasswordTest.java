@@ -5,8 +5,8 @@ import static org.mockito.Mockito.when;
 
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.services.MailServiceImpl;
-import eu.smesec.bridge.execptions.CacheException;
-import eu.smesec.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
+import eu.smesec.cysec.platform.bridge.generated.User;
 
 import java.util.Set;
 import java.util.TreeSet;

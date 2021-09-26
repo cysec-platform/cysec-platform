@@ -1,12 +1,12 @@
 package eu.smesec.cysec.platform.core.endpoints;
 
-import eu.smesec.bridge.FQCN;
-import eu.smesec.bridge.md.MetadataUtils;
+import eu.smesec.cysec.platform.bridge.FQCN;
+import eu.smesec.cysec.platform.bridge.md.MetadataUtils;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
-import eu.smesec.bridge.execptions.CacheException;
-import eu.smesec.bridge.generated.Audit;
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
+import eu.smesec.cysec.platform.bridge.generated.Audit;
 
-import eu.smesec.bridge.utils.AuditUtils;
+import eu.smesec.cysec.platform.bridge.utils.AuditUtils;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +18,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import static org.mockito.Mockito.when;
 
-import eu.smesec.bridge.generated.Metadata;
+import eu.smesec.cysec.platform.bridge.generated.Metadata;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;

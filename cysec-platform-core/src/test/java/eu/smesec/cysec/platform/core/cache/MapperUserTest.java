@@ -1,8 +1,8 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.generated.Company;
-import eu.smesec.bridge.generated.Locks;
-import eu.smesec.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.generated.Company;
+import eu.smesec.cysec.platform.bridge.generated.Locks;
+import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.core.utils.FileUtils;
 
 import java.io.BufferedInputStream;

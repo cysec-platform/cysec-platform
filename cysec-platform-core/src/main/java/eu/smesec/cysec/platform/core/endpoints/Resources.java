@@ -1,6 +1,6 @@
 package eu.smesec.cysec.platform.core.endpoints;
 
-import eu.smesec.bridge.CoachLibrary;
+import eu.smesec.cysec.platform.bridge.CoachLibrary;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.cache.ResourceManager;
 import eu.smesec.cysec.platform.core.utils.FileResponse;

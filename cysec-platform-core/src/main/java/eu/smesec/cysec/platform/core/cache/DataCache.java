@@ -1,13 +1,13 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.execptions.CacheAlreadyExistsException;
-import eu.smesec.bridge.execptions.CacheException;
-import eu.smesec.bridge.execptions.CacheNotFoundException;
-import eu.smesec.bridge.generated.Audits;
-import eu.smesec.bridge.generated.Company;
-import eu.smesec.bridge.generated.Questionnaire;
-import eu.smesec.bridge.generated.User;
-import eu.smesec.bridge.utils.TokenUtils;
+import eu.smesec.cysec.platform.bridge.execptions.CacheAlreadyExistsException;
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
+import eu.smesec.cysec.platform.bridge.execptions.CacheNotFoundException;
+import eu.smesec.cysec.platform.bridge.generated.Audits;
+import eu.smesec.cysec.platform.bridge.generated.Company;
+import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
+import eu.smesec.cysec.platform.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.utils.TokenUtils;
 import eu.smesec.cysec.platform.core.utils.FileUtils;
 import eu.smesec.cysec.platform.core.threading.ThreadFactory;
 import eu.smesec.cysec.platform.core.threading.Timer;

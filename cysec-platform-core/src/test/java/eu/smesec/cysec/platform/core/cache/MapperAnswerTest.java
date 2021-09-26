@@ -1,8 +1,8 @@
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.bridge.generated.Answer;
-import eu.smesec.bridge.generated.Answers;
-import eu.smesec.bridge.generated.QuestionnaireReference;
+import eu.smesec.cysec.platform.bridge.generated.Answer;
+import eu.smesec.cysec.platform.bridge.generated.Answers;
+import eu.smesec.cysec.platform.bridge.generated.QuestionnaireReference;
 import eu.smesec.cysec.platform.core.utils.FileUtils;
 
 import java.io.BufferedInputStream;
