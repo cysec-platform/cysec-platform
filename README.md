@@ -15,4 +15,4 @@ and [Semantic Versioning](https://semver.org) is used for this project.
 * Maven
 
 ## License
-Mozilla Public License 2.0 (see [LICENSE](LICENSE))
+This project is licensed under the Apache 2.0 license, see [LICENSE](LICENSE).

@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  CYSEC Platform Bridge
+  %%
+  Copyright (C) 2020 - 2021 FHNW (University of Applied Sciences and Arts Northwestern Switzerland)
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -15,9 +34,14 @@
 
     <packaging>jar</packaging>
 
-    <name>CySeC Bridge</name>
-    <description>The CySeC bridge provides compile time dependencies for coaches running on the CySeC platform.</description>
+    <name>CYSEC Platform Bridge</name>
+    <description>The CYSEC Platform Bridge provides compile time dependencies for coaches running on the CYSEC Platform</description>
     <url>https://cysec.cyberlab.fhnw.ch/</url>
+    <organization>
+        <name>FHNW (University of Applied Sciences and Arts Northwestern Switzerland)</name>
+        <url>https://www.fhwn.ch</url>
+    </organization>
+    <inceptionYear>2020</inceptionYear>
 
     <distributionManagement>
         <snapshotRepository>
@@ -32,8 +56,8 @@
 
     <licenses>
         <license>
-            <name>Mozilla Public License, Version 2.0</name>
-            <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
