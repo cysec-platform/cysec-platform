@@ -26,11 +26,11 @@
     <parent>
         <groupId>eu.smesec.cysec.platform</groupId>
         <artifactId>cysec-platform-parent</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>0.3.0</version>
     </parent>
 
     <artifactId>cysec-platform-core</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.3.0</version>
 
     <packaging>${buildPackageType}</packaging>
 
@@ -115,7 +115,7 @@
         <dependency>
             <groupId>eu.smesec.cysec.platform</groupId>
             <artifactId>cysec-platform-bridge</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
+            <version>0.3.0</version>
         </dependency>
 
         <!-- base -->
