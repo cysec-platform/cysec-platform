@@ -13,37 +13,36 @@ pipeline {
         }
       }
     }
-    stage ('Version update') {
-      steps {
-        script {
-          switch(BRANCH_NAME) {
-            case 'main':
-              sh 'mvn -DskipTests versions:set -DremoveSnapshot=true'
-              sh 'mvn -DskipTests versions:use-latest-releases versions:commit'
-            case 'integration':
-              sh 'mvn -DskipTests versions:use-latest-releases versions:commit'
-            default:
-              sh 'mvn -DskipTests versions:set -DnextSnapshot=true'
-              sh 'mvn -DskipTests versions:use-latest-snapshots versions:commit'
-          }
-        }
-      }
-    }
+//     stage ('Version update') {
+//       steps {
+//         script {
+//           switch(BRANCH_NAME) {
+//             case 'main':
+//               sh 'mvn -DskipTests versions:set -DremoveSnapshot=true'
+//               sh 'mvn -DskipTests versions:use-latest-releases versions:commit'
+//             case 'integration':
+//               sh 'mvn -DskipTests versions:use-latest-releases versions:commit'
+//             default:
+//               sh 'mvn -DskipTests versions:set -DnextSnapshot=true'
+//               sh 'mvn -DskipTests versions:use-latest-snapshots versions:commit'
+//           }
+//         }
+//       }
+//     }
     stage ('Build') {
       steps {
-        sh 'mvn -DskipTests clean install'
+        sh 'mvn clean compile'
       }
     }
-    stage ('Test on JDK8') {
+    stage ('Test') {
       steps{
         //sh 'mvn test jacoco:report'
         sh 'mvn test surefire-report:report -Daggregate=true'
       }
     }
-    
     stage ('Package all') {
       steps {
-        sh 'mvn -DskipTests clean -pl cysec-platform-core package'
+        sh 'mvn -DskipTests clean package'
       }
     }
     /*stage('SonarQube analysis') {
@@ -62,7 +61,7 @@ pipeline {
   }
   post {
     always {
-      publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'cysec-platform-bridge/target/surefire-reports', reportFiles: 'index.html', reportName: 'CySeC platform Report', reportTitles: 'CySeC-platform'])
+      publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'cysec-platform-bridge/target/surefire-reports', reportFiles: 'index.html', reportName: 'CYSEC Platform Report', reportTitles: 'cysec-platform'])
     }
     success {
       archiveArtifacts artifacts: 'cysec-platform-core/target/*.war,cysec-platform-bridge/target/*.jar', fingerprint: true
