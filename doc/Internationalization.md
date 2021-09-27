@@ -16,7 +16,7 @@ If you are planning to translate some text, make sure [GNU gettext](https://www.
 All source text is defined in a po template file `src/main/resources/po/cysec.pot`.
 The source language is english.
 `GNU gettext` extracts all translation texts in java classes,
-which are located in `src/main/java/eu/smesec/platform/messages`
+which are located in `src/main/java/eu/smesec/cysec/platform/core/messages`
 and writes them into the po template file.
 
 For each additional language, a po file must be created (eg. `de.po` for german).

@@ -43,7 +43,7 @@ pipeline {
     
     stage ('Package all') {
       steps {
-        sh 'mvn -DskipTests clean -pl cysec_backend package'
+        sh 'mvn -DskipTests clean -pl cysec-platform-core package'
       }
     }
     /*stage('SonarQube analysis') {
@@ -62,10 +62,10 @@ pipeline {
   }
   post {
     always {
-      publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'cysec_bridge/target/surefire-reports', reportFiles: 'index.html', reportName: 'CySeC platform Report', reportTitles: 'CySeC-platform'])
+      publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'cysec-platform-bridge/target/surefire-reports', reportFiles: 'index.html', reportName: 'CySeC platform Report', reportTitles: 'CySeC-platform'])
     }
     success {
-      archiveArtifacts artifacts: 'cysec_backend/target/*.war,cysec_bridge/target/*.jar', fingerprint: true
+      archiveArtifacts artifacts: 'cysec-platform-core/target/*.war,cysec-platform-bridge/target/*.jar', fingerprint: true
       updateGitlabCommitStatus(name: 'build', state: 'success')
     }
     failure {

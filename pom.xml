@@ -4,9 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>eu.smesec.platform</groupId>
-    <artifactId>coach_platform</artifactId>
-    <version>0.2.1-SNAPSHOT</version>
+    <groupId>eu.smesec.cysec.platform</groupId>
+    <artifactId>cysec-platform-parent</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+
     <packaging>pom</packaging>
 
     <name>CySeC</name>
@@ -55,8 +56,8 @@
     </properties>
 
     <modules>
-        <module>cysec_bridge</module>
-        <module>cysec_backend</module>
+        <module>cysec-platform-bridge</module>
+        <module>cysec-platform-core</module>
     </modules>
 
     <dependencyManagement>
@@ -124,7 +125,7 @@
               <version>2.8.1</version>
               <configuration>
                 <includes>
-                  <include>eu.smesec.platform:*</include>
+                  <include>eu.smesec.cysec.platform:*</include>
                 </includes>
               </configuration>
             </plugin>
