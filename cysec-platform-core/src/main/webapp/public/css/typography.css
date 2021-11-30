@@ -60,6 +60,7 @@ h6 {
 #blocks .container h1.panel-heading {
     color: #001921;
     padding-bottom: 40px;
+    margin-top: 0;
 }
 
 #blocks h3.panel-heading {
@@ -71,6 +72,9 @@ h6 {
      margin: 0;
  }
 
+#blocks p.introduction-text {
+    margin-bottom: 30px;
+}
 
 /* documentation */
 

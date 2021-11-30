@@ -194,7 +194,7 @@ body {
 
 /* questionnaire blocks */
 #blocks {
-    padding-top: 40px;
+    padding-top: 60px;
     height: calc(100vh - 220px);
     overflow-y: auto;
 }

@@ -6,6 +6,9 @@
 
 <div id="blocks" class="row">
     <div class="col-xs-12 container question panel" id="${ question.getId() }}">
+        <c:if test="${ question.getIntroduction() != null}">
+            <p class="introduction-text darkgrey">${ question.getIntroduction() }</p>
+        </c:if>
         <h1 class="panel-heading">${ question.getText() }</h1>
         <c:set var="qAttachments" value="${ question.getAttachments() }"/>
         <c:if test="${ qAttachments != null }">
