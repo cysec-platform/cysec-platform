@@ -103,6 +103,9 @@
         </xs:complexType>
     </xs:element>
 
+    <!-- An introduction text for a question. -->
+    <xs:element name="introduction" type="xs:string"/>
+
     <!-- The text of a question or answer option. A simple string for now, defined for extensibility. -->
     <xs:element name="text" type="xs:string"/>
 
@@ -131,6 +134,7 @@
     <xs:element name="question">
         <xs:complexType>
             <xs:sequence>
+                <xs:element ref="introduction" minOccurs="0"/>
                 <xs:element ref="text"/>
                 <xs:element ref="readMore" minOccurs="0"/>
                 <xs:element ref="attachments" minOccurs="0"/>
