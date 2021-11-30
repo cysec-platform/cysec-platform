@@ -62,12 +62,6 @@ h6 {
     padding-bottom: 40px;
 }
 
-@media (min-width: 1200px) {
-    #blocks .container h1.panel-heading {
-        padding-bottom: 60px;
-    }
-}
-
 #blocks h3.panel-heading {
      font-size: 0.75em;
      color: #7F8C90;
@@ -77,11 +71,6 @@ h6 {
      margin: 0;
  }
 
-@media (min-width: 1200px) {
-    #blocks h3.panel-heading {
-        padding-bottom: 20px;
-    }
-}
 
 /* documentation */
 
