@@ -18,9 +18,9 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: '8'
-        distribution: 'adopt'
+        distribution: 'temurin'
+        cache: 'maven'
         settings-path: ~/.m2/settings.xml
 
     - name: Build with Maven
-      run: mvn -B deploy
-
+      run: mvn -B clean deploy -P release
