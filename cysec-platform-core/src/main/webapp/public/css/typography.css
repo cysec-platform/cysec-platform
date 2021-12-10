@@ -1,0 +1,196 @@
+/* -------------------------------------------------- /
+/ Basic Typography:                                   /
+/ This stylesheet contains style formats related to   /
+/ typography such as basetype & styling of headings   /
+/ -------------------------------------------------- */
+
+
+/* base type */
+
+body, p {
+    font-family: 'Renner';
+    font-size: 18px;
+    line-height: 1.65em;
+    font-weight: 300;
+    color: #001921;
+}
+
+/*
+#documentation-wrapper p,
+*/
+p.small-text {
+    font-size: 14px;
+    line-height: 1.35em;
+}
+
+
+/* headings */
+
+h1, h2, h3, h6 {
+    font-family: 'Renner';
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+h4, h5 {
+    font-family: 'Miriam Libre';
+    font-weight: bold;
+}
+
+
+h1 {
+    font-size: 2em;
+}
+
+h4 {
+    color: #001921;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    padding: 15px 0;
+}
+
+h6 {
+    font-size: 1.1em;
+    color: #007EA7;
+    font-weight: 400;
+}
+
+
+/* questionnaire */
+#blocks .container h1.panel-heading {
+    color: #001921;
+    padding-bottom: 40px;
+}
+
+@media (min-width: 1200px) {
+    #blocks .container h1.panel-heading {
+        padding-bottom: 60px;
+    }
+}
+
+#blocks h3.panel-heading {
+     font-size: 0.75em;
+     color: #7F8C90;
+     font-weight: 400;
+     text-transform: uppercase;
+     letter-spacing: 2px;
+     margin: 0;
+ }
+
+@media (min-width: 1200px) {
+    #blocks h3.panel-heading {
+        padding-bottom: 20px;
+    }
+}
+
+/* documentation */
+
+#documentation-wrapper h3 {
+    font-size: 0.85em;
+    color: #001921;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding-top: 30px;
+    padding-bottom: 10px;
+}
+
+#documentation-wrapper h3.documentation-section:before {
+    content: "";
+    background-image: url(../../assets/icons/icn_plus.png);
+    background-size: 24px;
+    background-position: center left;
+    background-repeat: no-repeat;
+    padding-right: 40px;
+}
+
+#documentation-wrapper h3.documentation-section.ui-state-active:before {
+    content: "";
+    background-image: url(../../assets/icons/icn_minus.png);
+}
+
+#documentation-wrapper h3.documentation-section:focus {
+    outline: none !important;
+}
+
+#documentation-wrapper h3.documentation-section:not(:first-child) {
+    border-top: 1px solid #7F8C90;
+    margin-top: 30px;
+    padding-top: 40px;
+}
+
+#documentation-wrapper h3.documentation-section b,
+#documentation-wrapper h3.documentation-section strong {
+    font-weight: 900;
+}
+
+#documentation-wrapper p b,
+#documentation-wrapper p strong {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+#documentation-wrapper #documentation_link a {
+    font-family: 'Miriam Libre';
+    font-weight: bold;
+    color: #007EA7;
+}
+
+#documentation-wrapper h3.box-heading,
+#documentation-wrapper h3.video-heading {
+    font-size: 0.75em;
+    text-align: center;
+    color: #7F8C90;
+    font-weight: 400;
+    padding-bottom: 5px;
+}
+
+#page-content-wrapper .text-link-box,
+#documentation-wrapper .text-link-box {
+    font-size: 0.85em;
+    font-family: 'Miriam Libre';
+    color: #007EA7;
+    text-decoration: none;
+    border: solid 1px #229CCD;
+    padding: 15px 20px 10px;
+    margin: 20px 0;
+}
+
+#page-content-wrapper .text-link-box a,
+#documentation-wrapper .text-link-box a {
+    letter-spacing: 1px;
+    color: #007EA7;
+}
+
+#page-content-wrapper .text-link-box:hover,
+#documentation-wrapper .text-link-box:hover {
+    background-color: #229CCD;
+    transition: all 0.3s ease 0s;
+}
+
+#page-content-wrapper .text-link-box:hover a,
+#documentation-wrapper .text-link-box:hover a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s ease 0s;
+}
+
+#page-content-wrapper  .text-link-box a:before,
+#documentation-wrapper .text-link-box a:before {
+    content:' ';
+    background-image: url("../assets/next.svg");
+    background-repeat: no-repeat;
+    background-size: 20px 20px;
+    float: left;
+    width: 20px;
+    height: 20px;
+    margin: 2px 10px 0 0;
+}
+
+#page-content-wrapper .text-link-box:hover a:before,
+#documentation-wrapper .text-link-box:hover a:before {
+    background-image: url("../assets/next-inverted.svg");
+    transition: all 0.3s ease 0s;
+}
+
+

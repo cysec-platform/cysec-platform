@@ -1,0 +1,40 @@
+// This file defines available config variables
+// each line reads <type>; <name>; <default>; <description>
+// whereas valid types are "string", "numeric", and "boolean".
+
+// Path settings
+string; cysec_base_path; /var/lib/cysec/; The path to be used to find other subdirectories of cysec
+string; cysec_data_path; data/; The path to be used to find data files of cysec
+string; cysec_coach_path; coaches/; The path to be used to find data files of cysec
+string; cysec_log_path; log/; The path to be used to find log files of cysec
+
+string; cysec_authentication_scheme; Basic; Basic username&password authentication
+string; cysec_authentication_property; Authorization; The auth header
+
+// oauth aka 'header auth' header fields
+string; cysec_header_username; oidc_claim_preferred_username; The OAuth username
+string; cysec_header_email; oidc_claim_email; The OAuth email
+string; cysec_header_company; oidc_claim_company; The OAuth company
+string; cysec_header_firstname; oidc_claim_given_name; The OAuth firstname
+string; cysec_header_lastname; oidc_claim_family_name; The OAuth lastname
+string; cysec_header_locale; oidc_claim_locale; The OAuth locale
+
+// cysec server admin
+boolean; cysec_standalone; false; True if no proxy is used, or false otherwise
+boolean; cysec_register; true; True if a new user can register, or false otherwise
+string; cysec_header_profile;/; Profile URL for user profile
+string; cysec_header_logout;/; Logout URL
+string; cysec_admin_prefix; _admin_; The prefix identifying all admins
+string; cysec_admin_users; admin; Space separated list of admin user names
+string; cysec_admin_passwords; $1$31XX2vnn$NrTMpstqa8SkNneiNdZch0; Space separated list of passwords for the configured admins
+numeric; cysec_recommend_count; 6; The number of recommendations displayed in the dashboard
+
+// cysec replica
+string; cysec_replica_host; ; remote context inclusive
+string; cysec_replica_token; ; Space separated list of company/token
+
+// cysec mail
+string; cysec_mail_smtp_host; localhost ; The host of the mail server (SMTP)
+string; cysec_mail_smtp_port; 25 ; The port of the mail server (SMTP)
+string; cysec_mail_sender_name; ; The sender name used by the mail sender
+string; cysec_mail_sender_address; no-reply@example.com ; The sender address used by the mail sender

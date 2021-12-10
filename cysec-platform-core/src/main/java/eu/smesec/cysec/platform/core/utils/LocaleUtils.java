@@ -1,0 +1,76 @@
+/*-
+ * #%L
+ * CYSEC Platform Core
+ * %%
+ * Copyright (C) 2020 - 2021 FHNW (University of Applied Sciences and Arts Northwestern Switzerland)
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package eu.smesec.cysec.platform.core.utils;
+
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public final class LocaleUtils {
+  private static final Set<String> languages =
+      Arrays.stream(Locale.getISOLanguages()).collect(Collectors.toSet());
+  private static final Set<String> countries =
+      Arrays.stream(Locale.getISOCountries()).collect(Collectors.toSet());
+
+  private LocaleUtils() {}
+
+  /**
+   * Parses, validates and creates a locale from a string. Returns english as fallback.
+   *
+   * @param locale ISO-639-1-code
+   * @return locale object
+   */
+  public static Locale fromString(String locale) {
+    if (locale != null) {
+      Locale locale1 = Locale.forLanguageTag(locale.replace('_', '-'));
+      if (isLanguage(locale1.getLanguage())) {
+        return locale1;
+      }
+    }
+    return Locale.ENGLISH;
+  }
+
+  /**
+   * Checks, if a language tag is valid.
+   *
+   * @param language language tag
+   * @return <code>true</code> if the language tag is valid, or <code>false</code> otherwise
+   */
+  public static boolean isLanguage(String language) {
+    if (language == null || language.isEmpty()) {
+      return false;
+    }
+    return languages.contains(language.toLowerCase());
+  }
+
+  /**
+   * Checks, if a country tag is valid.
+   *
+   * @param country country tag
+   * @return <code>true</code> if the country tag is valid, or <code>false</code> otherwise
+   */
+  public static boolean isCountry(String country) {
+    if (country == null || country.isEmpty()) {
+      return false;
+    }
+    return countries.contains(country.toUpperCase());
+  }
+}

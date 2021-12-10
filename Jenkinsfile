@@ -8,31 +8,45 @@ pipeline {
   stages {
     stage ('Initialize') {
       steps {
-		script{
-			checkout scm
-		}
+        script{
+            checkout scm
+        }
       }
     }
+//     stage ('Version update') {
+//       steps {
+//         script {
+//           switch(BRANCH_NAME) {
+//             case 'main':
+//               sh 'mvn -DskipTests versions:set -DremoveSnapshot=true'
+//               sh 'mvn -DskipTests versions:use-latest-releases versions:commit'
+//             case 'integration':
+//               sh 'mvn -DskipTests versions:use-latest-releases versions:commit'
+//             default:
+//               sh 'mvn -DskipTests versions:set -DnextSnapshot=true'
+//               sh 'mvn -DskipTests versions:use-latest-snapshots versions:commit'
+//           }
+//         }
+//       }
+//     }
     stage ('Build') {
       steps {
-        sh 'mvn -DskipTests clean install'
+        sh 'mvn clean compile'
       }
     }
-    stage ('Test on JDK8') {
+    stage ('Test') {
       steps{
         //sh 'mvn test jacoco:report'
-		sh 'mvn test'
+        sh 'mvn test surefire-report:report -Daggregate=true'
       }
     }
-    
     stage ('Package all') {
       steps {
-        sh 'mvn -DskipTests clean -pl cysec_backend package'
+        sh 'mvn -DskipTests clean package'
       }
     }
     /*stage('SonarQube analysis') {
       steps {
-        //withSonarQubeEnv('SonarQube') {
         withSonarQubeEnv('localhost sonarQube') {
           sh "mvn sonar:sonar"
         }
@@ -41,30 +55,16 @@ pipeline {
     }*/
     stage('Deploy') {
       steps {
-        //fileOperations([
-          //fileCopyOperation(includes:"${workspace}/target/smesec-platform.war", targetLocation: "/var/lib/tomcat8/webapps/stage.war")
-        //])
-        echo "My branch is: ${env.BRANCH_NAME}"
-        echo "My branch is: ${BRANCH_NAME}"
-        // enable use of if(...)
-        //script {
-          //if(BRANCH_NAME == 'dev') {
-            //sh 'yes | cp -rf cysec_backend/target/smesec-platform.war  /var/lib/tomcat8/webapps/stage.war'
-          //}
-          //if(BRANCH_NAME == 'integration') {
-            //sh 'cp cysec_backend/target/smesec-platform.war  /var/lib/tomcat8/webapps/cysec-eauth.war'
-            //sh 'cp smesec-platform.war  /var/lib/tomcat8/webapps/cysec-local.war'
-          //}
-        //}
+        sh 'mvn -DskipTests deploy'
       }
     }
   }
   post {
-    /*always {
-      publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'target/surefire-reports', reportFiles: 'index.html', reportName: 'SMESEC platform Report', reportTitles: 'smesec-platform'])
-    }*/
+    always {
+      publishHTML([allowMissing: true, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'cysec-platform-bridge/target/surefire-reports', reportFiles: 'index.html', reportName: 'CYSEC Platform Report', reportTitles: 'cysec-platform'])
+    }
     success {
-      archiveArtifacts artifacts: 'cysec_backend/target/*.war,cysec_bridge/target/*.jar', fingerprint: true
+      archiveArtifacts artifacts: 'cysec-platform-core/target/*.war,cysec-platform-bridge/target/*.jar', fingerprint: true
       updateGitlabCommitStatus(name: 'build', state: 'success')
     }
     failure {
