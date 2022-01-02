@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-release:
     runs-on: [self-hosted, linux, ossrh]
     steps:
       - uses: actions/checkout@v2
@@ -18,4 +18,5 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build and release to OSSRH
-        run: mvn -B clean deploy -P release
+        # Once the signing process works, add "-P release" in the command below.
+        run: mvn -B clean deploy -gs /root/settings.xml
