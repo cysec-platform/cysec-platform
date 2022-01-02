@@ -74,6 +74,7 @@ h6 {
 
 #blocks p.introduction-text {
     margin-bottom: 30px;
+    font-style: italic;
 }
 
 /* documentation */
