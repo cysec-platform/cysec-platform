@@ -115,6 +115,9 @@
     <!-- The element to use to accompany questions with counseling/coaching text -->
     <xs:element name="readMore" type="xs:string"/>
 
+    <!-- An infotext to display instead of possible answers/options. -->
+    <xs:element name="infotext" type="xs:string"/>
+
     <!-- The element to use to comment the choice of an option -->
     <xs:element name="comment" type="xs:string"/>
 
@@ -139,6 +142,7 @@
                 <xs:element ref="readMore" minOccurs="0"/>
                 <xs:element ref="attachments" minOccurs="0"/>
                 <xs:element ref="options" minOccurs="0"/>
+                <xs:element ref="infotext" minOccurs="0"/><!-- only relevant for questionType=info -->
                 <xs:element ref="listeners" minOccurs="0"/>
                 <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="instruction" minOccurs="0"/>
