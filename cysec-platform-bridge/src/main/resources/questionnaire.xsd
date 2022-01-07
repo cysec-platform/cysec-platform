@@ -130,10 +130,7 @@
         </xs:complexType>
     </xs:element>
 
-    <!--
-        A question in the questionnaire, including any attachments and answer options.
-        Types of questions refer to classification from here: https://studmed.unibe.ch/a-z/page.php?id=Pr%FCfungstypen
-     -->
+    <!-- A question in the questionnaire, including any attachments and answer options. -->
     <xs:element name="question">
         <xs:complexType>
             <xs:sequence>
@@ -148,11 +145,18 @@
                 <xs:element ref="instruction" minOccurs="0"/>
             </xs:sequence>
             <xs:attribute name="id" type="xs:ID" use="required"/>
-            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="questionType" use="required"/>
             <xs:attribute name="hidden" type="xs:boolean" default="true"/>
             <xs:attribute name="extRef" type="xs:string"/>
         </xs:complexType>
     </xs:element>
+
+    <!-- Types of questions refer to classification from here: https://studmed.unibe.ch/a-z/page.php?id=Pr%FCfungstypen -->
+    <xs:simpleType name="questionType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="(A|Astar|Astarexcl|date|likert|text|yesno|info)"/>
+        </xs:restriction>
+    </xs:simpleType>
 
     <!--
         List of possible answers to a question, including the type of the question and option and, if applicable, a reference
