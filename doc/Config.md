@@ -24,4 +24,5 @@ Fallowing entries are currently used:
 | string | cysec_header_firstname | oidc_claim_given_name | The OAuth firstname |
 | string | cysec_header_lastname | oidc_claim_family_name | The OAuth lastname |
 ||||| 
-|numeric | cysec_recommend_count | 3 | The number of displayed recommendations |
+| numeric | cysec_recommend_count | 3       | The number of displayed recommendations                                                             |
+| boolean | cysec_hide_lib_company | false  | Flag to hide company coach on dashboard (workaround since lib-company stores global non-coach data) |

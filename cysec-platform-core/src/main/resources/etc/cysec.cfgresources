@@ -28,6 +28,7 @@ string; cysec_admin_prefix; _admin_; The prefix identifying all admins
 string; cysec_admin_users; admin; Space separated list of admin user names
 string; cysec_admin_passwords; $1$31XX2vnn$NrTMpstqa8SkNneiNdZch0; Space separated list of passwords for the configured admins
 numeric; cysec_recommend_count; 6; The number of recommendations displayed in the dashboard
+boolean; cysec_hide_lib_company; false; Hide company coach on dashboard (workaround since lib-company stores global non-coach data)
 
 // cysec replica
 string; cysec_replica_host; ; remote context inclusive
