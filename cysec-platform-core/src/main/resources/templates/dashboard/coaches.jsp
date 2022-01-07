@@ -1,7 +1,9 @@
 <c:set var="context" value="${pageContext.request.contextPath}"/>
 
-<div class="col-xs-12 padding-bottom-medium">
-    <h4 class="text-center padding-top-large no-margin-bottom">${it.msg.coaches}</h4>
+<div class="col-xs-12 padding-bottom-small">
+    <h4 class="text-center padding-top-large padding-bottom-small">${it.msg.coaches}</h4>
+    <c:choose>
+    <c:when test="${ not empty it.instantiated }">
     <c:forEach var="coach" items="${it.instantiated}">
         <div class="questionnaire-summary">
             <div class="row">
@@ -51,4 +53,11 @@
             </div>
         </div>
     </c:forEach>
+    </c:when>
+    <c:otherwise>
+        <div class="alert bg-lightbluegrey">
+            <p>${it.msg.noCoachesStartedInfo}</p>
+        </div>
+    </c:otherwise>
+    </c:choose>
 </div>
