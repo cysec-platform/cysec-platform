@@ -1,7 +1,7 @@
 <c:set var="baseUrl" value="${header['x-forwarded-proto'] != null ? header['x-forwarded-proto'] : pageContext.request.scheme}://${header.host}${pageContext.request.contextPath}/" />
 <c:set var="recommendations" value="${it.recommendations}"/>
 
-<div class="col-xs-12 padding-top-small padding-bottom-small">
+<div class="col-xs-12 padding-top-large padding-bottom-small">
     <h4 class="text-center">${it.msg.recommendations}</h4>
     <div class="row">
         <c:choose>

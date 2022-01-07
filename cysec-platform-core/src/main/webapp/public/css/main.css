@@ -427,9 +427,13 @@ body {
 }
 
 .questionnaire-summary {
-    padding-top: 35px;
+    padding-top: 15px;
     padding-bottom: 25px;
     border-bottom: 1px solid #7F8C90;
+}
+
+.questionnaire-summary ~ .questionnaire-summary {
+    padding-top: 35px;
 }
 
 .questionnaire-info {
