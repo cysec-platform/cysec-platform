@@ -70,7 +70,9 @@ import org.glassfish.jersey.server.mvc.Viewable;
 @DenyAll
 @Path("rest/dashboard")
 public class Dashboard {
-  public static final String RECOMMENDATIONS_SIZE = "cysec_recommend_count";
+
+  public static final String CONFIG_RECOMMENDATIONS_COUNT = "cysec_recommend_count";
+  public static final String CONFIG_HIDE_LIB_COMPANY = "cysec_hide_lib_company";
 
   private static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
@@ -151,7 +153,15 @@ public class Dashboard {
         }
       }
       List<CoachHelper> instantiated = new ArrayList<>();
-      instantiated.add(coachHelper);
+
+      // Workaround to hide company coach (lib-company) since it currently stores global non-coach data
+      // and therefore needs to be loaded for the platform to work. Once the data is stored in a different
+      // way, this code block can be removed
+      if (!CysecConfig.getDefault().getBooleanValue(contextName, CONFIG_HIDE_LIB_COMPANY)) {
+        instantiated.add(coachHelper);
+      }
+      // End of workaround
+
       FQCN lastSelectedFqcn =
           lastSelected != null ? FQCN.fromString(lastSelected.getCoachId()) : LibCal.FQCN_COMPANY;
       // process other coaches
@@ -220,7 +230,7 @@ public class Dashboard {
       recommendations =
           recommendations.stream()
               .sorted(Comparator.comparingInt(Recommendation::getOrder))
-              .limit(CysecConfig.getDefault().getNumericValue(contextName, RECOMMENDATIONS_SIZE))
+              .limit(CysecConfig.getDefault().getNumericValue(contextName, CONFIG_RECOMMENDATIONS_COUNT))
               .collect(Collectors.toList());
       badges = badges.subList(Integer.max(0, badges.size() - 3), badges.size());
 
