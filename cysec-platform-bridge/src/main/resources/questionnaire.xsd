@@ -115,6 +115,9 @@
     <!-- The element to use to accompany questions with counseling/coaching text -->
     <xs:element name="readMore" type="xs:string"/>
 
+    <!-- An infotext to display instead of possible answers/options. -->
+    <xs:element name="infotext" type="xs:string"/>
+
     <!-- The element to use to comment the choice of an option -->
     <xs:element name="comment" type="xs:string"/>
 
@@ -127,10 +130,7 @@
         </xs:complexType>
     </xs:element>
 
-    <!--
-        A question in the questionnaire, including any attachments and answer options.
-        Types of questions refer to classification from here: https://studmed.unibe.ch/a-z/page.php?id=Pr%FCfungstypen
-     -->
+    <!-- A question in the questionnaire, including any attachments and answer options. -->
     <xs:element name="question">
         <xs:complexType>
             <xs:sequence>
@@ -139,16 +139,24 @@
                 <xs:element ref="readMore" minOccurs="0"/>
                 <xs:element ref="attachments" minOccurs="0"/>
                 <xs:element ref="options" minOccurs="0"/>
+                <xs:element ref="infotext" minOccurs="0"/><!-- only relevant for questionType=info -->
                 <xs:element ref="listeners" minOccurs="0"/>
                 <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="instruction" minOccurs="0"/>
             </xs:sequence>
             <xs:attribute name="id" type="xs:ID" use="required"/>
-            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="type" type="questionType" use="required"/>
             <xs:attribute name="hidden" type="xs:boolean" default="true"/>
             <xs:attribute name="extRef" type="xs:string"/>
         </xs:complexType>
     </xs:element>
+
+    <!-- Types of questions refer to classification from here: https://studmed.unibe.ch/a-z/page.php?id=Pr%FCfungstypen -->
+    <xs:simpleType name="questionType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="(A|Astar|Astarexcl|date|likert|text|yesno|info)"/>
+        </xs:restriction>
+    </xs:simpleType>
 
     <!--
         List of possible answers to a question, including the type of the question and option and, if applicable, a reference
