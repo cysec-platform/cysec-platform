@@ -477,9 +477,17 @@ body {
     visibility: visible;
 }
 
+@media (min-width: 992px) { /** min-width equals bootstrap 'md'-breakpoint **/
+    .row.remaining-col-wrap {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
+
 .remaining {
-    border: 1px solid #007EA7;
+    border: 1px solid #7F8C90;
     padding: 5px;
+    margin-bottom: 30px;
 }
 
 .remaining img {
