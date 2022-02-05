@@ -38,6 +38,7 @@
                 <xs:element ref="blocks" minOccurs="0"/>
                 <xs:element ref="library" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="dictionary" minOccurs="0"/>
             </xs:sequence>
             <xs:attribute name="id" type="xs:ID" use="required"/>
             <xs:attribute name="version" type="xs:int" use="required"/>
@@ -385,4 +386,23 @@
             <xs:enumeration value="modified"/>
         </xs:restriction>
     </xs:simpleType>
+
+    <!-- Represents a dictionary that can be used by libraries to get text elements referenced by a key -->
+    <xs:element name="dictionary">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="entry" type="dictionaryEntry" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Represents an entry in a dictionary -->
+    <xs:complexType name="dictionaryEntry">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="key" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
 </xs:schema>
