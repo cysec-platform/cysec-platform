@@ -1,0 +1,10 @@
+# Documentation
+- [An overview over the current application](Overview.md)
+- [How to configure the the CySeC platform](Config.md)
+- [How to configure the Authentication of the platform](Authentication.md)
+- [Data API provided by the platform](DataAPI.md)
+- [Coaches and related documentation](Coach.md)
+  - [Question types supported by the coaches](QuestionTypes.md)
+  - [Hooks usable within a coach](Hooks.md)
+  - [Internationalization of Coaches](Internationalization.md)
+  - [Metadata within Coaches](Metadata.md)
