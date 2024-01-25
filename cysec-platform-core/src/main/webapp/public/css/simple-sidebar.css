@@ -1,0 +1,98 @@
+body {
+    overflow-x: hidden;
+}
+
+/* Toggle Styles */
+
+#wrapper {
+    padding-left: 0;
+    padding-right: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    position: absolute;
+    top: 0;
+}
+
+#sidebar-wrapper {
+    height: 100%;
+    padding-left: 50px;
+    padding-right: 70px;
+    line-height: 40px;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#page-content-wrapper {
+    padding: 0 15px;
+}
+
+/* Sidebar Styles */
+
+.sidebar-nav {
+    margin: 0;
+    list-style: none;
+    width: 100%;
+}
+
+.sidebar-nav a {
+    display: inline-block;
+    text-decoration: none;
+    color: #C9DAEA;
+}
+
+.sidebar-nav a:hover {
+    text-decoration: none;
+    color: #fff;
+    background: rgba(255,255,255,0.2);
+}
+
+.sidebar-nav a:active,
+.sidebar-nav a:focus {
+    text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+    min-height: 65px;
+    font-size: 18px;
+    line-height: 1.5em;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    background: none;
+}
+
+.sidebar-nav > .sidebar-box-padding-x {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.sidebar-nav h4,
+.sidebar-nav h4 a {
+    font-family: 'Miriam Libre';
+    color: #001921;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    padding: 15px 0 5px;
+}
+
+.sidebar-nav h4 a:hover {
+    color: #001921;
+    text-decoration: none;
+}
+
+.sidebar-nav .level-row {
+    padding-bottom: 0.5em;
+    padding-top: 0.5em;
+}
+
+.sidebar-nav .level-row:first-child {
+    padding-top: 0.8em;
+}
+
+.sidebar-nav .level-row:last-child {
+    padding-bottom: 0.8em;
+}

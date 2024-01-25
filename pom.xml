@@ -1,17 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  CYSEC Platform
+  %%
+  Copyright (C) 2020 - 2022 FHNW (University of Applied Sciences and Arts Northwestern Switzerland)
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>eu.smesec.platform</groupId>
-    <artifactId>coach_platform</artifactId>
-    <version>0.2.0</version>
+    <groupId>eu.smesec.cysec.platform</groupId>
+    <artifactId>cysec-platform-parent</artifactId>
+    <version>0.3.1-SNAPSHOT</version>
+
     <packaging>pom</packaging>
 
-    <name>CySeC</name>
-    <description>The CySeC coach runtime platform.</description>
-    <url>http://cysec.cyberlab.fhnw.ch/</url>
+    <name>CYSEC Platform</name>
+    <description>The Cybersecurity Coach (CYSEC) Platform</description>
+    <url>https://cysec.cyberlab.fhnw.ch/</url>
+    <organization>
+        <name>FHNW (University of Applied Sciences and Arts Northwestern Switzerland)</name>
+        <url>https://www.fhwn.ch</url>
+    </organization>
+    <inceptionYear>2020</inceptionYear>
 
     <distributionManagement>
         <snapshotRepository>
@@ -26,8 +51,8 @@
 
     <licenses>
         <license>
-            <name>Mozilla Public License, Version 2.0</name>
-            <url>https://www.mozilla.org/en-US/MPL/2.0/</url>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -55,8 +80,8 @@
     </properties>
 
     <modules>
-        <module>cysec_bridge</module>
-        <module>cysec_backend</module>
+        <module>cysec-platform-bridge</module>
+        <module>cysec-platform-core</module>
     </modules>
 
     <dependencyManagement>
@@ -93,6 +118,40 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.0.0</version>
+                <configuration>
+                    <licenseName>apache_v2</licenseName>
+                    <failOnMissingHeader>false</failOnMissingHeader>
+                    <failOnNotUptodateHeader>false</failOnNotUptodateHeader>
+                    <canUpdateCopyright>true</canUpdateCopyright>
+                    <canUpdateDescription>true</canUpdateDescription>
+                    <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+                    <roots>
+                        <root>src/main/java</root>
+                        <root>src/main/webapp</root>
+                        <root>src/test</root>
+                        <root>target/generated-sources</root>
+                    </roots>
+                    <includes>
+                        <include>**/*.java</include>
+                        <include>**/*.jsp</include>
+                        <include>**/*.xml</include>
+                        <include>**/*.xsd</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>first</id>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- sonatype publishing -->
             <!--<plugin>
                 <groupId>org.sonatype.plugins</groupId>
@@ -110,6 +169,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.5.3</version>
                 <configuration>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
@@ -124,58 +184,9 @@
               <version>2.8.1</version>
               <configuration>
                 <includes>
-                  <include>eu.smesec.platform:*</include>
+                  <include>eu.smesec.cysec.platform:*</include>
                 </includes>
               </configuration>
-            </plugin>
-
-            <!-- sources jar for sonatype -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- javadoc for publishing -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <source>${java.version}</source>
-                    <doclint>all,-missing</doclint>
-                    <excludePackageNames>*.generated</excludePackageNames>
-                </configuration>
-            </plugin>
-            <!-- signing  -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -204,4 +215,61 @@
         </plugins>
     </reporting>
 
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- sources jar for sonatype -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- javadoc for publishing -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <source>${java.version}</source>
+                            <doclint>all,-missing</doclint>
+                            <excludePackageNames>*.generated</excludePackageNames>
+                        </configuration>
+                    </plugin>
+                    <!-- signing -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

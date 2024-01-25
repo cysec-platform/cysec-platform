@@ -1,0 +1,22 @@
+name: Release
+
+on:
+#  push:
+#    tags:
+#      - "v*.*.*"
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: [self-hosted, linux, ossrh]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Build and release to OSSRH
+        # Once the signing process works, add "-P release" in the command below.
+        run: mvn -B clean deploy -gs /root/settings.xml

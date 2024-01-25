@@ -1,0 +1,408 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+  #%L
+  CYSEC Platform Bridge
+  %%
+  Copyright (C) 2020 - 2022 FHNW (University of Applied Sciences and Arts Northwestern Switzerland)
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:sx="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="https://smesec.eu" xmlns="https://smesec.eu"
+           elementFormDefault="qualified">
+
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+
+    <!--
+    A complete questionnaire contains questions and their structure.
+    Answers are optionally also stored in the questionnaire.
+    -->
+    <xs:element name="questionnaire">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="description" minOccurs="0"/>
+                <xs:element ref="attachments" minOccurs="0"/>
+                <xs:element ref="questions" minOccurs="0"/>
+                <xs:element ref="answers" minOccurs="0"/>
+                <xs:element ref="blocks" minOccurs="0"/>
+                <xs:element ref="library" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="dictionary" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:ID" use="required"/>
+            <xs:attribute name="version" type="xs:int" use="required"/>
+            <xs:attribute name="filename" type="xs:string"/>
+            <xs:attribute name="readableName" type="xs:string"/>
+            <xs:attribute name="order" type="xs:int"/>
+            <xs:attribute name="parent" type="xs:string"/>
+            <xs:attribute name="language" type="xs:language"/>
+            <!--            <xs:attribute name="parent" type="xs:IDREF"/>-->
+        </xs:complexType>
+    </xs:element>
+
+    <!-- A list of attachments, which may be empty. -->
+    <xs:element name="attachments">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="attachment" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Defines an attachment for a question or an answer option. -->
+    <xs:element name="attachment">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="content"/>
+            </xs:sequence>
+            <!--
+                Each attachment has an identifier that is used to refer to it, as well as a mime-type.
+                The ID is unique to the XML document and is used in the question text as well.
+            -->
+            <xs:attribute name="id" type="xs:ID" use="required"/>
+            <xs:attribute name="mime" type="xs:anyURI"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Defines the content of an attachment. May be language-dependent. -->
+    <xs:element name="content">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:base64Binary">
+                    <xs:attribute name="filename" type="xs:string" use="required"/>
+                    <xs:attribute ref="xml:lang"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="listeners">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="listener" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Definition of a listener: Which event to listen for, which call from which libraries to use. -->
+    <xs:element name="listener">
+        <xs:complexType>
+            <xs:attribute name="event" type="xs:string" use="required"/>
+            <xs:attribute name="libraries" type="xs:string" use="required"/>
+            <xs:attribute name="call" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- An introduction text for a question. -->
+    <xs:element name="introduction" type="xs:string"/>
+
+    <!-- The text of a question or answer option. A simple string for now, defined for extensibility. -->
+    <xs:element name="text" type="xs:string"/>
+
+    <!-- The element to use for a description of a short text -->
+    <xs:element name="description" type="xs:string"/>
+
+    <!-- The element to use to accompany questions with counseling/coaching text -->
+    <xs:element name="readMore" type="xs:string"/>
+
+    <!-- An infotext to display instead of possible answers/options. -->
+    <xs:element name="infotext" type="xs:string"/>
+
+    <!-- The element to use to comment the choice of an option -->
+    <xs:element name="comment" type="xs:string"/>
+
+    <xs:element name="questions">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- If there are any questions, there is at least one question -->
+                <xs:element ref="question" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- A question in the questionnaire, including any attachments and answer options. -->
+    <xs:element name="question">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="introduction" minOccurs="0"/>
+                <xs:element ref="text"/>
+                <xs:element ref="readMore" minOccurs="0"/>
+                <xs:element ref="attachments" minOccurs="0"/>
+                <xs:element ref="options" minOccurs="0"/>
+                <xs:element ref="infotext" minOccurs="0"/><!-- only relevant for questionType=info -->
+                <xs:element ref="listeners" minOccurs="0"/>
+                <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="instruction" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:ID" use="required"/>
+            <xs:attribute name="type" type="questionType" use="required"/>
+            <xs:attribute name="hidden" type="xs:boolean" default="true"/>
+            <xs:attribute name="extRef" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Types of questions refer to classification from here: https://studmed.unibe.ch/a-z/page.php?id=Pr%FCfungstypen -->
+    <xs:simpleType name="questionType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="(A|Astar|Astarexcl|date|likert|text|yesno|info)"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!--
+        List of possible answers to a question, including the type of the question and option and, if applicable, a reference
+        to the correct answer.
+    -->
+    <xs:element name="options">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- Some question types, like yes/no questions do not require option elements. -->
+                <xs:element ref="option" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="correct" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!--
+        A possible answer to a question, including any attachments needed.
+        Name chosen to avoid conflict with answers given by person filling out questionnaire.
+    -->
+    <xs:element name="option">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="text"/>
+                <xs:element ref="comment" minOccurs="0"/>
+                <xs:element ref="attachments" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:ID" use="required"/>
+            <xs:attribute name="short" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="answers">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="questionnaireReference" minOccurs="0"/>
+                <xs:element ref="answer" maxOccurs="unbounded"/>
+                <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="visible" type="xs:boolean" default="true"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- An answer given by the person filling out the questionnaire. qid refers to a question, aid-list to the given answers. -->
+    <xs:element name="answer">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="text"/>
+                <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <!--            <xs:attribute name="qid" type="xs:IDREF" use="required"/>-->
+            <xs:attribute name="qid" type="xs:ID" use="required"/>
+            <xs:attribute name="aid-list" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- The corresponding instruction to a block of questions. Instructions can be decorated with media,
+       such as a video or picture to provide more background information on the questions. -->
+    <xs:element name="instruction">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="text"/>
+                <xs:element ref="attachments" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="questionnaireReference">
+        <xs:complexType>
+            <xs:sequence>
+                <!--                <xs:element type="xs:IDREF" name="questionnaireId" />-->
+                <xs:element type="xs:ID" name="questionnaireId"/>
+                <xs:element type="xs:string" name="filename"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="metadata">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="mvalue" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <sx:attribute name="key" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!--
+    The metadata entry that either holds a binary or string value. The type field determines which one contains
+    the actual value. Link can be used to include an href.
+    -->
+    <xs:element name="mvalue">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element name="stringValue" type="xs:string"/>
+                    <xs:element name="binaryValue" type="xs:base64Binary"/>
+                </xs:choice>
+            </xs:sequence>
+            <xs:attribute name="key" type="xs:string" use="required"/>
+            <xs:attribute name="link" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+
+    <!-- Container object for multiple question blocks -->
+    <xs:element name="blocks">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="listeners" minOccurs="0"/>
+                <xs:element ref="block" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!--
+        A block of questions, in order to group questions in the UI and trigger logic based on these groups.
+        Optionally with a fixed position in the questionnaire. For each block there is a instruction description
+        on the left-hand side.
+    -->
+    <xs:element name="block">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="listeners" minOccurs="0"/>
+                <xs:element ref="instruction" minOccurs="0"/>
+                <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="title" type="xs:string" use="required"/>
+            <xs:attribute name="qid-list" type="xs:IDREFS" use="required"/>
+            <xs:attribute name="position" type="xs:string"/>
+            <xs:attribute name="id" type="xs:ID" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!--
+        A libray tag with code containing the event listeners.
+    -->
+    <xs:element name="library">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:base64Binary">
+                    <xs:attribute name="id" type="xs:ID" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="dataroot">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="company" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="company">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="questionnaire" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="user" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="companyname" type="xs:string"/>
+            <xs:attribute name="id" type="xs:ID"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="user">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="role" maxOccurs="unbounded"/><!-- at least one role is required-->
+                <xs:element ref="token" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:unsignedInt"/>
+            <xs:attribute name="username" type="xs:string"/>
+            <xs:attribute name="password" type="xs:string"/>
+            <xs:attribute name="email" type="xs:string"/>
+            <xs:attribute name="firstname" type="xs:string"/>
+            <xs:attribute name="surname" type="xs:string"/>
+            <xs:attribute name="locale" type="xs:string"/>
+            <xs:attribute name="lock" type="locks"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="locks" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="LOCKED"/>
+            <xs:enumeration value="PENDING"/>
+            <xs:enumeration value="NONE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:element name="role" type="xs:string"/>
+
+    <!-- An element that when set indicates a user desires to reset their password -->
+    <xs:element name="token">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="expiry" type="xs:dateTime"/>
+                    <xs:attribute name="id" type="xs:ID"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="audits">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="audit" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="audit">
+        <xs:complexType>
+            <xs:attribute name="time" type="xs:dateTime"/>
+            <xs:attribute name="user" type="xs:string"/>
+            <xs:attribute name="action" type="userAction"/>
+            <xs:attribute name="before" type="xs:string"/>
+            <xs:attribute name="after" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="userAction" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="created"/>
+            <xs:enumeration value="deleted"/>
+            <xs:enumeration value="modified"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Represents a dictionary that can be used by libraries to get text elements referenced by a key -->
+    <xs:element name="dictionary">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="entry" type="dictionaryEntry" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Represents an entry in a dictionary -->
+    <xs:complexType name="dictionaryEntry">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="key" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+</xs:schema>
