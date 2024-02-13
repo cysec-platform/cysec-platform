@@ -47,6 +47,23 @@ Unfortunately, the class provided in <filter> has to derive the Filter.class of 
 The password can be reset on the URL `/public/resetPassword/`
 The registration page is on the URL `/public/signUp/`
 
+## Dummy Auth
+If the application should not use an authenticator there is a dummy authenticator providing always static, valid credentials.
+
+To enable dummy authentication `cysec_authentication_scheme` needs to be set to `dummy` (case sensitive). If done so the authenticator will return always `acme` as company and `anonymous` as username.
+
+Furthermore, the company acme needs to be created. For this reason the following things need to be done:
+1. create a directory named `<config_base>/<datadir>/<instance_name>/acme`
+2. create a file `users.xml` in this directory containing the following content
+   ```
+   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+   <company xmlns="https://smesec.eu" companyname="ACME" id="acme">
+      <user id="0" username="anonymous" email="test@example.com" firstname="" surname="" lock="NONE">
+        <role>Admin</role>
+      </user>
+   </company>
+   ```
+
 ## Admin Auth
 The `/api/AdminPage` is accessible to statically defined users in the cfgResources file. Even if a user is already authenticated (eithe via Basic or OAuth) one has to enter the admin password.
 - `cysec_admin_prefix, _admin_` The site admin identification prefix (serves as company filler)
