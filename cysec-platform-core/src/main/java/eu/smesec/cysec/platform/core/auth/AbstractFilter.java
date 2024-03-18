@@ -2,7 +2,7 @@
  * #%L
  * CYSEC Platform Core
  * %%
- * Copyright (C) 2020 - 2022 FHNW (University of Applied Sciences and Arts Northwestern Switzerland)
+ * Copyright (C) 2020 - 2024 FHNW (University of Applied Sciences and Arts Northwestern Switzerland)
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,11 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.logging.LoggingFeature;
 
-/** Subclasses must implement @Provider Annotation. */
+/**
+ * Subclasses must implement @Provider Annotation.
+ */
 public abstract class AbstractFilter {
+
   protected Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
   protected List<AbstractAuthStrategy> authStrategies;
 
@@ -114,7 +117,7 @@ public abstract class AbstractFilter {
       logger.log(Level.WARNING, le.getMessage(), le);
       requestContext.abortWith(Response.status(423).build());
     } catch (CacheException ce) {
-      logger.log(Level.WARNING, "An error occurred accessing the cache",ce);
+      logger.log(Level.WARNING, "An error occurred accessing the cache", ce);
       requestContext.abortWith(Response.status(400).build());
     } catch (Exception e) {
       logger.log(Level.SEVERE, "An error occurred during authentication", e);

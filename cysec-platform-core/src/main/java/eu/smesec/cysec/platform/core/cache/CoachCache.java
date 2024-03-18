@@ -2,7 +2,7 @@
  * #%L
  * CYSEC Platform Core
  * %%
- * Copyright (C) 2020 - 2022 FHNW (University of Applied Sciences and Arts Northwestern Switzerland)
+ * Copyright (C) 2020 - 2024 FHNW (University of Applied Sciences and Arts Northwestern Switzerland)
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,11 @@
  * limitations under the License.
  * #L%
  */
+
 package eu.smesec.cysec.platform.core.cache;
 
-import eu.smesec.cysec.platform.bridge.ILibCal;
 import eu.smesec.cysec.platform.bridge.CoachLibrary;
+import eu.smesec.cysec.platform.bridge.ILibCal;
 import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.execptions.CacheNotFoundException;
 import eu.smesec.cysec.platform.bridge.execptions.LibraryException;
@@ -30,7 +31,6 @@ import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
 import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.jaxb.FieldCopyStrategy;
 import eu.smesec.cysec.platform.core.jaxb.GetterMergeStrategy;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -41,13 +41,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.jvnet.jaxb2_commons.lang.CopyStrategy2;
 import org.jvnet.jaxb2_commons.lang.MergeStrategy2;
 import org.jvnet.jaxb2_commons.locator.DefaultRootObjectLocator;
 
 class CoachCache extends Cache {
+
   private static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
   // copy only objects with text fields, used for translations
   private static final CopyStrategy2 fieldCopyStrategy =
@@ -70,8 +70,11 @@ class CoachCache extends Cache {
   private static final MergeStrategy2 getterMergeStrategy = new GetterMergeStrategy("getId");
   private static final Questionnaire emptyCoach = new Questionnaire();
 
-  /** Coach file instantiation, saves the file path of each coach for quick unmarshalling. */
+  /**
+   * Coach file instantiation, saves the file path of each coach for quick unmarshalling.
+   */
   private static class Coach {
+
     private final Path path;
     private Questionnaire coach;
 
@@ -85,6 +88,7 @@ class CoachCache extends Cache {
    * Coach instantiation, saves the default coach and the corresponding libraries and translations.
    */
   private static class CoachCollection {
+
     private final String id;
     private String parent;
     private Coach defaultCoach;
@@ -132,10 +136,10 @@ class CoachCache extends Cache {
   /**
    * Registers a new coach.
    *
-   * @param coachId The coach identifier of the coach.
+   * @param coachId  The coach identifier of the coach.
    * @param parentId The parent coach identifier of the coach.
    * @param language The language of the coach.
-   * @param path The file path of the coach.
+   * @param path     The file path of the coach.
    */
   void addCoach(String coachId, String parentId, String language, Path path) {
     writeLock.lock();
@@ -173,6 +177,10 @@ class CoachCache extends Cache {
                 + path.toString());
         coachCollection.translations.put(language, new Coach(path));
       }
+    } catch(Exception e) {
+      logger.log(
+          Level.SEVERE,
+          "Exception while loading coach",e);
     } finally {
       writeLock.unlock();
     }
@@ -326,7 +334,8 @@ class CoachCache extends Cache {
     return collection;
   }
 
-  private Tuple<Questionnaire, List<CoachLibrary>> getDefault(String coachId) throws CacheException {
+  private Tuple<Questionnaire, List<CoachLibrary>> getDefault(String coachId)
+      throws CacheException {
     CoachCollection collection = getCollection(coachId);
     Coach defaultCoach = collection.defaultCoach;
     // load default coach and libraries if not loaded yet
@@ -442,7 +451,7 @@ class CoachCache extends Cache {
    * Checks if a coach has been registered.
    *
    * @param coachId The coach identifier of the coach.
-   * @param locale The language of the coach
+   * @param locale  The language of the coach
    * @return <code>true</code> if the coach has been registered, or <code>false</code> otherwise.
    */
   public boolean existsCoach(String coachId, Locale locale) {
@@ -467,9 +476,9 @@ class CoachCache extends Cache {
    * Executes a read command on a coach.
    *
    * @param coachId relative coach directory.
-   * @param locale preferred coach language.
+   * @param locale  preferred coach language.
    * @param command read command.
-   * @param <R> command return type.
+   * @param <R>     command return type.
    * @return command result.
    * @throws CacheException if the coach could not be loaded.
    */
@@ -489,9 +498,9 @@ class CoachCache extends Cache {
   /**
    * Executes a read command on all installed coaches.
    *
-   * @param locale preferred coach language.
+   * @param locale  preferred coach language.
    * @param command read command.
-   * @param <R> command return type.
+   * @param <R>     command return type.
    * @return command result.
    * @throws CacheException if a coach could not be loaded.
    */
