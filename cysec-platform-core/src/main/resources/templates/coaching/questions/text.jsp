@@ -11,8 +11,7 @@
     <div class="col-xs-12">
         <c:set var="content" value="${answer != null ? answer.getText() : '' }" />
         <textarea name="${qid}" style="padding: 5px;" rows="8" cols="70"
-                  onchange="updateAnswer(event)">
-            <c:out value="${content}" />
+                  onchange="updateAnswer(event)"><c:out value="${content}" escapeXml="false" />
         </textarea>
     </div>
 </div>

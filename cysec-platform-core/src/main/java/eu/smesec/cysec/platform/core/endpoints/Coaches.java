@@ -66,6 +66,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.mvc.Viewable;
 
@@ -240,6 +241,8 @@ public class Coaches {
         return Response.status(404).build();
       }
       CoachLibrary library = cal.getLibrariesForQuestionnaire(coachId).get(0);
+      
+      value = StringEscapeUtils.escapeHtml4(value);      
 
       // check question exists
       Question question = cal.getQuestion(coachId, qid);
