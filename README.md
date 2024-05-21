@@ -4,7 +4,9 @@ This is the main repository for the CySeC project.
 
 
 ## Development
+This project uses dynamically generated sources. If working with a development environment make sure that you include the directory cysec-platform-core/target/generated-sources in order to have all syntax highlighting and build processes correct.
 
+It is also a good idea to include a ``mvn generate-sources`` as pre build command into the run configuration.
 ### Branching and Versioning
 The [Gitflow Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
 and [Semantic Versioning](https://semver.org) is used for this project.

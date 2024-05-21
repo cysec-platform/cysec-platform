@@ -2,7 +2,7 @@
  * #%L
  * CYSEC Platform Core
  * %%
- * Copyright (C) 2020 - 2022 FHNW (University of Applied Sciences and Arts Northwestern Switzerland)
+ * Copyright (C) 2020 - 2024 FHNW (University of Applied Sciences and Arts Northwestern Switzerland)
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class CoachHelper {
   }
 
   public void setBlocks(Collection<Block> blocks) {
-    this.blocks = new ArrayList<>(blocks);
+    this.blocks = (blocks==null) ? new ArrayList<>():new ArrayList<>(blocks);
   }
 
   public String getId() {
