@@ -43,7 +43,6 @@ import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.cache.LibCal;
 import eu.smesec.cysec.platform.core.cache.ResourceManager;
 import eu.smesec.cysec.platform.core.utils.LocaleUtils;
-import eu.smesec.cysec.platform.core.utils.Validator;
 import eu.smesec.cysec.platform.core.json.MValueAdapter;
 import eu.smesec.cysec.platform.core.messages.CoachMsg;
 
@@ -67,6 +66,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.mvc.Viewable;
 
@@ -241,11 +241,8 @@ public class Coaches {
         return Response.status(404).build();
       }
       CoachLibrary library = cal.getLibrariesForQuestionnaire(coachId).get(0);
-      // validate response
-      if (!Validator.validateAnswer(value)) {
-        logger.warning("response value is invalid");
-        return Response.status(400).build();
-      }
+      
+      value = StringEscapeUtils.escapeHtml4(value);      
 
       // check question exists
       Question question = cal.getQuestion(coachId, qid);
