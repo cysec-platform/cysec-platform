@@ -13,7 +13,7 @@
     </div>
     <div class="col-xs-4 text-right">
         <h4 class="next-question">
-            <a href="${baseUrl}${it.next}">${it.msg.next}
+            <a onmousedown="window.location = '${baseUrl}${it.next}'">${it.msg.next}
                 <img src="${baseUrl}/assets/arrow_blue.png"/>
             </a>
         </h4>
