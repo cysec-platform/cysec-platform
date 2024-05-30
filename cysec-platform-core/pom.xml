@@ -253,6 +253,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.12.0</version>
+        </dependency>
+
         <!-- crypt algorithms for passwords -->
         <dependency>
             <groupId>commons-codec</groupId>
