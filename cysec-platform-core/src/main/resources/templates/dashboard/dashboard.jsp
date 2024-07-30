@@ -6,18 +6,11 @@
 <c:set var="api" value="${pageContext.request.contextPath}/api/rest/resources/"/>
 
 <div class="row dashboard-wrapper bg-lightbluegrey">
-    <div id="page-content-wrapper" class="col-xs-8 bg-white">
+    <div id="page-content-wrapper" class="col-xs-12 bg-white">
         <div class="row">
             <%@include file="recommended.jsp"%>
             <%@include file="coaches.jsp"%>
             <%@include file="remaining.jsp"%>
-        </div>
-    </div>
-    <div id="sidebar-wrapper" class="col-xs-4 bg-lightbluegrey">
-        <div class="sidebar-nav sidebar-content">
-            <%@include file="sidebar/skillboard.jsp"%>
-            <%@include file="sidebar/grades.jsp"%>
-            <%@include file="sidebar/badges.jsp"%>
         </div>
     </div>
 </div>
