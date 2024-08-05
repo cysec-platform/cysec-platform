@@ -51,7 +51,7 @@ h4 {
 
 h6 {
     font-size: 1.1em;
-    color: #007EA7;
+    color: var(--primary);
     font-weight: 400;
 }
 
@@ -127,7 +127,7 @@ h6 {
 #documentation-wrapper #documentation_link a {
     font-family: 'Miriam Libre';
     font-weight: bold;
-    color: #007EA7;
+    color: var(--primary);
 }
 
 #documentation-wrapper h3.box-heading,
@@ -143,9 +143,9 @@ h6 {
 #documentation-wrapper .text-link-box {
     font-size: 0.85em;
     font-family: 'Miriam Libre';
-    color: #007EA7;
+    color: var(--primary);
     text-decoration: none;
-    border: solid 1px #229CCD;
+    border: solid 1px var(--primary-light);
     padding: 15px 20px 10px;
     margin: 20px 0;
 }
@@ -153,12 +153,12 @@ h6 {
 #page-content-wrapper .text-link-box a,
 #documentation-wrapper .text-link-box a {
     letter-spacing: 1px;
-    color: #007EA7;
+    color: var(--primary);
 }
 
 #page-content-wrapper .text-link-box:hover,
 #documentation-wrapper .text-link-box:hover {
-    background-color: #229CCD;
+    background-color: var(--primary-light);
     transition: all 0.3s ease 0s;
 }
 

@@ -3,7 +3,7 @@
 / This stylesheet contains all relevant colors        /
 / of the SMESEC branding                              /
 / -------------------------------------------------- */
-
+@import "theme.css";
 
 
 .bg-white {
@@ -43,27 +43,27 @@
 }
 
 .bg-blue {
-    background-color: #229CCD;
+    background-color: var(--primary-light);
 }
 
 .border-blue {
-    border: 1px solid #229CCD;
+    border: 1px solid var(--primary-light);
 }
 
 .blue {
-    color: #229CCD;
+    color: var(--primary-light);
 }
 
 .bg-darkblue {
-    background-color: #007EA7;
+    background-color: var(--primary);
 }
 
 .border-darkblue {
-    border: 1px solid #007EA7;
+    border: 1px solid var(--primary);
 }
 
 .darkblue {
-    color: #007EA7;
+    color: var(--primary);
 }
 
 
