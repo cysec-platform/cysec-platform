@@ -367,25 +367,28 @@ public class Coaches {
 
       // next
       Question next = library.getNextQuestion(question, fqcn);
-      String url =
-          next != null
-              ? "/app/coach.jsp?fqcn=" + fqcn.toString() + "&question=" + next.getId()
-              : res.hasResource(fqcn.getCoachId(), library.getId(), "/assets/jsp/summary.jsp")
-                  ? "/api/rest/resources/"
-                      + fqcn.getCoachId()
-                      + "/"
-                      + library.getId()
-                      + "/assets/jsp/summary.jsp"
-                  : "/app";
+      String url = next != null
+          ? "/app/coach.jsp?fqcn=" + fqcn.toString() + "&question=" + next.getId()
+          : res.hasResource(fqcn.getCoachId(), library.getId(), "/assets/jsp/summary.jsp")
+              ? "/api/rest/resources/"
+                  + fqcn.getCoachId()
+                  + "/"
+                  + library.getId()
+                  + "/assets/jsp/summary.jsp"
+              : "/app";
 
       CoachMsg msg = new CoachMsg(locale);
       Map<String, Object> model = new HashMap<>();
+      Answer answer = cal.getAnswer(companyId, fqcn, questionId);
       model.put("msg", msg.getMessages());
       model.put("question", question);
-      model.put("answer", cal.getAnswer(companyId, fqcn, questionId));
+      model.put("answer", answer);
       model.put("fqcn", id);
       model.put("next", url);
       model.put("actives", library.peekQuestions(question));
+      model.put("aidList", answer != null && answer.getAidList() != null
+          ? Arrays.asList(answer.getAidList().split(" "))
+          : Arrays.asList());
       return Response.status(200).entity(new Viewable("/coaching/coach", model)).build();
     } catch (CacheException ce) {
       logger.severe(ce.getMessage());

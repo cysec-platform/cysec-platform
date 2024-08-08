@@ -4,6 +4,7 @@
 <c:set var="coachId" value="${it.coachId}"/>
 <c:set var="question" value="${it.question}"/>
 <c:set var="answer" value="${it.answer}"/>
+<c:set var="aidList" value="${it.aidList}"/>
 <c:set var="qid" value="${question.getId()}"/>
 
 <!-- A star -->
@@ -12,11 +13,13 @@
     <div class="row">
         <c:forEach var="option" items="${question.getOptions().getOption()}">
             <c:set var="oid" value="${option.getId()}" />
+            <c:set var="checked" value="${answer != null && 
+                aidList.stream().anyMatch(aid -> aid.contentEquals(oid)).orElse(false)}" />
             <div class="questionnaire-answers col-xs-12">
                 <label>
                     <input type="checkbox" name="${question.getId()}" value="${oid}"
                            onchange="updateAnswer(event)"
-                    <c:if test="${answer != null && answer.getAidList().contains(oid)}">
+                    <c:if test="${checked}">
                            checked="checked"
                     </c:if>
                     >
