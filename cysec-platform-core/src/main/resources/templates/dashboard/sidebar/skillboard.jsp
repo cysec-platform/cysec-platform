@@ -15,44 +15,48 @@
             <img class="skill-image" src="${not empty image ? scheme.concat(host).concat(api).concat(image) : '../assets/skillboard.png'}">
         </div>
         <!-- strength -->
-        <div class="row padding-bottom-small">
-            <div class="col-xs-3 text-left">
-                <p class="skilllevel skill-strength">&nbsp;&nbsp;Lvl. 1</p>
-            </div>
-            <div class="col-xs-6">
-                <p class="text-center">${it.msg.strength}</p>
-            </div>
-            <div class="col-xs-3 text-right">
-                <p class="skilllevel skill-info"></p>
-            </div>
-            <div class="col-xs-12">
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: ${strength / strengthMax * 100}%;"
-                     aria-valuenow="${strength}" aria-valuemin="0" aria-valuemax="${strengthMax}">
+        <c:if test="${strengthMax gt 0}">
+            <div class="row padding-bottom-small">
+                <div class="col-xs-3 text-left">
+                    <p class="skilllevel skill-strength">&nbsp;&nbsp;Lvl. 1</p>
+                </div>
+                <div class="col-xs-6">
+                    <p class="text-center">${it.msg.strength}</p>
+                </div>
+                <div class="col-xs-3 text-right">
+                    <p class="skilllevel skill-info"></p>
+                </div>
+                <div class="col-xs-12">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: ${strength / strengthMax * 100}%;"
+                        aria-valuenow="${strength}" aria-valuemin="0" aria-valuemax="${strengthMax}">
+                        </div>
+                        <div class="progress-bar-title">${strength} / ${strengthMax}</div>
                     </div>
-                    <div class="progress-bar-title">${strength} / ${strengthMax}</div>
                 </div>
             </div>
-        </div>
+        </c:if>
         <!-- know how -->
-        <div class="row padding-bottom-small">
-            <div class="col-xs-3 text-left">
-                <p class="skilllevel skill-knowhow">&nbsp;&nbsp;Lvl. 1</p>
-            </div>
-            <div class="col-xs-6">
-                <p class="text-center">${it.msg.knowHow}</p>
-            </div>
-            <div class="col-xs-3 text-right">
-                <p class="skilllevel skill-info"></p>
-            </div>
-            <div class="col-xs-12">
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: ${knowHow / knowHowMax * 100}%;"
-                         aria-valuenow="${knowHow}" aria-valuemin="0" aria-valuemax="${knowHowMax}"></div>
-                    <div class="progress-bar-title">${knowHow} / ${knowHowMax}</div>
+        <c:if test="${knowHowMax gt 0}">
+            <div class="row padding-bottom-small">
+                <div class="col-xs-3 text-left">
+                    <p class="skilllevel skill-knowhow">&nbsp;&nbsp;Lvl. 1</p>
+                </div>
+                <div class="col-xs-6">
+                    <p class="text-center">${it.msg.knowHow}</p>
+                </div>
+                <div class="col-xs-3 text-right">
+                    <p class="skilllevel skill-info"></p>
+                </div>
+                <div class="col-xs-12">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: ${knowHow / knowHowMax * 100}%;"
+                            aria-valuenow="${knowHow}" aria-valuemin="0" aria-valuemax="${knowHowMax}"></div>
+                        <div class="progress-bar-title">${knowHow} / ${knowHowMax}</div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </c:if>
         <!-- endurance/fitness -->
         <div class="row padding-bottom-small">
             <div class="col-xs-3 text-left">
