@@ -107,6 +107,21 @@ public class LibCal implements ILibCal {
     return cal.getAllAnswers(getCompanyId(), getCoachContext());
   }
 
+  @Override
+  public void createAnswer(String coachId, Answer answer) throws CacheException {
+    cal.createAnswer(getCompanyId(), FQCN.fromString(coachId), answer);
+  }
+
+  @Override
+  public void updateAnswer(String coachId, Answer answer) throws CacheException {
+    cal.updateAnswer(getCompanyId(), FQCN.fromString(coachId), answer);
+  }
+
+  @Override
+  public void removeAnswer(String coachId, Object questionId) throws CacheException {
+    cal.removeAnswer(getCompanyId(), FQCN.fromString(coachId), questionId);
+  }
+
   /**
    * Deprecated method, this method will be removed in a later release.
    *

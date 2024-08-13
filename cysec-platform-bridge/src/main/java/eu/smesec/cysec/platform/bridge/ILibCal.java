@@ -65,6 +65,12 @@ public interface ILibCal {
 
   List<Answer> getAllAnswers() throws CacheException;
 
+  void createAnswer(String coachId, Answer answer) throws CacheException;
+
+  void updateAnswer(String coachId, Answer answer) throws CacheException;
+
+  void removeAnswer(String coachId, Object questionId) throws CacheException;
+
   Questionnaire getCoach() throws CacheException;
 
   Questionnaire getCoach(String coachId) throws CacheException;
