@@ -6,7 +6,18 @@
     <div class="col-xs-8">
         <c:forEach var="active" items="${it.actives}">
             <c:set var="aid" value="${active.getId()}"/>
-            <a href="${baseUrl}/app/coach.jsp?fqcn=${it.fqcn}&question=${aid}" class="pagination-element" title="${aid}">
+
+            <c:set var="text"> <c:out value="${active.getText()}"/></c:set> <%-- use c:out to escape strings --%>
+            <c:set var="intro"><c:out value="${active.getIntroduction()}" /></c:set> 
+
+            <a 
+                href="${baseUrl}/app/coach.jsp?fqcn=${it.fqcn}&question=${aid}"
+                class="pagination-element"
+                data-title="<h3>${text}</h3><p>${intro}</p>"
+                data-toggle="tooltip"
+                data-placement="top"
+                data-html="true"
+            >
                 <img class="pagination-img" src="${baseUrl}/assets/${it.question.getId().equals(aid) ? 'status_in_progress.png' : 'status_empty.png'}">
             </a>
         </c:forEach>
