@@ -32,5 +32,6 @@ public class CoachMsg extends Message {
 
     messages.put("readmore", i18n.tr("read more"));
     messages.put("next", i18n.tr("next"));
+    messages.put("summary", i18n.tr("Summary"));
   }
 }

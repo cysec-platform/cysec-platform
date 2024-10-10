@@ -21,6 +21,17 @@
                 <img class="pagination-img" src="${baseUrl}/assets/${it.question.getId().equals(aid) ? 'status_in_progress.png' : 'status_empty.png'}">
             </a>
         </c:forEach>
+        <%-- summary page --%>
+        <a 
+            href="${baseUrl}${it.summary}"
+            class="pagination-element"
+            data-title="<h3>${it.msg.summary}</h3>"
+            data-toggle="tooltip"
+            data-placement="top"
+            data-html="true"
+        >
+            <img class="pagination-img" src="${baseUrl}/assets/status_summary.png">
+        </a>
     </div>
     <div class="col-xs-4 text-right">
         <h4 class="next-question">

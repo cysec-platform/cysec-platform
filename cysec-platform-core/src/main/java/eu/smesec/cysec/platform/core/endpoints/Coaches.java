@@ -365,17 +365,20 @@ public class Coaches {
       State state = new State(questionId, null);
       cal.setMetadataOnAnswers(companyId, fqcn, MetadataUtils.toMd(state));
 
-      // next
+      // summary page
+      String summaryUrl = res.hasResource(fqcn.getCoachId(), library.getId(), "/assets/jsp/summary.jsp")
+      ? "/api/rest/resources/"
+          + fqcn.getCoachId()
+          + "/"
+          + library.getId()
+          + "/assets/jsp/summary.jsp"
+      : "/app";
+
+      // next page
       Question next = library.getNextQuestion(question, fqcn);
-      String url = next != null
+      String nextUrl = next != null
           ? "/app/coach.jsp?fqcn=" + fqcn.toString() + "&question=" + next.getId()
-          : res.hasResource(fqcn.getCoachId(), library.getId(), "/assets/jsp/summary.jsp")
-              ? "/api/rest/resources/"
-                  + fqcn.getCoachId()
-                  + "/"
-                  + library.getId()
-                  + "/assets/jsp/summary.jsp"
-              : "/app";
+          : summaryUrl;
 
       CoachMsg msg = new CoachMsg(locale);
       Map<String, Object> model = new HashMap<>();
@@ -384,7 +387,8 @@ public class Coaches {
       model.put("question", question);
       model.put("answer", answer);
       model.put("fqcn", id);
-      model.put("next", url);
+      model.put("next", nextUrl);
+      model.put("summary", summaryUrl);
       model.put("actives", library.peekQuestions(question));
       model.put("aidList", answer != null && answer.getAidList() != null
           ? Arrays.asList(answer.getAidList().split(" "))
