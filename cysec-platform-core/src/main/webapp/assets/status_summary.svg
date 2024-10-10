@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 22 22">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #001921;
+        stroke-width: .5px;
+      }
+
+      .cls-2 {
+        fill: url(#Unbenannter_Verlauf);
+        fill-rule: evenodd;
+        stroke: #fff;
+        stroke-width: 1.5px;
+      }
+    </style>
+    <linearGradient id="Unbenannter_Verlauf" data-name="Unbenannter Verlauf" x1="-894" y1="525.9" x2="-893" y2="524.9" gradientTransform="translate(15694 10660.8) scale(17.6 -20.3)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b9ffb7"/>
+      <stop offset="1" stop-color="#8dd7fa"/>
+    </linearGradient>
+  </defs>
+  <g id="Polygon-Copy-2">
+    <path class="cls-2" d="M11,.9L2.2,5.9v10.1l8.8,5.1,8.8-5.1V5.9L11,.9Z"/>
+    <path class="cls-1" d="M11,.3L1.7,5.6v10.7l9.3,5.4,9.3-5.4V5.6L11,.3Z"/>
+  </g>
+</svg>
