@@ -1,0 +1,6 @@
+* {
+    --primary: #007EA7;
+    --primary-light: #229CCD;
+    --gradient-low: #8dd7fa;
+    --gradient-high: var(--primary);
+}

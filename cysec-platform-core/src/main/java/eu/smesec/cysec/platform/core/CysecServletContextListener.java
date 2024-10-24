@@ -28,12 +28,27 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import org.glassfish.jersey.logging.LoggingFeature;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
+import java.util.logging.Logger;;
+
 @WebListener
 public class CysecServletContextListener implements ServletContextListener {
+  protected static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
   // configuration keys referenced in 'cysec.cfgresources'
   private static final String CONFIG_HEADER_PROFILE = "cysec_header_profile";
   private static final String CONFIG_HEADER_LOGOUT = "cysec_header_logout";
+  private static final String CONFIG_LOGO_PATH = "cysec_logo_path";
+  private static final String CONFIG_THEME_PATH = "cysec_theme_path";
+
+  private static final String LOGO_ASSET_PATH = "/assets/logo/logo.svg";
+  private static final String THEME_PUBLIC_PATH = "/public/css/theme.css";
 
   @Override
   public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -48,6 +63,40 @@ public class CysecServletContextListener implements ServletContextListener {
     final String headerLogoutHref = config.getStringValue(null, CONFIG_HEADER_LOGOUT);
     if (headerLogoutHref != null) {
       servletContext.setInitParameter("header_logout_href", headerLogoutHref);
+    }
+
+    final String logoPath = config.getStringValue(null, CONFIG_LOGO_PATH);
+    if (logoPath != null) {
+      // if available, overwrite logo.svg with a custom logo file
+
+      Path source = Path.of(logoPath);
+      String defaultLogo = servletContext.getRealPath(LOGO_ASSET_PATH);
+      Path target = Path.of(defaultLogo);
+
+      try {
+        Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+        logger.info("replaced default logo with custom logo");
+      } catch (IOException e) {
+        logger.severe("could not copy custom logo");
+        e.printStackTrace();
+      }
+    }
+
+    final String themePath = config.getStringValue(null, CONFIG_THEME_PATH);
+    if (themePath != null) {
+      // if available, overwrite theme.css with a custom theme file
+
+      Path source = Path.of(themePath);
+      String defaultTheme = servletContext.getRealPath(THEME_PUBLIC_PATH);
+      Path target = Path.of(defaultTheme);
+
+      try {
+        Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+        logger.info("replaced default css theme with custom theme");
+      } catch (IOException e) {
+        logger.severe("Could not copy custom logo");
+        e.printStackTrace();
+      }
     }
   }
 
