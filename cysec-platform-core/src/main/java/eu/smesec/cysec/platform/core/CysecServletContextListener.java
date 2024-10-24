@@ -45,8 +45,10 @@ public class CysecServletContextListener implements ServletContextListener {
   private static final String CONFIG_HEADER_PROFILE = "cysec_header_profile";
   private static final String CONFIG_HEADER_LOGOUT = "cysec_header_logout";
   private static final String CONFIG_LOGO_PATH = "cysec_logo_path";
+  private static final String CONFIG_THEME_PATH = "cysec_theme_path";
 
   private static final String LOGO_ASSET_PATH = "/assets/logo/logo.svg";
+  private static final String THEME_PUBLIC_PATH = "/public/css/theme.css";
 
   @Override
   public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -76,6 +78,24 @@ public class CysecServletContextListener implements ServletContextListener {
         logger.info("replaced default logo with custom logo");
       } catch (IOException e) {
         logger.severe("could not copy custom logo");
+        e.printStackTrace();
+      }
+    }
+
+    final String themePath = config.getStringValue(null, CONFIG_THEME_PATH);
+    if (themePath != null) {
+      // if available, overwrite theme.css with a custom theme file
+
+      Path source = Path.of(themePath);
+      String defaultTheme = servletContext.getRealPath(THEME_PUBLIC_PATH);
+      Path target = Path.of(defaultTheme);
+
+      try {
+        Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+        logger.info("replaced default css theme with custom theme");
+      } catch (IOException e) {
+        logger.severe("Could not copy custom logo");
+        e.printStackTrace();
       }
     }
   }

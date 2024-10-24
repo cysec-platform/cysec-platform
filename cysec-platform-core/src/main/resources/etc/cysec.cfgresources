@@ -8,6 +8,7 @@ string; cysec_data_path; data/; The path to be used to find data files of cysec
 string; cysec_coach_path; coaches/; The path to be used to find data files of cysec
 string; cysec_log_path; log/; The path to be used to find log files of cysec
 string; cysec_logo_path; ; Exact path to a custom logo file
+string; cysec_theme_path; ; Exact path to a custom css theme file
 
 string; cysec_authentication_scheme; Basic; Basic username&password authentication
 string; cysec_authentication_property; Authorization; The auth header
