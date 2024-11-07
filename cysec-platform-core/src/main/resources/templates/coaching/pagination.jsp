@@ -30,6 +30,9 @@
                 >
             </a>
         </c:forEach>
+        
+        &nbsp; | &nbsp; <%-- vertical line --%>
+        
         <%-- summary page --%>
         <a 
             href="${baseUrl}${it.summary}"
