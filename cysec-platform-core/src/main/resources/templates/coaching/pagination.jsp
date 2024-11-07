@@ -5,10 +5,12 @@
 <div id="pagination" class="row">
     <div class="col-xs-8">
         <c:forEach var="active" items="${it.actives}">
-            <c:set var="aid" value="${active.getId()}"/>
+            <c:set var="question" value="${active.getKey()}" />
+            <c:set var="answer" value="${active.getValue()}" />
+            <c:set var="aid" value="${question.getId()}"/>
 
-            <c:set var="text"> <c:out value="${active.getText()}"/></c:set> <%-- use c:out to escape strings --%>
-            <c:set var="intro"><c:out value="${active.getIntroduction()}" /></c:set> 
+            <c:set var="text"> <c:out value="${question.getText()}"/></c:set> <%-- use c:out to escape strings --%>
+            <c:set var="intro"><c:out value="${question.getIntroduction()}" /></c:set>
 
             <a 
                 href="${baseUrl}/app/coach.jsp?fqcn=${it.fqcn}&question=${aid}"
@@ -18,7 +20,14 @@
                 data-placement="top"
                 data-html="true"
             >
-                <img class="pagination-img" src="${baseUrl}/assets/${it.question.getId().equals(aid) ? 'status_in_progress.png' : 'status_empty.png'}">
+                <img
+                    class="pagination-img"
+                    src="${baseUrl}/assets/${it.question.getId().equals(aid)
+                        ? 'status_in_progress.png'
+                        : answer != null 
+                            ? 'status_done.png'
+                            : 'status_empty.png'}"
+                >
             </a>
         </c:forEach>
         <%-- summary page --%>

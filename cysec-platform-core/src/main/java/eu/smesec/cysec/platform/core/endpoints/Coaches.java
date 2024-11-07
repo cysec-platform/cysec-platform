@@ -46,6 +46,7 @@ import eu.smesec.cysec.platform.core.utils.LocaleUtils;
 import eu.smesec.cysec.platform.core.json.MValueAdapter;
 import eu.smesec.cysec.platform.core.messages.CoachMsg;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -54,6 +55,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import javax.annotation.security.DenyAll;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
@@ -73,12 +76,14 @@ import org.glassfish.jersey.server.mvc.Viewable;
 @DenyAll
 @Path("rest/coaches")
 public class Coaches {
-  @Context ServletContext context;
+  @Context
+  ServletContext context;
   private final Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
-  private final Gson gson =
-      new GsonBuilder().registerTypeAdapter(Mvalue.class, new MValueAdapter()).create();
-  @Inject private CacheAbstractionLayer cal;
-  @Inject private ResourceManager res;
+  private final Gson gson = new GsonBuilder().registerTypeAdapter(Mvalue.class, new MValueAdapter()).create();
+  @Inject
+  private CacheAbstractionLayer cal;
+  @Inject
+  private ResourceManager res;
 
   /**
    * Instantiates a new coach.
@@ -220,8 +225,8 @@ public class Coaches {
   /**
    * Updates an answers of an instantiated coach.
    *
-   * @param id The fully qualified coach name
-   * @param qid The id of the question
+   * @param id    The fully qualified coach name
+   * @param qid   The id of the question
    * @param value new answer value
    * @return response
    */
@@ -241,8 +246,8 @@ public class Coaches {
         return Response.status(404).build();
       }
       CoachLibrary library = cal.getLibrariesForQuestionnaire(coachId).get(0);
-      
-      value = StringEscapeUtils.escapeHtml4(value);      
+
+      value = StringEscapeUtils.escapeHtml4(value);
 
       // check question exists
       Question question = cal.getQuestion(coachId, qid);
@@ -299,12 +304,11 @@ public class Coaches {
 
         // Add audit entry
         // Make sure to use empty string if "before" or "after" is null
-        Audit audit =
-            AuditUtils.createAudit(
-                userId,
-                UserAction.MODIFIED,
-                before == null ? "" : before,
-                after == null ? "" : after);
+        Audit audit = AuditUtils.createAudit(
+            userId,
+            UserAction.MODIFIED,
+            before == null ? "" : before,
+            after == null ? "" : after);
         cal.createAuditLog(companyId, audit);
 
         library.onResponseChange(question, answer, fqcn);
@@ -313,16 +317,15 @@ public class Coaches {
       List<Question> active = library.peekQuestions(question);
 
       JsonObject data = new JsonObject();
-      String url =
-          next != null
-              ? "/app/coach.jsp?fqcn=" + fqcn.toString() + "&question=" + next.getId()
-              : res.hasResource(fqcn.getCoachId(), library.getId(), "/assets/jsp/summary.jsp")
-                  ? "/api/rest/resources/"
-                      + fqcn.getCoachId()
-                      + "/"
-                      + library.getId()
-                      + "/assets/jsp/summary.jsp"
-                  : "/app";
+      String url = next != null
+          ? "/app/coach.jsp?fqcn=" + fqcn.toString() + "&question=" + next.getId()
+          : res.hasResource(fqcn.getCoachId(), library.getId(), "/assets/jsp/summary.jsp")
+              ? "/api/rest/resources/"
+                  + fqcn.getCoachId()
+                  + "/"
+                  + library.getId()
+                  + "/assets/jsp/summary.jsp"
+              : "/app";
       data.addProperty("next", url);
 
       // todo active
@@ -343,7 +346,7 @@ public class Coaches {
   /**
    * Renders a question.
    *
-   * @param id The id of the coach
+   * @param id         The id of the coach
    * @param questionId the id of the question
    * @return rendered question as html
    */
@@ -367,18 +370,29 @@ public class Coaches {
 
       // summary page
       String summaryUrl = res.hasResource(fqcn.getCoachId(), library.getId(), "/assets/jsp/summary.jsp")
-      ? "/api/rest/resources/"
-          + fqcn.getCoachId()
-          + "/"
-          + library.getId()
-          + "/assets/jsp/summary.jsp"
-      : "/app";
+          ? "/api/rest/resources/"
+              + fqcn.getCoachId()
+              + "/"
+              + library.getId()
+              + "/assets/jsp/summary.jsp"
+          : "/app";
 
       // next page
       Question next = library.getNextQuestion(question, fqcn);
       String nextUrl = next != null
           ? "/app/coach.jsp?fqcn=" + fqcn.toString() + "&question=" + next.getId()
           : summaryUrl;
+
+      // question states for pagination
+      List<Question> peakQuestions = library.peekQuestions(question);
+      List<AbstractMap.SimpleEntry<Question, Answer>> actives = peakQuestions.stream()
+          .map(q -> {
+            try {
+              return new AbstractMap.SimpleEntry<>(q, cal.getAnswer(companyId, fqcn, q.getId()));
+            } catch (CacheException e) {
+              return new AbstractMap.SimpleEntry<Question, Answer>(q, null);
+            }
+          }).collect(Collectors.toList());
 
       CoachMsg msg = new CoachMsg(locale);
       Map<String, Object> model = new HashMap<>();
@@ -389,7 +403,7 @@ public class Coaches {
       model.put("fqcn", id);
       model.put("next", nextUrl);
       model.put("summary", summaryUrl);
-      model.put("actives", library.peekQuestions(question));
+      model.put("actives", actives);
       model.put("aidList", answer != null && answer.getAidList() != null
           ? Arrays.asList(answer.getAidList().split(" "))
           : Arrays.asList());
@@ -403,38 +417,39 @@ public class Coaches {
     return Response.status(500).build();
   }
 
-  //  @GET
-  //  @Path("/{id}/pagination/{qid}/render")
-  //  @Produces(MediaType.TEXT_HTML)
-  //  public Response renderPagination(@PathParam("id") String id,
-  //                                   @PathParam("qid") String questionId) {
-  //    String companyId = context.getAttribute("company").toString();
-  //    try {
-  //      FQCN fqcn = FQCN.fromString(id);
-  //      context.setAttribute("fqcn", id);
-  //      Library library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
-  //      Question question = cal.getQuestion(fqcn.getCoachId(), questionId);
-  //      if (question == null) {
-  //        return Response.status(404).build();
-  //      }
-  //      Answer answer = cal.getAnswer(companyId, fqcn, questionId);
-  //      // update state
-  //      State state = new State(questionId, null);
-  //      cal.setMetadataOnAnswers(companyId, fqcn, MetadataUtils.toMd(state));
+  // @GET
+  // @Path("/{id}/pagination/{qid}/render")
+  // @Produces(MediaType.TEXT_HTML)
+  // public Response renderPagination(@PathParam("id") String id,
+  // @PathParam("qid") String questionId) {
+  // String companyId = context.getAttribute("company").toString();
+  // try {
+  // FQCN fqcn = FQCN.fromString(id);
+  // context.setAttribute("fqcn", id);
+  // Library library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+  // Question question = cal.getQuestion(fqcn.getCoachId(), questionId);
+  // if (question == null) {
+  // return Response.status(404).build();
+  // }
+  // Answer answer = cal.getAnswer(companyId, fqcn, questionId);
+  // // update state
+  // State state = new State(questionId, null);
+  // cal.setMetadataOnAnswers(companyId, fqcn, MetadataUtils.toMd(state));
   //
-  //      Map<String, Object> model = new HashMap<>();
-  //      model.put("question", question);
-  //      model.put("answer", answer);
-  //      model.put("fqcn", id);
-  //      model.put("next", library.getNextQuestion(question, fqcn).getId());
-  //      model.put("active", library.peekQuestions(question));
-  //      return Response.status(200).entity(new Viewable("/coaching/coach", model)).build();
-  //    } catch (CacheException ce) {
-  //      logger.severe(ce.getMessage());
-  //      return Response.status(400).build();
-  //    } catch (Exception e) {
-  //      logger.log(Level.SEVERE, "Error occured", e);
-  //    }
-  //    return Response.status(500).build();
-  //  }
+  // Map<String, Object> model = new HashMap<>();
+  // model.put("question", question);
+  // model.put("answer", answer);
+  // model.put("fqcn", id);
+  // model.put("next", library.getNextQuestion(question, fqcn).getId());
+  // model.put("active", library.peekQuestions(question));
+  // return Response.status(200).entity(new Viewable("/coaching/coach",
+  // model)).build();
+  // } catch (CacheException ce) {
+  // logger.severe(ce.getMessage());
+  // return Response.status(400).build();
+  // } catch (Exception e) {
+  // logger.log(Level.SEVERE, "Error occured", e);
+  // }
+  // return Response.status(500).build();
+  // }
 }
