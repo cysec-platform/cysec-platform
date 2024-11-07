@@ -416,40 +416,4 @@ public class Coaches {
     }
     return Response.status(500).build();
   }
-
-  // @GET
-  // @Path("/{id}/pagination/{qid}/render")
-  // @Produces(MediaType.TEXT_HTML)
-  // public Response renderPagination(@PathParam("id") String id,
-  // @PathParam("qid") String questionId) {
-  // String companyId = context.getAttribute("company").toString();
-  // try {
-  // FQCN fqcn = FQCN.fromString(id);
-  // context.setAttribute("fqcn", id);
-  // Library library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
-  // Question question = cal.getQuestion(fqcn.getCoachId(), questionId);
-  // if (question == null) {
-  // return Response.status(404).build();
-  // }
-  // Answer answer = cal.getAnswer(companyId, fqcn, questionId);
-  // // update state
-  // State state = new State(questionId, null);
-  // cal.setMetadataOnAnswers(companyId, fqcn, MetadataUtils.toMd(state));
-  //
-  // Map<String, Object> model = new HashMap<>();
-  // model.put("question", question);
-  // model.put("answer", answer);
-  // model.put("fqcn", id);
-  // model.put("next", library.getNextQuestion(question, fqcn).getId());
-  // model.put("active", library.peekQuestions(question));
-  // return Response.status(200).entity(new Viewable("/coaching/coach",
-  // model)).build();
-  // } catch (CacheException ce) {
-  // logger.severe(ce.getMessage());
-  // return Response.status(400).build();
-  // } catch (Exception e) {
-  // logger.log(Level.SEVERE, "Error occured", e);
-  // }
-  // return Response.status(500).build();
-  // }
 }
