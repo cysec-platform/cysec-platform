@@ -384,8 +384,8 @@ public class Coaches {
           : summaryUrl;
 
       // question states for pagination
-      List<Question> peakQuestions = library.peekQuestions(question);
-      List<AbstractMap.SimpleEntry<Question, Answer>> actives = peakQuestions.stream()
+      List<AbstractMap.SimpleEntry<Question, Answer>> actives = library.peekQuestions(question)
+          .stream()
           .map(q -> {
             try {
               return new AbstractMap.SimpleEntry<>(q, cal.getAnswer(companyId, fqcn, q.getId()));
