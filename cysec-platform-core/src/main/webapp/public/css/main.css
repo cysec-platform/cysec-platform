@@ -609,6 +609,8 @@ body {
 #pagination {
     padding-top: 30px;
     height: 190px;
+    display: flex;
+    align-items: baseline;
 }
 
 .pagination-element {
@@ -667,7 +669,10 @@ body {
     color: #007EA7;
     background: none;
     border: none;
-    display: inline-block;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: baseline;
     text-transform: uppercase;
     letter-spacing: 5px;
     text-align: right;
