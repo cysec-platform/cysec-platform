@@ -624,6 +624,21 @@ body {
     display: none;
 }
 
+#pagination .tooltip {
+    padding: 5px 15px;
+    max-width: 100%;
+}
+
+#pagination .tooltip-inner {
+    background-color: #F7F8FC;
+    color: unset;
+    max-width: unset;
+}
+
+#pagination .tooltip-arrow {
+    border-top-color: #F7F8FC;
+}
+
 #progress {
     background-image: url(../../assets/badge_lightblue.png);
     height: 48px;
