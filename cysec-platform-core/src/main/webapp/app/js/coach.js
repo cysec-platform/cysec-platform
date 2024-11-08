@@ -41,10 +41,16 @@ const updateAnswer = (event) => {
         if (response.ok) {
             load()
         } else {
-            displayError("Couldn't update answer on: " + url + ": " + response.status);
             console.debug(response.status);
+            displayError("Couldn't update answer on: " + url + ": " + response.status);
+            $("#next-button").prop("disabled", false);
         }
+    }).catch(e => {
+        console.debug(e);
+        $("#next-button").prop("disabled", false);
     });
+    // disable the next button to avoid jumping to the wrong question
+    $("#next-button").prop("disabled", true);
 };
 
 const toggleReadMore = (event) => {

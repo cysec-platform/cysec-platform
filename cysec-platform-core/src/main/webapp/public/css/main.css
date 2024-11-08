@@ -609,6 +609,8 @@ body {
 #pagination {
     padding-top: 30px;
     height: 190px;
+    display: flex;
+    align-items: baseline;
 }
 
 .pagination-element {
@@ -661,19 +663,39 @@ body {
     margin: 0;
 }
 
-#pagination .next-question a {
+#pagination .next-question button {
     font-size: 1.8em;
     font-weight: normal;
     color: #007EA7;
-    cursor: pointer;
-}
+    background: none;
+    border: none;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: baseline;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    text-align: right;
 
-#pagination .next-question a img {
-    max-height: 0.8em;
-}
+    img {
+        max-height: 0.8em;
+    }
+    
+    svg {
+        fill: #007EA7;
+        display: none;
+    }
 
-#pagination .next-question a:hover {
-    color: #007EA7;
+    &:disabled {
+        opacity: 0.2;
+    
+        img {
+            display: none;
+        }
+        svg {
+            display: inline;
+        }
+    }
 }
 
 .question input {
