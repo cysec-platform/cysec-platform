@@ -670,15 +670,27 @@ body {
     display: inline-block;
     text-transform: uppercase;
     letter-spacing: 5px;
-    padding: 15px 0;
-}
+    text-align: right;
 
-#pagination .next-question button:disabled {
-    opacity: 0.2;
-}
+    img {
+        max-height: 0.8em;
+    }
+    
+    svg {
+        fill: #007EA7;
+        display: none;
+    }
 
-#pagination .next-question button img {
-    max-height: 0.8em;
+    &:disabled {
+        opacity: 0.2;
+    
+        img {
+            display: none;
+        }
+        svg {
+            display: inline;
+        }
+    }
 }
 
 .question input {
