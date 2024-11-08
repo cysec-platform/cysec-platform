@@ -404,7 +404,7 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-left" href="/">
-            <img src="${pageContext.request.contextPath}/assets/logo/smesec.png" alt="The SMESEC project"/>
+            <img src="${pageContext.request.contextPath}/assets/logo/CYSEC_Logo_RGB.svg" alt="The SMESEC project"/>
           </a>
         </div>
         <div class="clear"></div>

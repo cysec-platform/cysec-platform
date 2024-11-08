@@ -26,6 +26,7 @@
     <link rel="stylesheet" type="text/css" href="${context}/public/css/simple-sidebar.css"/>
     <link rel="stylesheet" type="text/css" href="${context}/public/css/main.css"/>
     <link rel="stylesheet" type="text/css" href="${context}/public/css/grades.css"/>
+    <link rel="stylesheet" type="text/css" href="${context}/public/css/theme.css"/>
     <jsp:invoke fragment="links"/>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="

@@ -58,7 +58,7 @@
 }
 
 #navbar li a:hover {
-    color: #007EA7;
+    color: var(--primary);
 }
 
 .navbar-default .navbar-nav>.open>a,
@@ -148,7 +148,7 @@
 }
 
 .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
-    color: #007EA7;
+    color: var(--primary);
     background-color: transparent;
 }
 
