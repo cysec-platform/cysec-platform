@@ -661,19 +661,24 @@ body {
     margin: 0;
 }
 
-#pagination .next-question a {
+#pagination .next-question button {
     font-size: 1.8em;
     font-weight: normal;
     color: #007EA7;
-    cursor: pointer;
+    background: none;
+    border: none;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    padding: 15px 0;
 }
 
-#pagination .next-question a img {
+#pagination .next-question button:disabled {
+    opacity: 0.2;
+}
+
+#pagination .next-question button img {
     max-height: 0.8em;
-}
-
-#pagination .next-question a:hover {
-    color: #007EA7;
 }
 
 .question input {
