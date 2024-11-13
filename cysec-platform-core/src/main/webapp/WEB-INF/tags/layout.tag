@@ -18,7 +18,10 @@
 <head>
     <meta charset="UTF-8">
     <title>CySec</title>
-    <link rel="stylesheet" type="text/css" href="${context}/public/bootstrap-3.3.7-dist/css/bootstrap.css"/>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="${context}/vendor/bootstrap-5.3.3/bootstrap-5.3.3.min.css">
+    <script src="${context}/vendor/bootstrap-5.3.3/bootstrap-5.3.3.bundle.min.js"></script>
+
     <link rel="stylesheet" type="text/css" href="${context}/public/font-awesome-4.7.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="${context}/public/css/fonts.css"/>
     <link rel="stylesheet" type="text/css" href="${context}/public/css/colors.css"/>
@@ -32,15 +35,14 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8.1/dist/polyfill.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.0/dist/fetch.umd.min.js"></script>
-    <script src="${context}/public/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     <script src="${context}/public/js/urlHandler.js"></script>
     <script src="${context}/public/js/alert.js"></script>
     <jsp:invoke fragment="scripts"/>
 </head>
 <body>
-<header class="global-nav bg-bluegrey">
+<div>
     <jsp:invoke fragment="header"/>
-</header>
+</div>
 <div id="wrapper" class="container">
     <jsp:doBody/>
 </div>
