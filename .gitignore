@@ -7,7 +7,9 @@ src/test/resources/test-temp/
 ansible/roles/ssh/files/user.pub
 *.episode
 submodules/
-
+**/*.xml_*
+**/*~
+**/hs_err_*
 
 ### Maven ###
 target/
