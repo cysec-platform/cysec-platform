@@ -46,6 +46,7 @@ import eu.smesec.cysec.platform.core.utils.LocaleUtils;
 import eu.smesec.cysec.platform.core.json.MValueAdapter;
 import eu.smesec.cysec.platform.core.messages.CoachMsg;
 
+import java.net.URI;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -377,11 +378,8 @@ public class Coaches {
               + "/assets/jsp/summary.jsp"
           : "/app";
 
-      // next page
-      Question next = library.getNextQuestion(question, fqcn);
-      String nextUrl = next != null
-          ? "/app/coach.jsp?fqcn=" + fqcn.toString() + "&question=" + next.getId()
-          : summaryUrl;
+      // endpoint will determine the next question when called
+      String nextUrl = "/api/rest/coaches/" + fqcn.getCoachId() + "/questions/" + questionId + "/next";
 
       // question states for pagination
       List<AbstractMap.SimpleEntry<Question, Answer>> actives = library.peekQuestions(question)
@@ -415,5 +413,46 @@ public class Coaches {
       logger.log(Level.SEVERE, "Error occured", e);
     }
     return Response.status(500).build();
+  }
+
+  /**
+   * Routing to the next question based on the current question and its state.
+   * 
+   * @param id                The id of the coach
+   * @param currentQuestionId The id of the current question
+   * @return                  Redirecting to the next question
+   */
+  @GET()
+  @Path("/{id}/questions/{qid}/next")
+  public Response nextQuestion(@PathParam("id") String id, @PathParam("qid") String currentQuestionId) {
+    FQCN fqcn = FQCN.fromString(id);
+    Locale locale = LocaleUtils.fromString(context.getAttribute("locale").toString());
+
+    try {
+      Question question = cal.getQuestion(fqcn.getCoachId(), currentQuestionId, locale);
+      if (question == null) {
+        return Response.status(404).build();
+      }
+
+      CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+
+      String summaryUrl = res.hasResource(fqcn.getCoachId(), library.getId(), "/assets/jsp/summary.jsp")
+          ? "/api/rest/resources/"
+              + fqcn.getCoachId()
+              + "/"
+              + library.getId()
+              + "/assets/jsp/summary.jsp"
+          : "/app";
+
+      Question next = library.getNextQuestion(question, fqcn);
+      String nextUrl = next != null
+          ? context.getContextPath() + "/app/coach.jsp?fqcn=" + fqcn.toString() + "&question=" + next.getId()
+          : context.getContextPath() + summaryUrl;
+      
+      return Response.seeOther(URI.create(nextUrl)).build();
+    } catch (CacheException e) {
+      logger.log(Level.SEVERE, "Error occured", e);
+      return Response.status(500).build();
+    }
   }
 }
