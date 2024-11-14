@@ -18,6 +18,7 @@
 <head>
     <meta charset="UTF-8">
     <title>CySec</title>
+
     <!-- Bootstrap -->
     <link rel="stylesheet" type="text/css" href="${context}/vendor/bootstrap-5.3.3/bootstrap-5.3.3.min.css">
     <script src="${context}/vendor/bootstrap-5.3.3/bootstrap-5.3.3.bundle.min.js"></script>
@@ -43,7 +44,7 @@
 <div>
     <jsp:invoke fragment="header"/>
 </div>
-<div id="wrapper" class="container">
+<div id="wrapper">
     <jsp:doBody/>
 </div>
 <footer>
