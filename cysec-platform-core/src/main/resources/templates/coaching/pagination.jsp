@@ -31,7 +31,7 @@
             </a>
         </c:forEach>
         
-        &nbsp; | &nbsp; <%-- vertical line --%>
+        &nbsp; | &nbsp;
         
         <%-- summary page --%>
         <a 

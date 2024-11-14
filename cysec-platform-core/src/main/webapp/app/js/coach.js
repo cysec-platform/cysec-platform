@@ -38,18 +38,20 @@ const updateAnswer = (event) => {
         body: answer,
         credentials: "include",
     }).then(response => {
+        $("#next-button").prop("disabled", false);
         if (response.ok) {
             load()
         } else {
             console.debug(response.status);
             displayError("Couldn't update answer on: " + url + ": " + response.status);
-            $("#next-button").prop("disabled", false);
         }
     }).catch(e => {
         console.debug(e);
         $("#next-button").prop("disabled", false);
     });
-    // disable the next button to avoid jumping to the wrong question
+    /* disable the next button while submitting answer to ensure
+       the server will not route the user (request to .../next) to a
+       wrong question by using the "old state". */
     $("#next-button").prop("disabled", true);
 };
 
