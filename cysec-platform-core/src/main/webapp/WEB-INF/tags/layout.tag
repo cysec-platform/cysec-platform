@@ -19,8 +19,9 @@
     <meta charset="UTF-8">
     <title>CySec</title>
 
-    <!-- Bootstrap -->
+    <!-- This project uses Bootstrap 5.3.3. Note that some of the bootstrap styles are customized. -->
     <link rel="stylesheet" type="text/css" href="${context}/vendor/bootstrap-5.3.3/bootstrap-5.3.3.min.css">
+    <link rel="stylesheet" type="text/css" href="${context}/public/css/bootstrap-customization.css"/>
     <script src="${context}/vendor/bootstrap-5.3.3/bootstrap-5.3.3.bundle.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="${context}/public/font-awesome-4.7.0/css/font-awesome.css">
