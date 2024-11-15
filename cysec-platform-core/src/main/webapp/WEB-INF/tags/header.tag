@@ -28,7 +28,7 @@
 
 <c:set var="context" value="${pageContext.request.contextPath}"/>
 
-<nav class="navbar navbar-expand-lg bg-bluegrey sticky-top">
+<nav class="navbar navbar-expand bg-bluegrey sticky-top">
     <div class="container-fluid">
         <jsp:invoke fragment="brand"/>
         <ul class="navbar-nav gap-4">

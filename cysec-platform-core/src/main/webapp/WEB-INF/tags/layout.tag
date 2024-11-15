@@ -42,9 +42,7 @@
     <jsp:invoke fragment="scripts"/>
 </head>
 <body>
-<div>
-    <jsp:invoke fragment="header"/>
-</div>
+<jsp:invoke fragment="header"/>
 <div id="wrapper">
     <jsp:doBody/>
 </div>

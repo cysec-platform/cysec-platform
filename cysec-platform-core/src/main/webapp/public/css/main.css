@@ -2,10 +2,6 @@ html {
     height:100%;
 }
 
-body {
-    overflow: hidden;
-}
-
 .global-nav {
     position: fixed;
     align-items:center;
@@ -854,10 +850,6 @@ body {
     visibility: hidden;
 }
 
-.progress {
-    position: relative;
-}
-
 .progress-bar {
     background-color: #007EA7;
     background-image: linear-gradient(to right, #8DD7FA, #007EA7);
@@ -946,3 +938,13 @@ body {
 .no-margin-bottom {
     margin-bottom: 0;
 }
+
+/* Sets the height to the height of the viewport minus the height of the header */
+.full-height-container {
+    height: calc(100vh - 70px); /* Height of the header navbar is always 70px */
+}
+
+.overflow-wrap {
+    overflow-wrap: anywhere;
+}
+
