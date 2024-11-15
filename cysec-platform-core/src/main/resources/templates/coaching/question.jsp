@@ -4,7 +4,7 @@
 <c:set var="question" value="${ it.question }"/>
 <c:set var="answer" value="${ it.answer }"/>
 
-<div class="flex-grow-1 overflow-y-scroll">
+<div class="flex-grow-1 overflow-y-auto">
     <div class="container question panel" id="${ question.getId() }}">
         <c:if test="${ question.getIntroduction() != null}">
             <p class="text-secondary fst-italic">${ question.getIntroduction() }</p>

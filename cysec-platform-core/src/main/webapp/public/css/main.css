@@ -89,11 +89,6 @@ html {
     margin-top: 120px;
 }
 
-#documentation-wrapper {
-    height: calc(100vh);
-    padding-right: 40px;
-}
-
 #documentation-wrapper .documentation-content-wrapper{
     height: calc(100vh - 70px);
     padding: 60px;
