@@ -1,6 +1,6 @@
 <c:set var="context" value="${pageContext.request.contextPath}"/>
 
-<div class="col-xs-12 padding-bottom-small">
+<div class="col-xs-12 pb-3">
     <h4 class="text-center pt-5 pb-3">${it.msg.coaches}</h4>
     <c:choose>
     <c:when test="${ not empty it.instantiated }">
@@ -17,8 +17,8 @@
                             </a>
                         </div>
                     </c:if>
-                    <div class="padding-top-small questionnaire-summary-title">
-                        <h4 class="no-margin-bottom">
+                    <div class="pt-3 questionnaire-summary-title">
+                        <h4 class="pb-0">
                             <a href="javascript:;" onclick="resume('${coachId}')">${ coach.getReadableName() }</a>
                             <div class="questionnaire-info"><img src="${context}/assets/icons/icn_info.png" width="24"
                                                                  height="24">
