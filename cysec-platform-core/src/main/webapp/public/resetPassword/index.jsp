@@ -28,49 +28,50 @@
         <jsp:include page="/WEB-INF/templates/header/smesec.jsp" />
     </jsp:attribute>
     <jsp:body>
-        <div class="row">
-            <div id="page-content-wrapper" class="col-xs-9 bg-white">
-                <div id="content" class="row">
-                    <div class="col-md-4 col-md-offset-4">
+        <div class="container-fluid">
+            <div class="row justify-content-center mt-3">
+                <div class="col col-12 col-sm-9 col-md-6 col-lg-4">
+                    <div id="content">
                         <h2>Reset Password | Step 1</h2>
-                        <p>Enter the email address associated to your account below to receive a token.
-                            This token will allow to change the password of your account.</p>
-                        <a href="resetPassword.html"> Step 2</a>
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div class="text-center">
-                                    <h3><i class="fa fa-lock fa-4x"></i></h3>
-                                    <h2 class="text-center">Forgot Password?</h2>
-                                    <p>You can reset your password here. Select the company your user belongs to and
-                                        enter the corresponding email.</p>
-                                    <div class="panel-body">
-                                        <form id="mail-form" role="form" autocomplete="off" class="form" method="post">
-                                            <div class="form-group">
-                                                <div class="input-group">
-                                                    <label>Company </label>
-                                                    <input id="company" name="company" placeholder="Company name"
-                                                           class="form-control" type="text" required>
-                                                    <input id="email" name="email" placeholder="email address"
-                                                           class="form-control" type="email" required>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <input name="recover-submit" class="btn btn-lg btn-primary btn-block"
-                                                       onclick="submitRequest(event)" value="Request token"
-                                                       type="submit">
-                                            </div>
-                                            <input type="hidden" class="hide" name="token" id="token" value="">
-                                        </form>
+                        <p>
+                            Enter the email address associated to your account below to receive a token.
+                            This token will allow to change the password of your account.
+                        </p>
+                        <a href="resetPassword.jsp"> Step 2</a>
+
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3><i class="fa fa-lock fa-4x"></i></h3>
+                                <h2 class="card-title">Forgot Password?</h2>
+                                <p class="card-text">
+                                    You can reset your password here. Select the company your user belongs to and
+                                    enter the corresponding email.
+                                </p>
+                                <form id="mail-form" role="form" autocomplete="off" class="form" method="post">
+                                    <h5 class="pt-5 pb-2">Company</h5>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" name="company" class="form-control" id="company" required placeholder="Company Name">
+                                        <label for="company">Company name</label>
                                     </div>
-                                </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" name="email" class="form-control" id="email" required placeholder="Email Address">
+                                        <label for="email">Email Address</label>
+                                    </div>
+                                    <div class="d-grid">
+                                        <input name="recover-submit" class="btn btn-lg btn-primary"
+                                               onclick="submitRequest(event)" value="Request token"
+                                               type="submit">
+                                    </div>
+                                    <input type="hidden" class="hide" name="token" id="token" value="">
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-<%--            <div id="sidebar-wrapper" class="col-xs-3 bg-lightbluegrey">--%>
-<%--            </div>--%>
+                    <%--            <div id="sidebar-wrapper" class="col-xs-3 bg-lightbluegrey">--%>
+                    <%--            </div>--%>
+            </div>
         </div>
     </jsp:body>
 </t:layout>
