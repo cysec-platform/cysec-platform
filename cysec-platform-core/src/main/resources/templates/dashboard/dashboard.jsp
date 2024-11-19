@@ -5,19 +5,21 @@
 
 <c:set var="api" value="${pageContext.request.contextPath}/api/rest/resources/"/>
 
-<div class="row dashboard-wrapper bg-lightbluegrey">
-    <div id="page-content-wrapper" class="col-xs-8 bg-white">
-        <div class="row">
-            <%@include file="recommended.jsp"%>
-            <%@include file="coaches.jsp"%>
-            <%@include file="remaining.jsp"%>
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        <div class="col col-8 p-5">
+            <div class="d-grid">
+                <%@include file="recommended.jsp"%>
+                <%@include file="coaches.jsp"%>
+                <%@include file="remaining.jsp"%>
+            </div>
         </div>
-    </div>
-    <div id="sidebar-wrapper" class="col-xs-4 bg-lightbluegrey">
-        <div class="sidebar-nav sidebar-content">
-            <%@include file="sidebar/skillboard.jsp"%>
-            <%@include file="sidebar/grades.jsp"%>
-            <%@include file="sidebar/badges.jsp"%>
+        <div class="col col-4 p-5 bg-lightbluegrey">
+            <div class="sidebar-nav sidebar-content">
+                <%@include file="sidebar/skillboard.jsp"%>
+                <%@include file="sidebar/grades.jsp"%>
+                <%@include file="sidebar/badges.jsp"%>
+            </div>
         </div>
     </div>
 </div>

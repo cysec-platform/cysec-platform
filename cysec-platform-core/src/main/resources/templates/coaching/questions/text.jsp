@@ -8,7 +8,7 @@
 
 <!-- Text -->
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col col-12">
         <c:set var="content" value="${answer != null ? answer.getText() : '' }" />
         <textarea name="${qid}" style="padding: 5px;" rows="8" cols="70"
                   onchange="updateAnswer(event)"><c:out value="${content}" escapeXml="false" />

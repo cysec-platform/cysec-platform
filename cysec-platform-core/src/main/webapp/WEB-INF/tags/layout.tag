@@ -18,7 +18,13 @@
 <head>
     <meta charset="UTF-8">
     <title>CySec</title>
-    <link rel="stylesheet" type="text/css" href="${context}/public/bootstrap-3.3.7-dist/css/bootstrap.css"/>
+
+    <!-- This project uses Bootstrap 5.3.3. Note that some of the bootstrap styles are customized. -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="${context}/public/css/bootstrap-customization.css"/>
+
     <link rel="stylesheet" type="text/css" href="${context}/public/font-awesome-4.7.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="${context}/public/css/fonts.css"/>
     <link rel="stylesheet" type="text/css" href="${context}/public/css/colors.css"/>
@@ -30,18 +36,13 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
             crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8.1/dist/polyfill.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/whatwg-fetch@3.0/dist/fetch.umd.min.js"></script>
-    <script src="${context}/public/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     <script src="${context}/public/js/urlHandler.js"></script>
     <script src="${context}/public/js/alert.js"></script>
     <jsp:invoke fragment="scripts"/>
 </head>
 <body>
-<header class="global-nav bg-bluegrey">
-    <jsp:invoke fragment="header"/>
-</header>
-<div id="wrapper" class="container">
+<jsp:invoke fragment="header"/>
+<div id="wrapper">
     <jsp:doBody/>
 </div>
 <footer>

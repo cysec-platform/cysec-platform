@@ -1,13 +1,13 @@
 <c:set var="context" value="${pageContext.request.contextPath}"/>
 
-<div class="col-xs-12 padding-bottom-small">
-    <h4 class="text-center padding-top-large padding-bottom-small">${it.msg.coaches}</h4>
+<div class="col-xs-12 pb-3">
+    <h4 class="text-center pt-5 pb-3">${it.msg.coaches}</h4>
     <c:choose>
     <c:when test="${ not empty it.instantiated }">
     <c:forEach var="coach" items="${it.instantiated}">
         <div class="questionnaire-summary">
             <div class="row">
-                <div class="col-xs-9 col-sm-10">
+                <div class="col col-9 col-sm-10">
                     <c:set var="coachId" value="${ coach.getId() }"/>
                     <c:set var="icon" value="${ coach.getIcon() }"/>
                     <c:if test="${ icon != null }">
@@ -17,8 +17,8 @@
                             </a>
                         </div>
                     </c:if>
-                    <div class="padding-top-small questionnaire-summary-title">
-                        <h4 class="no-margin-bottom">
+                    <div class="pt-3 questionnaire-summary-title">
+                        <h4 class="pb-0">
                             <a href="javascript:;" onclick="resume('${coachId}')">${ coach.getReadableName() }</a>
                             <div class="questionnaire-info"><img src="${context}/assets/icons/icn_info.png" width="24"
                                                                  height="24">
@@ -32,7 +32,7 @@
                         </h5>
                     </div>
                 </div>
-                <div class="col-xs-3 col-sm-2">
+                <div class="col col-3 col-sm-2">
                     <div class="questionnaire-rating text-right padding-top-small">
                         <c:set var="rating" value="${coach.getRating()}"/>
                         <c:choose>

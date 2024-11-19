@@ -12,7 +12,7 @@
     <div class="row">
         <c:forEach var="option" items="${question.getOptions().getOption()}">
             <c:set var="oid" value="${option.getId()}" />
-            <div class="questionnaire-answers col-xs-12">
+            <div class="questionnaire-answers col col-12">
                 <label>
                     <input type="checkbox" name="${question.getId()}" value="${oid}" id="${oid}"
                            onClick="exclusiveCheck(event)" onchange="updateAnswer(event)"
@@ -20,7 +20,7 @@
                            checked="checked"
                     </c:if>
                     >
-                    <span class="questionnaire-answers-text text-with-checkmark-padding">
+                    <span class="questionnaire-answers-text pe-5">
                         ${ option.getText() }
                     </span>
                     <c:if test="${!oid.contains('oNone')}">
@@ -31,7 +31,7 @@
                 <c:set var="oAttachments" value="${option.getAttachments()}"/>
                 <c:if test="${oAttachments != null}">
                     <c:forEach var="oAttachment" items="${oAttachments.getAttachment()}">
-                        <div class="col-lg-6">
+                        <div class="col col-lg-6">
                             <img src="data:${oAttachment.getMime()};base64, ${oAttachment.getContent().getValue()}"
                                  width="50"/>
                         </div>

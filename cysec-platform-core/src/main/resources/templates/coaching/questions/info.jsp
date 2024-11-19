@@ -3,7 +3,7 @@
 
 <!-- Info -->
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col col-12">
         ${question.getInfotext()}
     </div>
 </div>

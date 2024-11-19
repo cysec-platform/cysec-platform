@@ -6,30 +6,28 @@
 <c:set var="question" value="${ it.question }"/>
 <c:set var="answer" value="${ it.answer }"/>
 
-<div class="row">
+<div class="p-5">
     <!-- instruction -->
     <c:set var="instruction" value="${ question.getInstruction() }"/>
     <c:if test="${ instruction != null }">
-        <div class="col-lg-12 documentation-content-wrapper">
-            <div id="documentation_text">
+        <div>
+            <div>
                 <p>${fn:replace(instruction.getText(), '[smesec_instance]', baseUrl)}</p>
             </div>
-            <div id="documentation_media">
+            <div class="mt-3">
                 <c:set var="iAttachments" value="${ instruction.getAttachments() }"/>
                 <c:if test="${ iAttachments != null }">
                     <c:forEach var="iAttachment" items="${ iAttachments.getAttachment() }">
-                        <div class="col-lg-6">
+                        <div>
                             <c:set var="iMime" value="${ iAttachment.getMime() }"/>
                             <c:set var="iValue" value="${ iAttachment.getContent().getValue() }"/>
                             <c:choose>
                                 <c:when test="${ iMime.startsWith('image') }">
-                                    <img class="img-responsive" src="data:${ iMime };base64, ${ iValue }"
-                                         width="50"/>
+                                    <img class="img-responsive" src="data:${ iMime };base64, ${ iValue }" width="50"/>
                                 </c:when>
                                 <c:otherwise>
                                     <video class="img-responsive" controls>
-                                        <source type="${ iMime }" src="data:${ iMime };base64, ${ iValue }"
-                                                width="50">
+                                        <source type="${ iMime }" src="data:${ iMime };base64, ${ iValue }" width="50">
                                     </video>
                                 </c:otherwise>
                             </c:choose>

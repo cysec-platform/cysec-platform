@@ -20,12 +20,6 @@ const load = () => {
     })
 };
 
-// When the user clicks on the button, open the modal
-const openAddUserModal = () => {
-    // populateCompaniesDropdown(addModal.find("[name='company']"));
-    $('#addUserModal').css("display", "block");
-};
-
 const openEditUserModal = (event) => {
     const url = `${endpoint}/${event.target.id}`;
     const editModal = $('#editUserModal');
@@ -43,7 +37,6 @@ const openEditUserModal = (event) => {
                 editModal.find("[name='roles']").val(user.role !== undefined ? user.role.join(' ') : '');
                 editModal.find("[name='lock']").val(user.lock);
                 // populateCompaniesDropdown(editModal.find("[name='company']"));
-                editModal.css("display", "block");
             })
         } else {
             alert("Filling user data into form failed, please retry.")
@@ -71,8 +64,8 @@ const populateCompaniesDropdown = (dropdown) => {
 
 // When the user clicks on <span> (x), close the modal
 const closeModals = () => {
-    $('#addUserModal').css("display", "none");
-    $('#editUserModal').css("display", "none");
+    bootstrap.Modal.getInstance('#addUserModal')?.hide();
+    bootstrap.Modal.getInstance('#editUserModal')?.hide();
 };
 
 /**

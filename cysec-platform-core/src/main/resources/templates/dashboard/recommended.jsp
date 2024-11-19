@@ -1,13 +1,13 @@
 <c:set var="baseUrl" value="${header['x-forwarded-proto'] != null ? header['x-forwarded-proto'] : pageContext.request.scheme}://${header.host}${pageContext.request.contextPath}/" />
 <c:set var="recommendations" value="${it.recommendations}"/>
 
-<div class="col-xs-12 padding-top-large padding-bottom-small">
+<div class="container-fluid">
     <h4 class="text-center">${it.msg.recommendations}</h4>
-    <div class="row">
+    <div class="row overflow-wrap">
         <c:choose>
             <c:when test="${ not empty recommendations }">
                 <c:forEach var="item" items="${ recommendations }">
-                    <div class="col-sm-12 col-md-6 col-lg-4">
+                    <div class="col col-sm-12 col-md-6 col-lg-4">
                         <c:set var="link" value="${item.getLink()}" />
                         <c:set var="prefix" value="ext" />
                         <c:set var="url" value="${link.startsWith('ext ')
@@ -28,7 +28,7 @@
                 </c:forEach>
             </c:when>
             <c:otherwise>
-                <div class="col-xs-12">
+                <div class="col col-12">
                     <div class="alert bg-lightbluegrey">
                         <p><strong>${it.msg.noRecommendation}</strong></p>
                         <p>${it.msg.noRecommendationInfo}</p>

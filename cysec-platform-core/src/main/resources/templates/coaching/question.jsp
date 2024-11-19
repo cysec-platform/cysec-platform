@@ -4,12 +4,12 @@
 <c:set var="question" value="${ it.question }"/>
 <c:set var="answer" value="${ it.answer }"/>
 
-<div id="blocks" class="row">
-    <div class="col-xs-12 container question panel" id="${ question.getId() }}">
+<div class="flex-grow-1 overflow-y-auto">
+    <div class="container question panel" id="${ question.getId() }}">
         <c:if test="${ question.getIntroduction() != null}">
-            <p class="introduction-text darkgrey">${ question.getIntroduction() }</p>
+            <p class="text-secondary fst-italic">${ question.getIntroduction() }</p>
         </c:if>
-        <h1 class="panel-heading">${ question.getText() }</h1>
+        <h1 class="mb-4">${ question.getText() }</h1>
         <c:set var="qAttachments" value="${ question.getAttachments() }"/>
         <c:if test="${ qAttachments != null }">
             <div class="row">
