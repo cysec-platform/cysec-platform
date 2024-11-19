@@ -7,6 +7,7 @@
         <div class="col col-8">
             <c:forEach var="active" items="${it.actives}">
                 <c:set var="question" value="${active.getKey()}" />
+                <c:set var="answer" value="${active.getValue()}" />
                 <c:set var="aid" value="${question.getId()}"/>
 
                 <c:set var="text"> <c:out value="${question.getText()}"/></c:set> <%-- use c:out to escape strings --%>
