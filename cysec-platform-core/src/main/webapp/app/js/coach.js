@@ -20,7 +20,12 @@ const load = () => {
                 const wrapper = $("#wrapper");
                 wrapper.empty();
                 wrapper.append(question);
-                $(function() {$('[data-toggle="tooltip"]').tooltip()}); // opt-in bootstrap tooltips for pagination (do it here and not on init, since the navigation can be replaced at any time)
+                $(function() {
+                    // opt-in bootstrap tooltips for pagination (do it here and not on init, since the navigation can be replaced at any time)
+                    $('[data-bs-toggle="tooltip"]').each(function () {
+                        new bootstrap.Tooltip($(this).get(0))
+                    })
+                });
             })
         } else {
             displayError("Couldn't access question on: " + url + ": " + response.status);

@@ -14,10 +14,11 @@
                 <a
                         href="${baseUrl}/app/coach.jsp?fqcn=${it.fqcn}&question=${aid}"
                         class="pagination-element"
-                        data-title="<h3>${text}</h3><p>${intro}</p>"
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        data-html="true"
+                        data-bs-custom-class="pagination-tooltip"
+                        data-bs-title="<h3>${text}</h3><p>${intro}</p>"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        data-bs-html="true"
                 >
                     <img class="pagination-img" src="${baseUrl}/assets/${it.question.getId().equals(aid) ? 'status_in_progress.png' : 'status_empty.png'}">
                 </a>

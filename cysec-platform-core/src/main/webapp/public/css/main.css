@@ -421,19 +421,20 @@ html {
     display: none;
 }
 
-#pagination .tooltip {
-    padding: 5px 15px;
-    max-width: 100%;
-}
+.tooltip.pagination-tooltip {
+    --bs-tooltip-bg: #F7F8FC;
+    --bs-tooltip-color: #001921;
+    --bs-tooltip-max-width: 350px;
+    --bs-tooltip-padding-y: 1rem;
+    --bs-tooltip-padding-x: 1.5rem;
 
-#pagination .tooltip-inner {
-    background-color: #F7F8FC;
-    color: unset;
-    max-width: unset;
-}
+    h3 {
+        font-size: x-large;
+    }
 
-#pagination .tooltip-arrow {
-    border-top-color: #F7F8FC;
+    p {
+        font-size: medium;
+    }
 }
 
 #progress {
