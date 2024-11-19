@@ -1,7 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
-<div class="d-flex flex-column container-fluid full-height-container">
+<div class="d-flex flex-column container-fluid full-height-container pt-3">
     <div>
         <h1>${it.msg.title}</h1>
     </div>
@@ -26,7 +26,7 @@
                 </c:otherwise>
             </c:choose>
         </div>
-        <div id="audits" class="col col-8 h-100" style="overflow-y: auto">
+        <div id="audits" class="col col-8 h-100 overflow-y-auto">
         </div>
     </div>
 </div>
