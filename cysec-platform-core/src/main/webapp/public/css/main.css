@@ -466,7 +466,6 @@ html {
     background: none;
     border: none;
     display: inline-flex;
-    flex-wrap: wrap;
     justify-content: flex-end;
     align-items: baseline;
     text-transform: uppercase;
