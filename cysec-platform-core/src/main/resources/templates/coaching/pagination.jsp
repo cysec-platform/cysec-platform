@@ -39,10 +39,11 @@
             <a
                     href="${baseUrl}${it.summary}"
                     class="pagination-element"
-                    data-title="<h3>${it.msg.summary}</h3>"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    data-html="true"
+                    data-bs-custom-class="pagination-tooltip"
+                    data-bs-title="<h3>${it.msg.summary}</h3>"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    data-bs-html="true"
             >
                 <img class="pagination-img" src="${baseUrl}/assets/status_summary.png">
             </a>
