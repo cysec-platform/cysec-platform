@@ -23,24 +23,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class LibraryClassLoader extends ClassLoader {
-  //  private static Pattern regexWord = Pattern.compile("^assets/\\w+\\.\\w+$");
-  // Hidden data members.
-
   // Map from class or resource name to contents.
   private Map<String, byte[]> contentMap = new HashMap<>();
   private ClassLoader chain;
@@ -48,37 +37,21 @@ public class LibraryClassLoader extends ClassLoader {
   // Exported constructors.
 
   /**
-   * Construct a new JAR class loader. The parent class loader is the system class loader.
-   *
-   * @param jar Byte array with the contents of the JAR file.
-   * @throws NullPointerException (unchecked exception) Thrown if <code>jar</code> is null.
-   * @throws IOException Thrown if the JAR file's contents could not be extracted from the
-   *     <code>jar</code> byte array.
-   */
-  public LibraryClassLoader(byte[] jar) throws IOException {
-    super();
-    readJarContents(jar);
-  }
-
-  /**
    * Construct a new JAR class loader with the given parent class loader.
    *
    * @param parent Parent class loader.
-   * @param jar Byte array with the contents of the JAR file.
    * @throws NullPointerException (unchecked exception) Thrown if <code>jar</code> is null.
-   * @throws IOException Thrown if the JAR file's contents could not be extracted from the
-   *     <code>jar</code> byte array.
    */
-  public LibraryClassLoader(ClassLoader parent, byte[] jar) throws IOException {
+  public LibraryClassLoader(ClassLoader parent) {
     super(parent);
     this.chain = parent;
-    readJarContents(jar);
   }
 
-  private void readJarContents(byte[] jar) throws IOException {
+  public void loadJar(byte[] jar) throws IOException {
     if (jar == null) {
       throw new NullPointerException("JarClassLoader(): jar is null");
     }
+    contentMap = new HashMap<>();
     JarInputStream in = new JarInputStream(new ByteArrayInputStream(jar));
     JarEntry jarEntry;
     String name;
