@@ -379,7 +379,7 @@ public class Coaches {
           : "/app";
 
       // endpoint will determine the next question when called
-      String nextUrl = "/api/rest/coaches/" + fqcn.getCoachId() + "/questions/" + questionId + "/next";
+      String nextUrl = "/api/rest/coaches/" + fqcn + "/questions/" + questionId + "/next";
 
       // question states for pagination
       List<AbstractMap.SimpleEntry<Question, Answer>> actives = library.peekQuestions(question)

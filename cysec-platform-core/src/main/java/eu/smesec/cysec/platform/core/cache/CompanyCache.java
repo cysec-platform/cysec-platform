@@ -612,18 +612,23 @@ class CompanyCache extends Cache {
         throw new CacheNotFoundException("Parent directory " + parentDir + " does not exists");
       }
       Path coachDir = parentDir.resolve(coach.getId());
-      if (Files.exists(coachDir)) {
-        throw new CacheAlreadyExistsException("Coach directory " + coachDir + " already exists");
+      if (!Files.exists(coachDir)) {
+        Files.createDirectories(coachDir);
       }
-      Files.createDirectories(coachDir);
       Answers answers = CacheFactory.createAnswersFromCoach(coach);
       Mapper<Answers> mapper = CacheFactory.createMapper(Answers.class);
       if (names != null) {
         for (String name : names) {
-          mapper.init(coachDir.resolve(name + ".xml"), answers);
+          Path path = coachDir.resolve(name + ".xml");
+          if (!Files.exists(path)) {
+            mapper.init(path, answers);
+          }
         }
       } else {
-        mapper.init(coachDir.resolve(DEFAULT_ANSWERS_XML), answers);
+        Path path = coachDir.resolve(DEFAULT_ANSWERS_XML + ".xml");
+        if (!Files.exists(path)) {
+          mapper.init(path, answers);
+        }
       }
     } catch (IOException ioe) {
       throw new CacheException("IO error during coach instantiation: " + ioe.getMessage());
