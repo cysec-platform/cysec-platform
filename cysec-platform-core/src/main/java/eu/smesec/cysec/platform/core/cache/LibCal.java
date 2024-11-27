@@ -166,6 +166,11 @@ public class LibCal implements ILibCal {
   }
 
   @Override
+  public void removeSubCoach(FQCN fqcn) throws CacheException {
+    cal.removeSubCoach(getCompanyId(), fqcn.toPath());
+  }
+
+  @Override
   public void registerResources(CoachLibrary library) throws IOException {
     resManager.registerLibResources(library);
   }

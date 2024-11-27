@@ -41,13 +41,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -660,6 +654,28 @@ class CompanyCache extends Cache {
     } catch (IOException ioe) {
       throw new CacheException(
           "Error during deleting answer file " + coach.toString() + ": " + ioe.getMessage());
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  /**
+   * Deletes a sub-coach of a coach
+   * @param subCoachPath The path where the sub-coach is stored
+   * @throws CacheException If something goes wrong, this is thrown
+   */
+  void deleteSubCoach(Path subCoachPath) throws CacheException {
+    Objects.requireNonNull(subCoachPath);
+    Path subCoachFilePath = path.resolve(subCoachPath);
+    writeLock.lock();
+    try {
+      if (!Files.isRegularFile(subCoachFilePath)) {
+        throw new CacheException(String.format("Path %s is not a file", subCoachFilePath));
+      }
+      objectCache.remove(subCoachPath);
+      Files.delete(subCoachFilePath);
+    } catch (IOException e) {
+      throw new CacheException(String.format("Error while deleting file of sub-coach %s: %s", subCoachPath, e.getMessage()));
     } finally {
       writeLock.unlock();
     }

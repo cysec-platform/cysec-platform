@@ -1421,6 +1421,19 @@ public class CacheAbstractionLayer {
         });
   }
 
+    /**
+     * Removes a sub-coach from a company
+     * @param companyId ID of the company
+     * @param path The path of the sub-coach
+     * @throws CacheException If any errors happen while deleting the sub-coach
+     */
+    public void removeSubCoach(String companyId, Path path) throws CacheException {
+        data.executeOnCompany(companyId, companyCache -> {
+            companyCache.deleteSubCoach(path);
+            return null;
+        });
+    }
+
   /**
    * Lists all instantiated coaches for a company.
    *
