@@ -29,6 +29,7 @@ import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.execptions.ElementAlreadyExistsException;
 import eu.smesec.cysec.platform.bridge.execptions.ElementNotFoundException;
 import eu.smesec.cysec.platform.bridge.generated.Answer;
+import eu.smesec.cysec.platform.bridge.generated.Answers;
 import eu.smesec.cysec.platform.bridge.generated.Audit;
 import eu.smesec.cysec.platform.bridge.generated.Metadata;
 import eu.smesec.cysec.platform.bridge.generated.Mvalue;
@@ -39,9 +40,11 @@ import eu.smesec.cysec.platform.bridge.md.LastSelected;
 import eu.smesec.cysec.platform.bridge.md.MetadataUtils;
 import eu.smesec.cysec.platform.bridge.md.State;
 import eu.smesec.cysec.platform.bridge.utils.AuditUtils;
+import eu.smesec.cysec.platform.core.auth.SecuredAdmin;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.cache.LibCal;
 import eu.smesec.cysec.platform.core.cache.ResourceManager;
+import eu.smesec.cysec.platform.core.utils.FileResponse;
 import eu.smesec.cysec.platform.core.utils.LocaleUtils;
 import eu.smesec.cysec.platform.core.json.MValueAdapter;
 import eu.smesec.cysec.platform.core.messages.CoachMsg;
@@ -452,6 +455,22 @@ public class Coaches {
       return Response.seeOther(URI.create(nextUrl)).build();
     } catch (CacheException e) {
       logger.log(Level.SEVERE, "Error occured", e);
+      return Response.status(500).build();
+    }
+  }
+
+  // @SecuredAdmin // TODO
+  @GET()
+  @Path("{id}/export")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  public Response exportCoach(@PathParam("id") String id) {
+    String companyId = context.getAttribute("company").toString();
+    try {
+      FileResponse coachZip = cal.zipCoach(companyId, id);
+      return Response.status(200).entity(coachZip).build();
+    } catch (CacheException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
       return Response.status(500).build();
     }
   }

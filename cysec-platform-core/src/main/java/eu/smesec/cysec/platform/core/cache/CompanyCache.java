@@ -19,6 +19,7 @@
  */
 package eu.smesec.cysec.platform.core.cache;
 
+import eu.smesec.cysec.platform.bridge.FQCN;
 import eu.smesec.cysec.platform.bridge.execptions.CacheAlreadyExistsException;
 import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.execptions.CacheNotFoundException;
@@ -584,6 +585,26 @@ class CompanyCache extends Cache {
               + e.getMessage());
     } finally {
       this.readLock.unlock();
+    }
+  }
+
+  void zipCoach(Path dest, String coachId) throws CacheException {
+    FQCN fqcn = FQCN.fromString(coachId);
+    Path coach = fqcn.toPath().getParent(); // zip the entire directory to support sub coaches
+    Path path = this.path.resolve(coach);
+    String p = path.toString();
+
+    readLock.lock();
+    try {
+      FileUtils.zip(path, dest);
+    } catch (IOException e) {
+      throw new CacheException(
+          "error during zipping coach "
+              + coach.toString()
+              + ": "
+              + e.getMessage());
+    } finally {
+      readLock.unlock();
     }
   }
 

@@ -1534,4 +1534,33 @@ public class CacheAbstractionLayer {
           return null;
         });
   }
+
+  // ---------------------
+  // ------ Export -------
+  // ---------------------
+
+  /**
+   * TODO
+   * @param companyId
+   * @param coachId
+   * @return
+   * @throws CacheException
+   */
+  public FileResponse zipCoach(String companyId, String coachId) throws CacheException {
+    return data.executeOnCompany(
+        companyId,
+        companyCache -> {
+          try {
+            Path temp = Files.createTempFile(data.path, companyId, null);
+            try {
+              companyCache.zipCoach(temp, coachId);
+              return new FileResponse(Files.readAllBytes(temp));
+            } finally {
+              Files.delete(temp);
+            }
+          } catch (Exception e) {
+            throw new CacheException(e.getMessage());
+          }
+        });
+  }
 }

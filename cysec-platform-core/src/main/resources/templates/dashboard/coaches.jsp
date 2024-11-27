@@ -29,6 +29,8 @@
                             <a href="javascript:;" onclick="restart('${coachId}')">${it.msg.coachRestart}</a>
                             &nbsp; | &nbsp;
                             <a href="javascript:;" onclick="resume('${coachId}')">${it.msg.coachContinue}</a>
+                            &nbsp; | &nbsp;
+                            <a href="${context}/api/rest/coaches/${coachId}/export" download="${coachId}.zip">Export</a>
                         </h5>
                     </div>
                 </div>
