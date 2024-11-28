@@ -29,7 +29,6 @@ import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.execptions.ElementAlreadyExistsException;
 import eu.smesec.cysec.platform.bridge.execptions.ElementNotFoundException;
 import eu.smesec.cysec.platform.bridge.generated.Answer;
-import eu.smesec.cysec.platform.bridge.generated.Answers;
 import eu.smesec.cysec.platform.bridge.generated.Audit;
 import eu.smesec.cysec.platform.bridge.generated.Metadata;
 import eu.smesec.cysec.platform.bridge.generated.Mvalue;
@@ -459,7 +458,13 @@ public class Coaches {
     }
   }
 
-  // @SecuredAdmin // TODO
+  /**
+   * Export all coach (and sub coaches) data by exporting the stored answers file(s).
+   * 
+   * @param id  The id of the coach
+   * @return    Coach data as zip of the data
+   */
+  @SecuredAdmin
   @GET()
   @Path("{id}/export")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -469,8 +474,7 @@ public class Coaches {
       FileResponse coachZip = cal.zipCoach(companyId, id);
       return Response.status(200).entity(coachZip).build();
     } catch (CacheException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      logger.log(Level.SEVERE, "Error while exporting coach data as zip", e);
       return Response.status(500).build();
     }
   }
