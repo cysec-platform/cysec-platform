@@ -113,7 +113,7 @@ public class Coaches {
       logger.log(Level.SEVERE, "Error instantiating coach", ce);
       return Response.status(400).build();
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "Error occured", e);
+      logger.log(Level.SEVERE, "Error occurred", e);
     }
     return Response.status(500).build();
   }
@@ -142,7 +142,7 @@ public class Coaches {
       logger.severe(ce.getMessage());
       return Response.status(400).build();
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "Error occured", e);
+      logger.log(Level.SEVERE, "Error occurred", e);
     }
     return Response.status(500).build();
   }
@@ -166,7 +166,7 @@ public class Coaches {
       logger.warning(ce.getMessage());
       return Response.status(400).build();
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "Error occured", e);
+      logger.log(Level.SEVERE, "Error occurred", e);
     }
     return Response.status(500).build();
   }
@@ -412,7 +412,7 @@ public class Coaches {
       logger.severe(ce.getMessage());
       return Response.status(400).build();
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "Error occured", e);
+      logger.log(Level.SEVERE, "Error occurred", e);
     }
     return Response.status(500).build();
   }
@@ -453,7 +453,7 @@ public class Coaches {
       
       return Response.seeOther(URI.create(nextUrl)).build();
     } catch (CacheException e) {
-      logger.log(Level.SEVERE, "Error occured", e);
+      logger.log(Level.SEVERE, "Error occurred", e);
       return Response.status(500).build();
     }
   }
