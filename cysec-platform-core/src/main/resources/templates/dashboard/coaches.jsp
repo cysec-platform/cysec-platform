@@ -31,6 +31,11 @@
                             <a href="javascript:;" onclick="resume('${coachId}')">${it.msg.coachContinue}</a>
                             &nbsp; | &nbsp;
                             <a href="${context}/api/rest/coaches/${coachId}/export" download="${coachId}.zip">Export</a>
+                            &nbsp; | &nbsp;
+                            <form action="${context}/api/rest/coaches/${coachId}/import" method="post" enctype="multipart/form-data">
+                                <input type="file" name="file" />
+                                <input type="submit" value="Upload" />
+                            </form>
                         </h5>
                     </div>
                 </div>

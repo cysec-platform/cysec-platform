@@ -48,6 +48,7 @@ import eu.smesec.cysec.platform.core.utils.LocaleUtils;
 import eu.smesec.cysec.platform.core.json.MValueAdapter;
 import eu.smesec.cysec.platform.core.messages.CoachMsg;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ import java.util.stream.Collectors;
 import javax.annotation.security.DenyAll;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -74,6 +76,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.server.mvc.Viewable;
 
 @DenyAll
@@ -422,7 +426,7 @@ public class Coaches {
    * 
    * @param id                The id of the coach
    * @param currentQuestionId The id of the current question
-   * @return                  Redirecting to the next question
+   * @return Redirecting to the next question
    */
   @GET()
   @Path("/{id}/questions/{qid}/next")
@@ -450,7 +454,7 @@ public class Coaches {
       String nextUrl = next != null
           ? context.getContextPath() + "/app/coach.jsp?fqcn=" + fqcn.toString() + "&question=" + next.getId()
           : context.getContextPath() + summaryUrl;
-      
+
       return Response.seeOther(URI.create(nextUrl)).build();
     } catch (CacheException e) {
       logger.log(Level.SEVERE, "Error occurred", e);
@@ -459,10 +463,11 @@ public class Coaches {
   }
 
   /**
-   * Export all coach (and sub coaches) data by exporting the stored answers file(s).
+   * Export all coach (and sub coaches) data by exporting the stored answers
+   * file(s).
    * 
-   * @param id  The id of the coach
-   * @return    Coach data as zip of the data
+   * @param id The id of the coach
+   * @return Coach data as zip of the data
    */
   @SecuredAdmin
   @GET()
@@ -477,5 +482,22 @@ public class Coaches {
       logger.log(Level.SEVERE, "Error while exporting coach data as zip", e);
       return Response.status(500).build();
     }
+  }
+
+  @SecuredAdmin
+  @POST
+  @Path("{id}/import")
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
+  public Response importCoach(
+      @PathParam("id") String id,
+      @FormDataParam("file") InputStream zipUploadStream,
+      @FormDataParam("file") FormDataContentDisposition fileData) {
+        String companyId = context.getAttribute("company").toString();
+
+        // TODO verify upload is a zip
+
+        cal.unzipCoach(companyId, id, zipUploadStream);
+
+        return Response.status(200).build();
   }
 }

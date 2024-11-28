@@ -41,7 +41,9 @@ import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.config.Config;
 import eu.smesec.cysec.platform.core.utils.FileResponse;
+import eu.smesec.cysec.platform.core.utils.FileUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -1562,5 +1564,16 @@ public class CacheAbstractionLayer {
             throw new CacheException(e.getMessage());
           }
         });
+  }
+
+  public void unzipCoach(String companyId, String coachId, InputStream zipUploadStream) {
+    try {
+      Path temp = Files.createTempFile(data.path, coachId, null);
+      FileUtils.unzip(zipUploadStream, temp);
+
+      // TOOD import extracted data into CAL
+    } catch (IOException e) {
+      // TODO error handling
+    }
   }
 }
