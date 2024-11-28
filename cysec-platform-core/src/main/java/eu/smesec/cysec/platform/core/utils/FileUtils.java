@@ -20,6 +20,7 @@
 package eu.smesec.cysec.platform.core.utils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,7 +43,8 @@ import org.glassfish.jersey.logging.LoggingFeature;
 public final class FileUtils {
   protected static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
-  private FileUtils() {}
+  private FileUtils() {
+  }
 
   /**
    * Returns the filename or directory name of a path.
@@ -89,7 +91,7 @@ public final class FileUtils {
     if (i == -1) {
       throw new IllegalArgumentException("file name doesn't contain dot");
     }
-    return new String[] {filename.substring(0, i), filename.substring(i + 1)};
+    return new String[] { filename.substring(0, i), filename.substring(i + 1) };
   }
 
   /**
@@ -203,8 +205,8 @@ public final class FileUtils {
   /**
    * Zips a directory into an *.zip archive.
    *
-   * @param source the source directory.
-   * @param dest the *.zip archive.
+   * @param source     the source directory.
+   * @param dest       the *.zip archive.
    * @param exclusions the exclusions for the zip file
    * @throws IOException if an io error occurs.
    */
@@ -213,9 +215,8 @@ public final class FileUtils {
       throw new IllegalArgumentException("Invalid source directory or destination archive");
     }
     Set<Path> exclusionSet = Arrays.stream(exclusions).map(Paths::get).collect(Collectors.toSet());
-    try (ZipOutputStream zos =
-        new ZipOutputStream(
-            Files.newOutputStream(dest, StandardOpenOption.WRITE, StandardOpenOption.CREATE))) {
+    try (ZipOutputStream zos = new ZipOutputStream(
+        Files.newOutputStream(dest, StandardOpenOption.WRITE, StandardOpenOption.CREATE))) {
       Files.walk(source)
           .filter(path1 -> !Files.isDirectory(path1))
           .forEach(
@@ -236,18 +237,28 @@ public final class FileUtils {
   }
 
   /**
-   * Unzips an *.zip archive into a directory.
+   * Unzips a *.zip archive into a directory.
    *
    * @param source the *.zip archive.
-   * @param dest the destination directory.
+   * @param dest   the destination directory.
    * @throws IOException if an io error occurs.
    */
   public static void unzip(Path source, Path dest) throws IOException {
     if (source == null || dest == null) {
       throw new IllegalArgumentException("Invalid source archive or destination directory");
     }
-    try (ZipInputStream zis =
-        new ZipInputStream(Files.newInputStream(source, StandardOpenOption.READ))) {
+    unzip(Files.newInputStream(source, StandardOpenOption.READ), dest);
+  }
+
+  /**
+   * Unzips a *.zip archive stream into a directory.
+   *
+   * @param source the *.zip archive input stream.
+   * @param dest   the destination directory.
+   * @throws IOException if an io error occurs.
+   */
+  public static void unzip(InputStream source, Path dest) throws IOException {
+    try (ZipInputStream zis = new ZipInputStream(source)) {
       ZipEntry zipEntry = zis.getNextEntry();
       while (zipEntry != null) {
         String name = zipEntry.getName();
