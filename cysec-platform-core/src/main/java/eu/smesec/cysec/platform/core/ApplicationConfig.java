@@ -40,6 +40,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.mvc.jsp.JspMvcFeature;
 
@@ -86,6 +87,7 @@ public class ApplicationConfig extends ResourceConfig {
 
       register(MailServiceImpl.class);
       register(JspMvcFeature.class);
+      register(MultiPartFeature.class); // enable jerseys multipart form data support for file upload
       property(JspMvcFeature.TEMPLATE_BASE_PATH, JSP_TEMPLATE_HOME);
       register(new CysecBinder(context));
 
