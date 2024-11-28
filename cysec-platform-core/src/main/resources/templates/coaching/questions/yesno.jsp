@@ -11,7 +11,7 @@
 <div>
     <!-- options -->
     <div class="row">
-        <div class="questionnaire-answers col-xs-6">
+        <div class="questionnaire-answers col col-6">
             <label>
                 <input type="radio" name="${qid}" value="${qid}o1"
                        onchange="updateAnswer(event)"
@@ -22,7 +22,7 @@
                 <span class="questionnaire-answers-text">Yes</span>
             </label>
         </div>
-        <div class="questionnaire-answers col-xs-6">
+        <div class="questionnaire-answers col col-6">
             <label>
                 <input type="radio" name="${qid}" value="${qid}o2"
                        onchange="updateAnswer(event)"
@@ -39,7 +39,7 @@
         <c:if test="${answer != null}">
             <c:forEach var="option" items="${options}">
                 <c:if test="${option.getId().equals(answer.getText())}">
-                    <div class="col-xs-12">
+                    <div class="col col-12">
                         ${option.getComment()}
                     </div>
                 </c:if>

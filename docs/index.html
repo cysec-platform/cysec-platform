@@ -3,29 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Cysec</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style/cysec.css">
     <link rel="stylesheet" href="style/fonts.css">
 </head>
 <body>
 <div id="content" class="cysec">
-    <div class="container">
+    <div class="container mt-3">
         <h2>Cysec platform</h2>
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
-            <li><a data-toggle="tab" href="#menu1">Coaches</a></li>
-            <li><a data-toggle="tab" href="#menu2">Roadmap</a></li>
+            <li><a class="nav-link active" data-bs-toggle="tab" data-bs-target="#home" href="#home">Home</a></li>
+            <li><a class="nav-link" data-bs-toggle="tab" data-bs-target="#menu1" data-toggle="tab" href="#menu1">Coaches</a></li>
+            <li><a class="nav-link" data-bs-toggle="tab" data-bs-target="#menu2" data-toggle="tab" href="#menu2">Roadmap</a></li>
         </ul>
 
-        <div class="tab-content">
-
-            <div id="home" class="tab-pane fade in active">
+        <div class="tab-content mt-3">
+            <div id="home" class="tab-pane fade in active show">
                 <h3>What is Cysec?</h3>
                 <p>Cysec is an open-source, extensible and flexible web application written in Java.</p>
                 <p>Its primary purpose is to provide a platform for so-called "coaches". Coaches are interactive pieces of software that collect information and provide expert advice based on this information. </p>
-				<p>The platform was designed by the <a href="https://www.fhnw.ch">University of Applied Sciences of Northwestern Switzerland</a> for cybersecurity specific advice for SMEs within the EU funded project <a href="https://www.smesec.eu">SMESEC</a>. We discovered that by aplying small changes to the platform it became suitable for all kinds of coaching.</a></p>
+                <p>The platform was designed by the <a href="https://www.fhnw.ch">University of Applied Sciences of Northwestern Switzerland</a> for cybersecurity specific advice for SMEs within the EU funded project <a href="https://www.smesec.eu">SMESEC</a>. We discovered that by aplying small changes to the platform it became suitable for all kinds of coaching.</a></p>
 
                 <h3>Who are the target groups?</h3>
                 <p>CySeC is neither limited to topics like cybersecurity nor focused on small and medium-sized enterprises (SME). The versatile nature of the coaches allows to cover arbitrary topics and is therefore suitable for other parties, such as</p>
@@ -36,8 +34,8 @@
                     <li>Governments</li>
                     <li>Non government organizations</li>
                 </ul>
-				<p>and it may accommodate any advice given that the respective coach is available.<p>
-				
+                <p>and it may accommodate any advice given that the respective coach is available.<p>
+
                 <h3>Data security</h3>
                 <p>CySeC has been created with security in mind. Data of individual users or companies are stored within strictly separated data structures. These structures guarantee that in the unlikely event of an algorithmic problem, not other data is leaked to a user. Furthermore, all data is kept in human-readable XML files to allow to see all data collected about a user or entity.</p>
             </div>
@@ -45,7 +43,7 @@
             <div id="menu1" class="tab-pane fade">
                 <h3>Specific coaching</h3>
                 <p>You can install diverse coaches you want to use.
-                   A coach is not a survey tool like others but an intelligent digital assistant. Questions asked may be dynamically built according to information obtained by the coach in any conceivable way.</p>
+                    A coach is not a survey tool like others but an intelligent digital assistant. Questions asked may be dynamically built according to information obtained by the coach in any conceivable way.</p>
                 <img src="cysec_question_instruction.png" style="width: 50%">
                 <p>Coaches react on the users' input in a variety of different ways: Based on a users input, it might include additional questions on the fly to dig deeper into a subject. Coaches are also able to give recommendations on specific questions to guide a user towards best practices.</p>
                 <img src="cysec_feedback.png" style="width: 50%">
@@ -59,7 +57,7 @@
                 <h3>Roadmap</h3>
                 <p>We are working hard to add useful features to the CySeC platform, see below for the upcoming milestones.</p>
                 <img src="roadmap.png" style="width: 70%">
-				<p>Simultaneously, a team of experts is working on a comprehensive coach bringing advanced threat protection such as honey pots and online patching to a level so that smaller SMEs may work with them.</p>
+                <p>Simultaneously, a team of experts is working on a comprehensive coach bringing advanced threat protection such as honey pots and online patching to a level so that smaller SMEs may work with them.</p>
             </div>
         </div>
 

@@ -12,7 +12,7 @@
     <div class="row">
         <c:forEach var="option" items="${question.getOptions().getOption()}">
             <c:set var="oid" value="${option.getId()}"/>
-            <div class="questionnaire-answers col-xs-12">
+            <div class="questionnaire-answers col col-12">
                 <label>
                     <input type="radio" name="${qid}" value="${oid}" onchange="updateAnswer(event)"
                     <c:if test="${answer != null && answer.getText().equals(oid)}">
@@ -29,10 +29,10 @@
 
     <!-- option comment -->
     <c:if test="${answer != null}">
-        <div id="comment" class="row padding-top-small">
+        <div id="comment" class="row pt-3">
             <c:forEach var="option" items="${question.getOptions().getOption()}">
                 <c:if test="${answer.getText().equals(option.getId())}">
-                    <div class="col-xs-12">
+                    <div class="col col-12">
                         ${option.getComment()}
                     </div>
                 </c:if>

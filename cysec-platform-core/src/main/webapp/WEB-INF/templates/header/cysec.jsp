@@ -19,34 +19,33 @@
   --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <c:set var="context" value="${pageContext.request.contextPath}"/>
 
-<div class="row">
-    <div class="col-xs-8 no-margin-right" style="margin-left: -10px;">
-        <a href="${context}/app#" title="Home">
-            <img src="${context}/assets/logo/CYSEC_Logo_RGB.svg" width="106px" height="44px"/>
+<t:header>
+    <jsp:attribute name="brand">
+        <a class="navbar-brand ms-4" href="${context}/app#" title="Home">
+            <img alt="Cysec Logo" src="${context}/assets/logo/CYSEC_Logo_RGB.svg" width="106px" height="44px"/>
         </a>
-    </div>
-    <div class="col-xs-4 text-right">
-        <ul>
-            <li>
-                <a href="${context}/app/users.jsp" title="User Management">
-                    <img src="${context}/assets/icons/icn_user-management.png" width="24px" height="24px"/>
+    </jsp:attribute>
+    <jsp:attribute name="links">
+        <li class="nav-item">
+            <a class="nav-link" href="${context}/app/users.jsp" title="User Management">
+                <img alt="User Management" src="${context}/assets/icons/icn_user-management.png" width="24px" height="24px"/>
+            </a>
+        </li>
+        <c:if test="${not fn:containsIgnoreCase(header['Authorization'], 'Basic')}">
+            <li class="nav-item">
+                <a class="nav-link" href="${initParam['header_profile_href']}" title="Profile">
+                    <img alt="Profile" src="${context}/assets/icons/icn_company.svg" width="24px" height="24px"/>
                 </a>
             </li>
-            <c:if test="${not fn:containsIgnoreCase(header['Authorization'], 'Basic')}">
-                <li>
-                    <a href="${initParam['header_profile_href']}" title="Profile">
-                        <img src="${context}/assets/icons/icn_company.svg" width="24px" height="24px"/>
-                    </a>
-                </li>
-                <li>
-                    <a href="${initParam['header_logout_href']}" title="Logout">
-                        <img src="${context}/assets/icons/icn_logout.svg" width="24px" height="24px"/>
-                    </a>
-                </li>
-            </c:if>
-        </ul>
-    </div>
-</div>
+            <li class="nav-item">
+                <a class="nav-link" href="${initParam['header_logout_href']}" title="Logout">
+                    <img alt="Logout" src="${context}/assets/icons/icn_logout.svg" width="24px" height="24px"/>
+                </a>
+            </li>
+        </c:if>
+    </jsp:attribute>
+</t:header>

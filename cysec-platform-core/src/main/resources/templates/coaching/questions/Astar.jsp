@@ -15,7 +15,7 @@
             <c:set var="oid" value="${option.getId()}" />
             <c:set var="checked" value="${answer != null && 
                 aidList.stream().anyMatch(aid -> aid.contentEquals(oid)).orElse(false)}" />
-            <div class="questionnaire-answers col-xs-12">
+            <div class="questionnaire-answers col col-12">
                 <label>
                     <input type="checkbox" name="${question.getId()}" value="${oid}"
                            onchange="updateAnswer(event)"
@@ -23,7 +23,7 @@
                            checked="checked"
                     </c:if>
                     >
-                    <span class="questionnaire-answers-text text-with-checkmark-padding">
+                    <span class="questionnaire-answers-text pe-5">
                         ${ option.getText() }
                     </span>
                     <span class="questionnaire-answers-checkmark"></span>
@@ -32,7 +32,7 @@
                 <c:set var="oAttachments" value="${option.getAttachments()}"/>
                 <c:if test="${oAttachments != null}">
                     <c:forEach var="oAttachment" items="${oAttachments.getAttachment()}">
-                        <div class="col-lg-6">
+                        <div class="col col-lg-6">
                             <img src="data:${ oAttachment.getMime() };base64, ${ oAttachment.getContent().getValue() }"
                                  width="50"/>
                         </div>

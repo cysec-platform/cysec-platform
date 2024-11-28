@@ -1,11 +1,11 @@
-<div class="col-xs-12">
-    <h4 class="text-center padding-top-large">${it.msg.remaining}</h4>
+<div class="container-fluid">
+    <h4 class="text-center pt-5">${it.msg.remaining}</h4>
     <div class="row remaining-col-wrap">
         <c:set var="remaining" value="${it.remaining}"/>
         <c:choose>
             <c:when test="${ not empty remaining }">
                 <c:forEach var="coach" items="${remaining}">
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col col-md-6 col-lg-4">
                         <a href="javascript:;" onclick="instantiate('${coach.getId()}');">
                             <div class="text-center remaining">
                                 <img src="../assets/badges/badge_access_control.png"/>
@@ -16,7 +16,7 @@
                 </c:forEach>
             </c:when>
             <c:otherwise>
-                <div class="col-xs-12">
+                <div>
                     <div class="alert bg-lightbluegrey">
                         <p>${it.msg.noRemaining}</p>
                     </div>

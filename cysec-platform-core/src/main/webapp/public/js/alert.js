@@ -1,22 +1,22 @@
 const displaySuccess = (msg) => {
-    $("#wrapper").prepend("<div class='alert alert-success alert-dismissible below-header' role='alert'>" +
-        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>" +
-    "<strong>Success: </strong>" + msg + "<div>");
+    $("#wrapper").prepend("<div class='alert alert-warning alert-dismissible fade show mt-5' role='alert'>" +
+        "<strong>Success: </strong>" + msg + "<div>" +
+        "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>");
 };
 
 const displayInfo = (msg) => {
-    $("#wrapper").prepend("<div class='alert alert-success alert-dismissible below-header' role='alert'>" +
-        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>" +
-    "<strong>Info: </strong>" + msg + "<div>");
+    $("#wrapper").prepend("<div class='alert alert-warning alert-dismissible fade show mt-5' role='alert'>" +
+        "<strong>Info: </strong>" + msg + "<div>" +
+        "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>");
 };
 
 const displayWarning = (msg) => {
-    $("#wrapper").prepend("<div class='alert alert-warning alert-dismissible below-header' role='alert'>" +
-        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>" +
-        "<strong>Warning: </strong>" + msg + "<div>");
+    $("#wrapper").prepend("<div class='alert alert-warning alert-dismissible fade show mt-5' role='alert'>" +
+        "<strong>Warning: </strong>" + msg + "<div>" +
+        "<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>");
 };
 
 const displayError = (msg) => {
-    $("#wrapper").empty().append("<div class='alert alert-danger below-header' role='alert'>" +
+    $("#wrapper").empty().append("<div class='alert alert-danger mt-5' role='alert'>" +
     "<strong>Error: </strong>" + msg + "<div>");
 };

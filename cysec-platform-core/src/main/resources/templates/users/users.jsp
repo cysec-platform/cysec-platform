@@ -1,61 +1,64 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<div class="row dashboard-wrapper bg-lightbluegrey">
-    <div id="page-content-wrapper" class="col-xs-8 bg-white">
+<div class="row min-vh-100">
+    <div class="col col-8 px-4 py-3 bg-white">
         <!-- user content -->
-        <div class="row">
-            <h1>${it.msg.users}</h1>
-            <c:choose>
-                <c:when test="${empty it.users}">
-                    <div class="user-table" id="users">${it.msg.noUsers}</div>
-                </c:when>
-                <c:otherwise>
-                    <table class='table table-bordered table-responsive table-striped'>
-                        <thead>
-                        <tr>
-                            <th>${it.msg.username}</th>
-                            <th>${it.msg.roles}</th>
-                            <th>${it.msg.lock}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <c:forEach var="user" items="${it.users}">
+        <div class="container-fluid">
+            <div class="mb-4">
+                <h1>${it.msg.users}</h1>
+                <c:choose>
+                    <c:when test="${empty it.users}">
+                        <div class="user-table" id="users">${it.msg.noUsers}</div>
+                    </c:when>
+                    <c:otherwise>
+                        <table class='table table-bordered table-responsive table-striped'>
+                            <thead>
                             <tr>
-                                <td>${user.getUsername()}</td>
-                                <td>${user.getRole()}
-                                    <span class="pull-right" onclick="openEditUserModal(event) ">
-                        <i id="${user.getId()}" class="fa fa-pencil" aria-hidden="true" title="${it.msg.editUser}"></i>
-                    </span>
-                                </td>
-                                <td>${user.getLock()}</td>
+                                <th>${it.msg.username}</th>
+                                <th>${it.msg.roles}</th>
+                                <th>${it.msg.lock}</th>
                             </tr>
-                        </c:forEach>
-                        </tbody>
-                    </table>
-                </c:otherwise>
-            </c:choose>
-            <p class="text-link-box" onclick="openAddUserModal()">
-                <a onclick="openAddUserModal()">${it.msg.addUser}</a></p>
+                            </thead>
+                            <tbody>
+                            <c:forEach var="user" items="${it.users}">
+                                <tr>
+                                    <td>${user.getUsername()}</td>
+                                    <td>${user.getRole()}
+                                        <span class="pull-right" onclick="openEditUserModal(event)" data-bs-toggle="modal" data-bs-target="#editUserModal">
+                                        <i id="${user.getId()}" class="fa fa-pencil" aria-hidden="true" title="${it.msg.editUser}"></i>
+                                    </span>
+                                    </td>
+                                    <td>${user.getLock()}</td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </c:otherwise>
+                </c:choose>
+                <div class="d-grid">
+                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#addUserModal">${it.msg.addUser}</button>
+                </div>
+            </div>
 
+            <!-- tokens -->
+            <div class="mb-4">
+                <h1>${it.msg.token_header}</h1>
+                <c:choose>
+                    <c:when test="${it.replica == null}">
+                        <div>${it.msg.token_empty}</div>
+                    </c:when>
+                    <c:otherwise>
+                        <div>${it.replica}</div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
 
             <%@include file="userAdd.jsp" %>
             <%@include file="userEdit.jsp" %>
         </div>
-        <!-- tokens -->
-        <div class="row table-responsive">
-            <h1>${it.msg.token_header}</h1>
-            <c:choose>
-                <c:when test="${it.replica == null}">
-                    <div class="user-table" id="users">${it.msg.token_empty}</div>
-                </c:when>
-                <c:otherwise>
-                    <div>${it.replica}</div>
-                </c:otherwise>
-            </c:choose>
-        </div>
     </div>
-    <div id="sidebar-wrapper" class="col-xs-4 bg-lightbluegrey">
-        <div class=sidebar-content">
+    <div class="col col-4 px-4 py-3 bg-lightbluegrey">
+        <div class="container-fluid">
             <p>${it.msg.info}</p>
         </div>
     </div>

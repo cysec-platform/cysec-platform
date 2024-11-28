@@ -3,15 +3,15 @@
 <c:set var="host" value="${header['x-forwarded-host'] != null ? header['x-forwarded-host'] : header.host}"/>
 <c:set var="api" value="${pageContext.request.contextPath}/api/rest/resources/"/>
 
-<div class="badge-content-wrapper scrollable">
+<div class="container-fluid mt-3 overflow-y-auto">
     <main>
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col col-12">
                 <h1>${it.msg.title}</h1>
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col col-12">
                 <c:choose>
                     <c:when test="${not empty it.badges }">
                         <p>${it.msg.unlocked}:</p>

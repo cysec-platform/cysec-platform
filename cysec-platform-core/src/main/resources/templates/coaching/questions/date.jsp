@@ -8,7 +8,7 @@
 
 <!-- Date -->
 <div class="row">
-    <div class="questionnaire-answers col-xs-12">
+    <div class="questionnaire-answers col col-12">
         <input type="date" name="${qid}" required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
                onchange="updateAnswer(event)"
         <c:if test="${answer != null}">
