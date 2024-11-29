@@ -41,9 +41,6 @@ import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.config.Config;
 import eu.smesec.cysec.platform.core.utils.FileResponse;
-import eu.smesec.cysec.platform.core.utils.FileUtils;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -1538,7 +1535,7 @@ public class CacheAbstractionLayer {
   }
 
   // ---------------------
-  // ------ Export -------
+  // -- Import / Export --
   // ---------------------
 
   /**
@@ -1566,14 +1563,21 @@ public class CacheAbstractionLayer {
         });
   }
 
-  public void unzipCoach(String companyId, String coachId, InputStream zipUploadStream) {
-    try {
-      Path temp = Files.createTempFile(data.path, coachId, null);
-      FileUtils.unzip(zipUploadStream, temp);
-
-      // TOOD import extracted data into CAL
-    } catch (IOException e) {
-      // TODO error handling
-    }
+  /**
+   * Import coach (and sub coaches) data from a zip archive. This operation will
+   * <b>overwrite</b> any existing data.
+   * 
+   * @param companyId       The id of the company.
+   * @param coachId         The id of the coach (not the instance) to overwrite.
+   * @param zipUploadStream The archive is expected to match the filesystem structure of a coach.
+   * @throws CacheException
+   */
+  public void unzipCoach(String companyId, String coachId, InputStream zipUploadStream) throws CacheException {    
+    data.executeOnCompany(
+      companyId,
+      companyCache -> {
+        companyCache.unzipCoach(zipUploadStream, coachId);
+        return null;
+      });
   }
 }

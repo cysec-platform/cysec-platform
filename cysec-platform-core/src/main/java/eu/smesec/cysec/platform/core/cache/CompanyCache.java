@@ -589,12 +589,13 @@ class CompanyCache extends Cache {
   }
 
   void zipCoach(Path dest, String coachId) throws CacheException {
+    // TODO add null checks
     FQCN fqcn = FQCN.fromString(coachId);
     Path coach = fqcn.toPath().getParent(); // zip the entire directory to support sub coaches
     Path path = this.path.resolve(coach);
-    String p = path.toString();
 
     readLock.lock();
+    // TODO ensure, the cache has been persisted
     try {
       FileUtils.zip(path, dest);
     } catch (IOException e) {
@@ -605,6 +606,58 @@ class CompanyCache extends Cache {
               + e.getMessage());
     } finally {
       readLock.unlock();
+    }
+  }
+
+  /**
+   * Import coach (and sub coaches) data from a zip archive. This operation will
+   * <b>overwrite</b> any existing data.
+   * 
+   * @param zipInputStream  The archive is expected to match the filesystem structure of a coach.
+   * @param coachId         The id of the coach (not the instance) to overwrite (must be an instantiated coach to have any effect).
+   * @throws CacheException
+   */
+  void unzipCoach(InputStream zipInputStream, String coachId) throws CacheException {
+    if (zipInputStream == null || coachId == null) throw new IllegalArgumentException("input stream or coachId is null");
+    if (this.readOnly) throw new CacheReadOnlyException("Company " + id + " is read only"); 
+    
+    // TODO verify coachId matches a instantiated coach
+
+    try {
+      Path temp = Files.createTempDirectory(this.path, coachId);
+      FileUtils.unzip(zipInputStream, temp);
+      Path newCoach = Files.list(temp) // zip is extracted as subdirectory into temp dir
+        .filter(Files::isDirectory)
+        .findFirst()
+        .orElseThrow(() -> new CacheException("error during unzipping coach " + coachId + "(no coach directory in extracted archive)"));
+      logger.info("unzipped coach " + coachId);
+
+      Path oldCoach = this.path.resolve(coachId);
+
+      this.writeLock.lock();
+      try {
+        // overwrite on disk
+        // TODO should we ensure the structure and all the answer files ar ok first?
+        FileUtils.deleteDir(oldCoach);
+        Files.move(
+          newCoach,
+          oldCoach,
+          StandardCopyOption.REPLACE_EXISTING
+        );
+        logger.info("overwrote " + coachId + " data on disk");
+
+        // invalidate cache
+        this.objectCache.clear();
+        logger.info("invalidated entire cache for company " + this.id);
+      } finally {
+        this.writeLock.unlock();
+      }
+    } catch (IOException e) {
+      throw new CacheException(
+        "error during unzipping coach "
+            + coachId
+            + ": "
+            + e.getMessage());
     }
   }
 

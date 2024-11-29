@@ -467,7 +467,7 @@ public class Coaches {
    * file(s).
    * 
    * @param id The id of the coach
-   * @return Coach data as zip of the data
+   * @return   Coach data as zip archive
    */
   @SecuredAdmin
   @GET()
@@ -484,6 +484,15 @@ public class Coaches {
     }
   }
 
+
+  /**
+   * Import all coach (and sub coaches) data by <b>overwriting</b> the stored answers.
+   * 
+   * @param id              The id of the coach.
+   * @param zipUploadStream Coach data as zip (expected to match the file system structure).
+   * @param fileData        File metadata.
+   * @return
+   */
   @SecuredAdmin
   @POST
   @Path("{id}/import")
@@ -493,10 +502,17 @@ public class Coaches {
       @FormDataParam("file") InputStream zipUploadStream,
       @FormDataParam("file") FormDataContentDisposition fileData) {
         String companyId = context.getAttribute("company").toString();
+        FQCN fqcn = FQCN.fromString(id);
+        String coachId = fqcn.getCoachId();
 
         // TODO verify upload is a zip
 
-        cal.unzipCoach(companyId, id, zipUploadStream);
+        try {
+          cal.unzipCoach(companyId, coachId, zipUploadStream);
+        } catch (CacheException e) {
+          logger.log(Level.SEVERE, "Error while importing coach data from zip", e);
+          return Response.status(500).build();
+        }
 
         return Response.status(200).build();
   }
