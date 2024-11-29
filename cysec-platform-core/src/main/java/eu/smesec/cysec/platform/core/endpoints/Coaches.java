@@ -505,8 +505,6 @@ public class Coaches {
         FQCN fqcn = FQCN.fromString(id);
         String coachId = fqcn.getCoachId();
 
-        // TODO verify upload is a zip
-
         try {
           cal.unzipCoach(companyId, coachId, zipUploadStream);
         } catch (CacheException e) {

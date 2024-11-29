@@ -1539,10 +1539,11 @@ public class CacheAbstractionLayer {
   // ---------------------
 
   /**
-   * TODO
-   * @param companyId
-   * @param coachId
-   * @return
+   * Import coach (and sub coaches) data from a zip archive. This operation will
+
+   * @param companyId       The id of the company.
+   * @param coachId         The id of the coach (not the instance) to export.
+   * @return                Exported data as <code>FileResponse</code> of zip archive.
    * @throws CacheException
    */
   public FileResponse zipCoach(String companyId, String coachId) throws CacheException {

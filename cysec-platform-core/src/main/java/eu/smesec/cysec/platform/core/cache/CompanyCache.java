@@ -588,14 +588,21 @@ class CompanyCache extends Cache {
     }
   }
 
+  /**
+   * Export coach (and sub coaches) data as zip archive.
+   * 
+   * @param dest            The path of the new zip file.
+   * @param coachId         The id of the coach (not instance) to export.
+   * @throws CacheException
+   */
   void zipCoach(Path dest, String coachId) throws CacheException {
-    // TODO add null checks
+    if (dest == null || coachId == null) throw new IllegalArgumentException("dest or coachId is null");
     FQCN fqcn = FQCN.fromString(coachId);
     Path coach = fqcn.toPath().getParent(); // zip the entire directory to support sub coaches
     Path path = this.path.resolve(coach);
 
     readLock.lock();
-    // TODO ensure, the cache has been persisted
+    this.saveCachedObjects();
     try {
       FileUtils.zip(path, dest);
     } catch (IOException e) {
@@ -620,8 +627,9 @@ class CompanyCache extends Cache {
   void unzipCoach(InputStream zipInputStream, String coachId) throws CacheException {
     if (zipInputStream == null || coachId == null) throw new IllegalArgumentException("input stream or coachId is null");
     if (this.readOnly) throw new CacheReadOnlyException("Company " + id + " is read only"); 
-    
-    // TODO verify coachId matches a instantiated coach
+    if (!isCoachInstantiated(Paths.get(coachId))) {
+      throw new CacheException("Can not import a not yet instantiated coach: " + coachId);
+    }
 
     try {
       Path temp = Files.createTempDirectory(this.path, coachId);
