@@ -206,13 +206,7 @@ public class Coaches {
     String companyId = context.getAttribute("company").toString();
     try {
       FQCN fqcn = FQCN.fromString(id);
-      CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
-      Question question = library.getFirstQuestion();
-      Metadata md = cal.getMetadataOnAnswer(companyId, fqcn, MetadataUtils.MD_STATE);
-      if (md != null) {
-        State state = MetadataUtils.fromMd(md, State.class);
-        question = cal.getQuestion(fqcn.getCoachId(), state.getResume());
-      }
+      Question question = cal.getCurrentQuestion(companyId, fqcn);
       return Response.status(200).entity(gson.toJson(question)).build();
     } catch (CacheException ce) {
       logger.log(Level.SEVERE, "Error occured", ce);
@@ -425,6 +419,7 @@ public class Coaches {
   @GET()
   @Path("/{id}/questions/{qid}/next")
   public Response nextQuestion(@PathParam("id") String id, @PathParam("qid") String currentQuestionId) {
+    String companyId = context.getAttribute("company").toString();
     FQCN fqcn = FQCN.fromString(id);
     Locale locale = LocaleUtils.fromString(context.getAttribute("locale").toString());
 
@@ -445,9 +440,23 @@ public class Coaches {
           : "/app";
 
       Question next = library.getNextQuestion(question, fqcn);
-      String nextUrl = next != null
-          ? context.getContextPath() + "/app/coach.jsp?fqcn=" + fqcn.toString() + "&question=" + next.getId()
-          : context.getContextPath() + summaryUrl;
+
+
+      String nextUrl;
+      boolean isSubCoach = library.getQuestionnaire().getParent() != null;
+      if (next == null) { // Are we at the end of the questionnaire?
+        if (isSubCoach) {
+          // If we are in a subcoach and the questionnaire is finished, we need to get the next question
+          // relative to the current question of the parent coach
+          Question currentQuestionParent = cal.getCurrentQuestion(companyId, fqcn.getParent());
+          nextUrl = context.getContextPath() + "/api/rest/coaches/" + fqcn.getParent() + "/questions/" + currentQuestionParent.getId() + "/next";
+        } else {
+          // If are in the root coach, we go to the summary page when the questionnaire is finished
+          nextUrl = context.getContextPath() + summaryUrl;
+        }
+      } else {
+        nextUrl = context.getContextPath() + "/app/coach.jsp?fqcn=" + fqcn + "&question=" + next.getId();
+      }
       
       return Response.seeOther(URI.create(nextUrl)).build();
     } catch (CacheException e) {

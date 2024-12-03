@@ -38,6 +38,8 @@ import eu.smesec.cysec.platform.bridge.generated.Question;
 import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
 import eu.smesec.cysec.platform.bridge.generated.Token;
 import eu.smesec.cysec.platform.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.md.MetadataUtils;
+import eu.smesec.cysec.platform.bridge.md.State;
 import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.config.Config;
 import eu.smesec.cysec.platform.core.utils.FileResponse;
@@ -1398,6 +1400,24 @@ public class CacheAbstractionLayer {
           setMetadataOnAnswers(companyId, subcoachFqcn, parentArgument);
           return null;
         });
+  }
+
+    /**
+     * Gets the currently active question of a coach given its company id and its FQCN
+     * @param companyId the company in which the coach is
+     * @param fqcn the name of the coach
+     * @return the currently active question
+     * @throws CacheException if something goes awry
+     */
+  public Question getCurrentQuestion(String companyId, FQCN fqcn) throws CacheException {
+      CoachLibrary library = getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+      Question question = library.getFirstQuestion();
+      Metadata md = getMetadataOnAnswer(companyId, fqcn, MetadataUtils.MD_STATE);
+      if (md != null) {
+          State state = MetadataUtils.fromMd(md, State.class);
+          question = getQuestion(fqcn.getCoachId(), state.getResume());
+      }
+      return question;
   }
 
   /**
