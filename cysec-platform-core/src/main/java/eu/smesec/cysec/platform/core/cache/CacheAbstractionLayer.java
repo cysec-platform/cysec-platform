@@ -48,14 +48,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import javax.servlet.ServletContext;
@@ -1394,12 +1387,15 @@ public class CacheAbstractionLayer {
    * @param selectors The selectors to identify sub-coach instances.
    */
   public void instantiateSubCoach(
-      String companyId, FQCN fqcn, Questionnaire subCoach, Set<String> selectors)
+      String companyId, FQCN fqcn, Questionnaire subCoach, Set<String> selectors, Metadata parentArgument)
       throws CacheException {
     data.executeOnCompany(
         companyId,
         company -> {
           company.instantiateCoach(fqcn.toPath().getParent(), subCoach, selectors);
+          String subCoachName = selectors.iterator().next();
+          FQCN subcoachFqcn = FQCN.fromString(String.format("%s.%s.%s", fqcn.getRootCoachId(), subCoach.getId(), subCoachName));
+          setMetadataOnAnswers(companyId, subcoachFqcn, parentArgument);
           return null;
         });
   }

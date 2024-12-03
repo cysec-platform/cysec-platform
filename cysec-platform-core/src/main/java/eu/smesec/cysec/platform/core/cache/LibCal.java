@@ -151,18 +151,18 @@ public class LibCal implements ILibCal {
   /**
    * Deprecated method, this method will be removed in a later release.
    *
-   * @see LibCal#instantiateSubCoach(Questionnaire, FQCN, Set)
+   * @see LibCal#instantiateSubCoach(Questionnaire, FQCN, Set, Metadata)
    */
   @Override
-  public void instantiateSubCoach(Questionnaire subCoach, Set<String> selectors)
+  public void instantiateSubCoach(Questionnaire subCoach, Set<String> selectors, Metadata parentArgument)
       throws CacheException {
-    cal.instantiateSubCoach(getCompanyId(), getCoachContext(), subCoach, selectors);
+    cal.instantiateSubCoach(getCompanyId(), getCoachContext(), subCoach, selectors, parentArgument);
   }
 
   @Override
-  public void instantiateSubCoach(Questionnaire subCoach, FQCN fqcn, Set<String> selectors)
+  public void instantiateSubCoach(Questionnaire subCoach, FQCN fqcn, Set<String> selectors, Metadata parentArgument)
       throws CacheException {
-    cal.instantiateSubCoach(getCompanyId(), fqcn, subCoach, selectors);
+    cal.instantiateSubCoach(getCompanyId(), fqcn, subCoach, selectors, parentArgument);
   }
 
   @Override

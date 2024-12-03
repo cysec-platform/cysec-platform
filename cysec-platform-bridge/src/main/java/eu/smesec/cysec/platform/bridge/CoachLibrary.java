@@ -155,6 +155,12 @@ public interface CoachLibrary {
   Object getParent();
 
   /**
+   * Updates the active questions pool based on the current visibility state
+   * of the questions.
+   */
+  void updateActiveQuestions();
+
+  /**
    * <p>Gets the model for a *.jsp file.</p>
    *
    * @param file The path of the *.jsp file.
