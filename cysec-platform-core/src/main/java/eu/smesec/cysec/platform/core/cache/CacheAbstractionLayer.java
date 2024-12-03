@@ -1391,15 +1391,22 @@ public class CacheAbstractionLayer {
   public void instantiateSubCoach(
       String companyId, FQCN fqcn, Questionnaire subCoach, Set<String> selectors, Metadata parentArgument)
       throws CacheException {
-    data.executeOnCompany(
-        companyId,
-        company -> {
-          company.instantiateCoach(fqcn.toPath().getParent(), subCoach, selectors);
-          String subCoachName = selectors.iterator().next();
-          FQCN subcoachFqcn = FQCN.fromString(String.format("%s.%s.%s", fqcn.getRootCoachId(), subCoach.getId(), subCoachName));
-          setMetadataOnAnswers(companyId, subcoachFqcn, parentArgument);
-          return null;
-        });
+      data.executeOnCompany(
+              companyId,
+              company -> {
+                  company.instantiateCoach(fqcn.toPath().getParent(), subCoach, selectors);
+
+                  // Set parent argument in subcoach
+                  String subCoachName = selectors.iterator().next();
+                  FQCN subcoachFqcn = FQCN.fromString(String.format("%s.%s.%s", fqcn.getRootCoachId(), subCoach.getId(), subCoachName));
+                  setMetadataOnAnswers(companyId, subcoachFqcn, parentArgument);
+
+                  // Set parent context in subcoach
+                  CoachLibrary subcoachLibrary = getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
+                  CoachLibrary parentCoachLibrary = getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+                  subcoachLibrary.setParent(parentCoachLibrary.getContext());
+                  return null;
+              });
   }
 
     /**

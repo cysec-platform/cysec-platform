@@ -155,6 +155,14 @@ public interface CoachLibrary {
   Object getParent();
 
   /**
+   * Exposed the executor context of the coach library. This has return type object because
+   * the executor context type is not available in this project. Any consumer of this method
+   * must cast the object in order to do something useful with it.
+   * @return ExecutorContext of coachLibrary
+   */
+  Object getContext();
+
+  /**
    * Updates the active questions pool based on the current visibility state
    * of the questions.
    */
