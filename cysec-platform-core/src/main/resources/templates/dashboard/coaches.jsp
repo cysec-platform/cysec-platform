@@ -19,8 +19,9 @@
                             </c:if>
                             <div class="pt-3 questionnaire-summary-title">
                                 <h4 class="pb-0">
-                                    <a href="javascript:;" onclick="resume('${coachId}')">${ coach.getReadableName()
-                                        }</a>
+                                    <a href="javascript:;" onclick="resume('${coachId}')">
+                                        ${ coach.getReadableName()}
+                                    </a>
                                     <div class="questionnaire-info"><img src="${context}/assets/icons/icn_info.png"
                                             width="24" height="24">
                                         <span class="questionnaire-infotext">${ coach.getDescription() }</span>
@@ -32,8 +33,8 @@
                                     <a href="javascript:;" onclick="resume('${coachId}')">${it.msg.coachContinue}</a>
                                     <c:if test="${it.userIsAdmin}">
                                         &nbsp; | &nbsp;
-                                        <a href="javascript:;" onclick="openAdminModal('${coachId}')" data-bs-toggle="modal"
-                                            data-bs-target="#adminCoachModal">Mehr</a>
+                                        <a href="javascript:;" onclick="openAdminModal('${coachId}')"
+                                            data-bs-toggle="modal" data-bs-target="#adminCoachModal">Mehr</a>
                                     </c:if>
                                 </h5>
                             </div>
@@ -45,9 +46,6 @@
                                     <c:when test="${ rating != null }">
                                         <h4>${ rating.getScore() }</h4>
                                         <h5>score</h5>
-                                        <!--
-                                <h5>your grade: ${ rating.getGrade() }</h5>
-                                -->
                                     </c:when>
                                     <c:otherwise>
                                         <h4>&mdash;</h4>
