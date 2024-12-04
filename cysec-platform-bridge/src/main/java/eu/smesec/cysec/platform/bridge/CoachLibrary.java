@@ -22,6 +22,7 @@ package eu.smesec.cysec.platform.bridge;
 import eu.smesec.cysec.platform.bridge.generated.Answer;
 import eu.smesec.cysec.platform.bridge.generated.Question;
 import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
+import eu.smesec.cysec.platform.bridge.utils.Tuple;
 
 import java.io.InputStream;
 import java.util.List;
@@ -121,6 +122,14 @@ public interface CoachLibrary {
   List<Question> peekQuestions(Question question);
 
   /**
+   * Return the active questions of a coach including its subcoaches.
+   * @param fqcn The fqcn of the parent coach
+   * @return List of tuples containing the fqcn of the coach where the
+   * question comes from and the question itself
+   */
+  List<Tuple<FQCN, Question>> peekQuestionsIncludingSubcoaches(FQCN fqcn);
+
+  /**
    * Ask the library for the last question of the coach.
    * @return A question object or null (if coach has no questions)
    */
@@ -166,7 +175,7 @@ public interface CoachLibrary {
    * Updates the active questions pool based on the current visibility state
    * of the questions.
    */
-  void updateActiveQuestions();
+  void updateActiveQuestions(FQCN fqcn);
 
   /**
    * <p>Gets the model for a *.jsp file.</p>

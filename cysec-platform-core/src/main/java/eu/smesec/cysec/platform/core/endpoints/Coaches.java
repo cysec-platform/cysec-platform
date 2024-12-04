@@ -39,6 +39,7 @@ import eu.smesec.cysec.platform.bridge.md.LastSelected;
 import eu.smesec.cysec.platform.bridge.md.MetadataUtils;
 import eu.smesec.cysec.platform.bridge.md.State;
 import eu.smesec.cysec.platform.bridge.utils.AuditUtils;
+import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.cache.LibCal;
 import eu.smesec.cysec.platform.core.cache.ResourceManager;
@@ -354,7 +355,11 @@ public class Coaches {
     try {
       FQCN fqcn = FQCN.fromString(id);
       context.setAttribute("fqcn", id);
+
+      FQCN parentFqcn = fqcn.isTopLevel() ? fqcn : fqcn.getParent();
+      CoachLibrary parentLibrary = cal.getLibrariesForQuestionnaire(fqcn.getRootCoachId()).get(0);
       CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+
       Question question = cal.getQuestion(fqcn.getCoachId(), questionId, locale);
       if (question == null) {
         return Response.status(404).build();
@@ -366,9 +371,9 @@ public class Coaches {
       // summary page
       String summaryUrl = res.hasResource(fqcn.getCoachId(), library.getId(), "/assets/jsp/summary.jsp")
           ? "/api/rest/resources/"
-              + fqcn.getCoachId()
+              + parentFqcn.getCoachId()
               + "/"
-              + library.getId()
+              + parentLibrary.getId()
               + "/assets/jsp/summary.jsp"
           : "/app";
 
@@ -376,15 +381,15 @@ public class Coaches {
       String nextUrl = "/api/rest/coaches/" + fqcn + "/questions/" + questionId + "/next";
 
       // question states for pagination
-      List<AbstractMap.SimpleEntry<Question, Answer>> actives = library.peekQuestions(question)
-          .stream()
-          .map(q -> {
-            try {
-              return new AbstractMap.SimpleEntry<>(q, cal.getAnswer(companyId, fqcn, q.getId()));
-            } catch (CacheException e) {
-              return new AbstractMap.SimpleEntry<Question, Answer>(q, null);
-            }
-          }).collect(Collectors.toList());
+      List<AbstractMap.SimpleEntry<Tuple<FQCN, Question>, Answer>> actives = parentLibrary.peekQuestionsIncludingSubcoaches(parentFqcn)
+              .stream()
+              .map(tup -> {
+                try {
+                  return new AbstractMap.SimpleEntry<>(tup, cal.getAnswer(companyId, tup.getFirst(), tup.getSecond().getId()));
+                } catch (CacheException e) {
+                  return new AbstractMap.SimpleEntry<Tuple<FQCN, Question>, Answer>(tup, null);
+                }
+              }).collect(Collectors.toList());
 
       CoachMsg msg = new CoachMsg(locale);
       Map<String, Object> model = new HashMap<>();

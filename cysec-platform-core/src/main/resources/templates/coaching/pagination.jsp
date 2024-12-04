@@ -6,7 +6,8 @@
     <div class="d-flex w-100 justify-content-between">
         <div class="">
             <c:forEach var="active" items="${it.actives}">
-                <c:set var="question" value="${active.getKey()}" />
+                <c:set var="question" value="${active.getKey().getSecond()}" />
+                <c:set var="questionFqcn" value="${active.getKey().getFirst()}" />
                 <c:set var="answer" value="${active.getValue()}" />
                 <c:set var="aid" value="${question.getId()}"/>
 
@@ -14,7 +15,7 @@
                 <c:set var="intro"><c:out value="${question.getIntroduction()}" /></c:set>
 
                 <a
-                        href="${baseUrl}/app/coach.jsp?fqcn=${it.fqcn}&question=${aid}"
+                        href="${baseUrl}/app/coach.jsp?fqcn=${questionFqcn.toString()}&question=${aid}"
                         class="pagination-element"
                         data-bs-custom-class="pagination-tooltip"
                         data-bs-title="<h3>${text}</h3><p>${intro}</p>"
