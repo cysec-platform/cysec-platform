@@ -48,13 +48,7 @@ import eu.smesec.cysec.platform.core.json.MValueAdapter;
 import eu.smesec.cysec.platform.core.messages.CoachMsg;
 
 import java.net.URI;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -133,6 +127,13 @@ public class Coaches {
       FQCN fqcn = FQCN.fromString(id);
       CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
       library.onResume(fqcn.getCoachId(), fqcn);
+
+      // Resume sub coaches of this coach
+      for (FQCN subcoachFqcn : cal.listInstantiatedCoaches(companyId)) {
+        CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
+        subcoachLibrary.onResume(subcoachFqcn.getCoachId(), subcoachFqcn);
+      }
+
       // update last selected
       LastSelected lastSelected = new LastSelected(fqcn.toString());
       cal.setMetadataOnAnswers(companyId, LibCal.FQCN_COMPANY, MetadataUtils.toMd(lastSelected));
@@ -307,7 +308,29 @@ public class Coaches {
             after == null ? "" : after);
         cal.createAuditLog(companyId, audit);
 
-        library.onResponseChange(question, answer, fqcn);
+          // If we are in a parent coach that potentially has subcoaches, we
+          // want to find the subcoaches that were activated during this answer
+          // update so we can reevaluate the subcoaches. To find the new subcoches
+          // we compare the visible subcoach placeholders before and after running
+          // the response change logic
+          if (fqcn.isTopLevel()) {
+            List<Question> subcoachesBeforeUpdate = library.peekQuestions(question).stream()
+                    .filter(q -> Objects.equals(q.getType(), "subcoach")).collect(Collectors.toList());
+            library.onResponseChange(question, answer, fqcn);
+            List<Question> newSubCoaches = library.peekQuestions(question).stream()
+                    .filter(q -> Objects.equals(q.getType(), "subcoach"))
+                    .filter(q -> !subcoachesBeforeUpdate.contains(q))
+                    .collect(Collectors.toList());
+
+            for (Question newSubCoach : newSubCoaches) {
+              FQCN subcoachFqcn = FQCN.fromString(String.format("%s.%s.%s", fqcn.getRootCoachId(), newSubCoach.getSubcoachId(), newSubCoach.getInstanceName()));
+              CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
+              subcoachLibrary.onResume(subcoachFqcn.getCoachId(), subcoachFqcn);
+            }
+          } else {
+            // If we are in a subcoach we can simply run the response change logic
+            library.onResponseChange(question, answer, fqcn);
+          }
       }
       Question next = library.getNextQuestion(question, fqcn);
       List<Question> active = library.peekQuestions(question);
