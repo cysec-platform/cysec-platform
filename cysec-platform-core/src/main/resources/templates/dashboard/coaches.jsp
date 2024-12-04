@@ -72,8 +72,8 @@
                             <h4>Import</h4>
                             <form method="post" enctype="multipart/form-data" class="btn-group" role="group"
                                 aria-label="Import">
-                                <input class="form-control" type="file" name="file" accept=".zip" />
-                                <input class="btn btn-outline-primary" type="submit" value="Import" />
+                                <input class="form-control" type="file" name="file" accept=".zip" required/>
+                                <input class="btn btn-outline-primary" type="submit" value="Import"  />
                             </form>
                         </div>
                     </div>
