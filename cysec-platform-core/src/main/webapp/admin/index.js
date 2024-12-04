@@ -14,11 +14,6 @@ const loadAudits = (companyId) => {
     loadContent(url, "#admin-wrapper");
 };
 
-const loadCoaches = (companyId) => {
-    const url = buildUrl(`${endpoint}/coaches/${companyId}`);
-    loadContent(url, "#admin-wrapper");
-};
-
 /**
  * Fetch content from an endpoint and append the response to `domId`.
  * 

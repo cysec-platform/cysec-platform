@@ -77,4 +77,19 @@ const instantiate = (coachId) => {
     });
 };
 
+/**
+ * Inject the coach id of the selected coach into the generic modal.
+ * @param {string} coachId - full coach id
+ */
+const openAdminModal = (coachId) => {
+    const modal = $("#adminCoachModal .modal-body");
+    const exportButton = modal.children("a")[0];
+    const importForm = modal.children("form")[0];
+
+    exportButton.download = `${coachId}.zip`;
+    exportButton.href = buildUrl(`/api/rest/coaches/${coachId}/export`);
+    
+    importForm.action = buildUrl(`/api/rest/coaches/${coachId}/import`);
+};
+
 window.addEventListener("load", getDashboard);

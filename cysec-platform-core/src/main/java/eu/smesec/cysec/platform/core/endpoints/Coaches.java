@@ -39,6 +39,7 @@ import eu.smesec.cysec.platform.bridge.md.LastSelected;
 import eu.smesec.cysec.platform.bridge.md.MetadataUtils;
 import eu.smesec.cysec.platform.bridge.md.State;
 import eu.smesec.cysec.platform.bridge.utils.AuditUtils;
+import eu.smesec.cysec.platform.core.auth.Secured;
 import eu.smesec.cysec.platform.core.auth.SecuredAdmin;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.cache.LibCal;
@@ -62,6 +63,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.annotation.security.DenyAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
@@ -469,7 +471,8 @@ public class Coaches {
    * @param id The id of the coach
    * @return   Coach data as zip archive
    */
-  @SecuredAdmin
+  @Secured
+  @RolesAllowed("Admin")
   @GET()
   @Path("{id}/export")
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -493,7 +496,8 @@ public class Coaches {
    * @param fileData        File metadata.
    * @return
    */
-  @SecuredAdmin
+  @Secured
+  @RolesAllowed("Admin")
   @POST
   @Path("{id}/import")
   @Consumes(MediaType.MULTIPART_FORM_DATA)

@@ -601,8 +601,9 @@ class CompanyCache extends Cache {
     Path coach = fqcn.toPath().getParent(); // zip the entire directory to support sub coaches
     Path path = this.path.resolve(coach);
 
-    readLock.lock();
     this.saveCachedObjects();
+
+    readLock.lock();
     try {
       FileUtils.zip(path, dest);
     } catch (IOException e) {

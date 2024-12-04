@@ -237,8 +237,14 @@ public class Dashboard {
       // add data for jsp
       DashboardMsg msg =
           new DashboardMsg(locale, instantiated.size(), remaining.size(), badges.size());
+      
+      String userName = context.getAttribute("user").toString();
+      boolean userIsAdmin = cal.getAllAdminUsers(companyId).stream()
+        .anyMatch(u -> u.getUsername().equals(userName));
+
       Map<String, Object> model = new HashMap<>();
       model.put("msg", msg.getMessages());
+      model.put("userIsAdmin", userIsAdmin);
       model.put("instantiated", instantiated);
       model.put("remaining", remaining);
       model.put("recommendations", recommendations);

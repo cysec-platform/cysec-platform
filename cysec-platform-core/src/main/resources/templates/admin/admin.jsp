@@ -19,9 +19,6 @@
                                 <a class="btn btn-link" href="javascript:;" onclick="loadAudits('${company.getId()}')">
                                     show audits
                                 </a>
-                                <a class="btn btn-link" href="javascript:;" onclick="loadCoaches('${company.getId()}')">
-                                    show coaches
-                                </a>
                             </li>
                         </c:forEach>
                     </ul>

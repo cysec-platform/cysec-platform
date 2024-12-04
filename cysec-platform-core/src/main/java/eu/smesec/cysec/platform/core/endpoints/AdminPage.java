@@ -103,25 +103,4 @@ public class AdminPage {
     }
     return Response.status(500).build();
   }
-
-  @GET
-  @Path("coaches/{cid}")
-  @Produces(MediaType.TEXT_HTML)
-  public Response getAdminCoaches(@PathParam("cid") String companyId) {
-    try {
-      List<Questionnaire> coaches = cal.getAllCoaches();
-      
-      Map<String, Object> model = new HashMap<>();
-      model.put("coaches", coaches);
-      model.put("companyId", companyId);
-
-      return Response
-        .status(200)
-        .entity(new Viewable("/admin/coaches", model))
-        .build();
-    } catch (CacheException e) {
-      logger.warning(e.getMessage());
-      return Response.status(500).build();
-    }
-  }
 }
