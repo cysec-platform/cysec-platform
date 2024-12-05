@@ -88,8 +88,38 @@ const openAdminModal = (coachId) => {
 
     exportButton.download = `${coachId}.zip`;
     exportButton.href = buildUrl(`/api/rest/coaches/${coachId}/export`);
-    
-    importForm.action = buildUrl(`/api/rest/coaches/${coachId}/import`);
+
+    importForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        submitImportForm(importForm, coachId)
+    });
 };
+
+
+/**
+ * Overwriting the default behavior of an HTML form to handle 
+ * both the error and the success case client side.
+ * 
+ * @param {HTMLFormElement} form 
+ * @param {string} coachId
+ */
+const submitImportForm = (form, coachId) => {
+    const url = buildUrl(`/api/rest/coaches/${coachId}/import`);
+    const formData = new FormData(form);
+
+    fetch(url, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+    }).then(response => {
+        bootstrap.Modal.getInstance($("#adminCoachModal")).toggle();
+        if (response.ok) {
+            displaySuccess("Imported coach");
+        } else {
+            displayError("POST " + url + "<br>status code: " + response.status);
+            console.debug(response.status);
+        }
+    });
+}
 
 window.addEventListener("load", getDashboard);
