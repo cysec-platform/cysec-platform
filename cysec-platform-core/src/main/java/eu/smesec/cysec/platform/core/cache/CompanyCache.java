@@ -651,10 +651,14 @@ class CompanyCache extends Cache {
 
       Path oldCoach = this.path.resolve(coachId);
 
+      if (!verifyZipImport(newCoach)) {
+        Files.delete(temp);
+        throw new CacheException("Some files are not valid Answers XML files");
+      }
+
       this.writeLock.lock();
       try {
         // overwrite on disk
-        // TODO should we ensure the structure and all the answer files ar ok first?
         FileUtils.deleteDir(oldCoach);
         Files.move(
           newCoach,
@@ -676,6 +680,48 @@ class CompanyCache extends Cache {
             + coachId
             + ": "
             + e.getMessage());
+    }
+  }
+
+  /**
+   * Verify wether all uploaded files are valid 
+   * {@link eu.smesec.cysec.platform.bridge.generated.Answers} XML files 
+   * or not.
+   * 
+   * Non XML files will be ignored.
+   * 
+   * @param root          Path to the uploaded (extracted) files.
+   * @return              Wether the files are valid Answers XML files or not.
+   * @throws IOException
+   */
+  private boolean verifyZipImport(Path root) {
+    try {
+    return Files.list(root)
+      .map(path -> {
+        if (Files.isDirectory(path)) {
+          return verifyZipImport(path);
+        } else {
+          // base case: verification
+          String ext = FileUtils.getFileExt(path);
+          ext = ext != null ? ext : "";
+          if (!ext.toLowerCase().equals("xml")) {
+            return true; // ignore all other files
+          } 
+
+          Mapper<Answers> mapper = CacheFactory.createMapper(Answers.class);
+          try {
+            mapper.unmarshal(path);
+            return true;
+          } catch (MapperException e) {
+            logger.log(Level.SEVERE, FileUtils.getFileName(path) + " is not a valid Answers XML file", e);
+            return false;
+          }
+        }
+      })
+      .allMatch(Boolean::valueOf);
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, "IO error during verification of zip import", e);
+      return false; // "cast" exceptions to false to enable recursive usage of this method
     }
   }
 
