@@ -635,10 +635,18 @@ class CompanyCache extends Cache {
     try {
       Path temp = Files.createTempDirectory(this.path, coachId);
       FileUtils.unzip(zipInputStream, temp);
-      Path newCoach = Files.list(temp) // zip is extracted as subdirectory into temp dir
-        .filter(Files::isDirectory)
-        .findFirst()
-        .orElseThrow(() -> new CacheException("error during unzipping coach " + coachId + "(no coach directory in extracted archive)"));
+
+      List<Path> unzipped = Files.list(temp).collect(Collectors.toList());
+      Path newCoach = null;
+      
+      if (unzipped.size() == 1 && Files.isDirectory(unzipped.get(0))) {
+        // a coach with sub coaches is extracted as a single folder containing the contents of the archive into the destination dir
+         newCoach = unzipped.get(0);
+      } else {
+        // a coach with no sub coaches is extracted as files directly into the destination dir
+        newCoach = temp;
+      }
+
       logger.info("unzipped coach " + coachId);
 
       Path oldCoach = this.path.resolve(coachId);
