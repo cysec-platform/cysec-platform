@@ -668,6 +668,7 @@ class CompanyCache extends Cache {
         logger.info("invalidated entire cache for company " + this.id);
       } finally {
         this.writeLock.unlock();
+        if (Files.exists(temp)) Files.delete(temp);
       }
     } catch (IOException e) {
       throw new CacheException(
