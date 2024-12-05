@@ -647,7 +647,18 @@ class CompanyCache extends Cache {
     }
 
     try {
-      Path temp = Files.createTempDirectory(this.path, coachId);
+      Path tempBase = this.path.getParent();
+      /*
+       * tempBase: work on same level as companies to avoid that any temp dir will be
+       * falsy treated as a coach dir. Not using java.nio's default temp dir (by
+       * providing not
+       * path) to ensure we work inside the cysec_data_path (from cysec.conf) to avoid
+       * potential
+       * problems with mounted directories (e.g. when moving files).
+       * https://docs.oracle.com/javase/8/docs/api/java/nio/file/Files.html#move-java.
+       * nio.file.Path-java.nio.file.Path-java.nio.file.CopyOption...-
+       */
+      Path temp = Files.createTempDirectory(tempBase, coachId);
       FileUtils.unzip(zipInputStream, temp);
 
       List<Path> unzipped = Files.list(temp).collect(Collectors.toList());
@@ -668,7 +679,7 @@ class CompanyCache extends Cache {
       Path oldCoach = this.path.resolve(coachId);
 
       if (!verifyZipImport(newCoach)) {
-        Files.delete(temp);
+        FileUtils.deleteDir(temp);
         throw new CacheException("Some files are not valid Answers XML files");
       }
 
@@ -676,10 +687,7 @@ class CompanyCache extends Cache {
       try {
         // overwrite on disk
         FileUtils.deleteDir(oldCoach);
-        Files.move(
-            newCoach,
-            oldCoach,
-            StandardCopyOption.REPLACE_EXISTING);
+        FileUtils.moveDir(newCoach, oldCoach);
         logger.info("overwrote " + coachId + " data on disk");
 
         // invalidate cache
@@ -687,10 +695,12 @@ class CompanyCache extends Cache {
         logger.info("invalidated entire cache for company " + this.id);
       } finally {
         this.writeLock.unlock();
-        if (Files.exists(temp))
-          Files.delete(temp);
+        if (Files.exists(temp)) {
+          FileUtils.deleteDir(temp);
+        }
       }
     } catch (IOException e) {
+      e.printStackTrace();
       throw new CacheException(
           "error during unzipping coach "
               + coachId
