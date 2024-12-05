@@ -34,6 +34,26 @@ const load = () => {
     });
 };
 
+const toggleFlagged = () => {
+    const currentFlaggedState = !!$("#question-flag").data("flagged");
+    const url = buildUrl("/api/rest/coaches/" + fqcn + "/questions/" + qid + "/flag");
+
+    fetch(url, {
+        method: "POST",
+        body: !currentFlaggedState,
+        credentials: "include",
+    }).then(response => {
+        if (response.ok) {
+            load()
+        } else {
+            console.debug(response.status);
+            displayError("Couldn't toggle flagged state on: " + url + ": " + response.status);
+        }
+    }).catch(e => {
+        console.debug(e);
+    });
+};
+
 const updateAnswer = (event) => {
     // separate comma from coach string in window location
     const url = buildUrl("/api/rest/coaches/" + fqcn + "/answers/" + qid);

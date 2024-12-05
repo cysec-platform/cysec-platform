@@ -22,6 +22,7 @@ package eu.smesec.cysec.platform.core.cache;
 import eu.smesec.cysec.platform.bridge.CoachLibrary;
 import eu.smesec.cysec.platform.bridge.execptions.LibraryException;
 import eu.smesec.cysec.platform.bridge.generated.Answers;
+import eu.smesec.cysec.platform.bridge.generated.FlaggedQuestions;
 import eu.smesec.cysec.platform.bridge.generated.Library;
 import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
 import eu.smesec.cysec.platform.bridge.generated.QuestionnaireReference;
@@ -66,6 +67,21 @@ public final class CacheFactory {
     reference.setFilename(coach.getFilename());
     answers.setQuestionnaireReference(reference);
     return answers;
+  }
+
+  /**
+   * Creates a flagged questions list with a reference to the coach.
+   *
+   * @param coach coach object
+   * @return flagged questions object
+   */
+  public static FlaggedQuestions createFlaggedQuestionsFromCoach(Questionnaire coach) {
+    FlaggedQuestions flaggedQuestions = new FlaggedQuestions();
+    QuestionnaireReference reference = new QuestionnaireReference();
+    reference.setQuestionnaireId(coach.getId());
+    reference.setFilename(coach.getFilename());
+    flaggedQuestions.setQuestionnaireReference(reference);
+    return flaggedQuestions;
   }
 
   /**

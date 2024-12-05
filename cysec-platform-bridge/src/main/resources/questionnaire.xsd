@@ -189,6 +189,21 @@
         </xs:complexType>
     </xs:element>
 
+    <xs:element name="flaggedQuestions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="questionnaireReference" minOccurs="0"/>
+                <xs:element ref="flaggedQuestion" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="flaggedQuestion">
+        <xs:complexType>
+            <xs:attribute name="qid" type="xs:ID" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
     <xs:element name="answers">
         <xs:complexType>
             <xs:sequence>

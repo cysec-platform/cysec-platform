@@ -5,9 +5,9 @@
 <div id="pagination" class="container-fluid">
     <div class="d-flex w-100 justify-content-between">
         <div class="">
-            <c:forEach var="active" items="${it.actives}">
-                <c:set var="question" value="${active.getKey()}" />
-                <c:set var="answer" value="${active.getValue()}" />
+            <c:forEach var="question" items="${it.actives}">
+                <c:set var="answer" value="${it.answers.get(question)}" />
+                <c:set var="isFlagged" value="${it.flagStatus.get(question)}" />
                 <c:set var="aid" value="${question.getId()}"/>
 
                 <c:set var="text"> <c:out value="${question.getText()}"/></c:set> <%-- use c:out to escape strings --%>
@@ -28,7 +28,9 @@
                             ? 'status_in_progress.png'
                             : answer != null
                                 ? 'status_done.png'
-                                : 'status_empty.png'}"
+                                : isFlagged
+                                    ? 'status_flagged.png'
+                                    : 'status_empty.png'}"
                     >
                 </a>
             </c:forEach>
