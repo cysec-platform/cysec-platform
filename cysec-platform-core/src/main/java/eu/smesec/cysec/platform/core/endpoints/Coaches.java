@@ -383,6 +383,12 @@ public class Coaches {
       CoachLibrary parentLibrary = cal.getLibrariesForQuestionnaire(fqcn.getRootCoachId()).get(0);
       CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
 
+      // If we switch to another instance of the same coach we have to resume it first
+      if (!library.getActiveInstance().equals(fqcn.getName())) {
+        library.onResume(questionId, fqcn);
+        library.setActiveInstance(fqcn.getName());
+      }
+
       Question question = cal.getQuestion(fqcn.getCoachId(), questionId, locale);
       if (question == null) {
         return Response.status(404).build();

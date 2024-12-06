@@ -103,6 +103,10 @@ public interface CoachLibrary {
   @Deprecated
   void setId(String id);
 
+  String getActiveInstance();
+
+  void setActiveInstance(String instance);
+
   /**
    * <p>Ask library to (re)evaluate the current question and return the next question.</p>
    *
