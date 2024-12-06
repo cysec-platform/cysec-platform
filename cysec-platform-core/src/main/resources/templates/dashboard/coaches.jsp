@@ -34,7 +34,9 @@
                                     <c:if test="${it.userIsAdmin}">
                                         &nbsp; | &nbsp;
                                         <a href="javascript:;" onclick="openAdminModal('${coachId}')"
-                                            data-bs-toggle="modal" data-bs-target="#adminCoachModal">Mehr</a>
+                                            data-bs-toggle="modal" data-bs-target="#adminCoachModal">
+                                            ${it.msg.coachMore}
+                                        </a>
                                     </c:if>
                                 </h5>
                             </div>
@@ -62,18 +64,20 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h3 class="modal-title" id="adminModalLabel">Admin actions</h3>
+                            <h3 class="modal-title" id="adminModalLabel">${it.msg.adminModalTitle}</h3>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body d-grid">
-                            <h4>Export</h4>
-                            <a class="btn btn-outline-primary text-decoration-none">Export</a>
+                            <h4>${it.msg.adminModalExport}</h4>
+                            <a class="btn btn-outline-primary text-decoration-none">
+                                ${it.msg.adminModalExport}
+                            </a>
 
-                            <h4>Import</h4>
-                            <form enctype="multipart/form-data" class="btn-group" role="group"
-                                aria-label="Import">
-                                <input class="form-control" type="file" name="file" accept=".zip" required/>
-                                <input class="btn btn-outline-primary" type="submit" value="Import"  />
+                            <h4>${it.msg.adminModalImport}</h4>
+                            <form enctype="multipart/form-data" class="btn-group" role="group" aria-label="Import">
+                                <input class="form-control" type="file" name="file" accept=".zip" required />
+                                <input class="btn btn-outline-primary" type="submit"
+                                    value="${it.msg.adminModalImport}" />
                             </form>
                         </div>
                     </div>

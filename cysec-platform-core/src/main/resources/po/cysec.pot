@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-10 11:14+0000\n"
+"POT-Creation-Date: 2024-12-06 14:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -239,4 +239,20 @@ msgstr ""
 
 #: DashboardMsg.java:57
 msgid "show all"
+msgstr ""
+
+#: DashboardMsg.java:58
+msgid "more"
+msgstr ""
+
+#: DashboardMsg.java:59
+msgid "Admin actions"
+msgstr ""
+
+#: DashboardMsg.java:60
+msgid "Export"
+msgstr ""
+
+#: DashboardMsg.java:61
+msgid "Import"
 msgstr ""

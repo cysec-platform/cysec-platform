@@ -55,5 +55,9 @@ public class DashboardMsg extends Message {
         "latestAchievements", i18n.trn("latest achievement", "latest achievements", badges));
     messages.put("noAchievements", i18n.tr("No achievements have been unlocked"));
     messages.put("showAll", i18n.tr("show all"));
+    messages.put("coachMore", i18n.tr("more"));
+    messages.put("adminModalTitle", i18n.tr("Admin actions"));
+    messages.put("adminModalExport", i18n.tr("Export"));
+    messages.put("adminModalImport", i18n.tr("Import"));
   }
 }
