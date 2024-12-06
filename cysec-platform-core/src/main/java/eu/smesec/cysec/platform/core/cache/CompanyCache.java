@@ -649,6 +649,7 @@ class CompanyCache extends Cache {
       throw new CacheException("Can not import a not yet instantiated coach: " + coachId);
     }
 
+    Path temp = null;
     try {
       Path tempBase = this.path.getParent();
       /*
@@ -661,7 +662,7 @@ class CompanyCache extends Cache {
        * https://docs.oracle.com/javase/8/docs/api/java/nio/file/Files.html#move-java.
        * nio.file.Path-java.nio.file.Path-java.nio.file.CopyOption...-
        */
-      Path temp = Files.createTempDirectory(tempBase, coachId);
+      temp = Files.createTempDirectory(tempBase, coachId);
       FileUtils.unzip(zipInputStream, temp);
 
       List<Path> unzipped = Files.list(temp).collect(Collectors.toList());
@@ -706,6 +707,14 @@ class CompanyCache extends Cache {
       }
     } catch (IOException e) {
       e.printStackTrace();
+      try { // since many of the operations above can throw an IOException the temp file is likely to never be deleted
+        if (Files.exists(temp)) {
+          FileUtils.deleteDir(temp);
+        }
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      }
+
       throw new CacheException(
           "error during unzipping coach "
               + coachId
