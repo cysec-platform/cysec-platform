@@ -50,7 +50,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -683,6 +686,8 @@ class CompanyCache extends Cache {
         throw new CacheException("Some files are not valid Answers XML files");
       }
 
+      backupCoachBeforeImport(coachId);
+
       this.writeLock.lock();
       try {
         // overwrite on disk
@@ -748,6 +753,45 @@ class CompanyCache extends Cache {
     } catch (IOException e) {
       logger.log(Level.SEVERE, "IO error during verification of zip import", e);
       return false; // "cast" exceptions to false to enable recursive usage of this method
+    }
+  }
+
+  /**
+   * Before importing (and overwriting) a new coach, a zip export of the current
+   * state is stored locally. Up to 3 backups per coach are stored.
+   * 
+   * Note that this feature is not meant to be user facing but as a "last resort"
+   * for system admins.
+   * 
+   * @param coachId
+   */
+  private void backupCoachBeforeImport(String coachId) throws IOException, CacheException {
+    final Pattern pattern = Pattern.compile(coachId + ".backup-(\\d+).zip");
+    Function<Integer, Path> getZipPath = (index) -> this.path.resolve(coachId + ".backup-" + index + ".zip");
+
+    List<Integer> backupIndices = Files
+        .list(this.path)
+        .map(p -> p.getFileName().toString())
+        .map(fileName -> pattern.matcher(fileName))
+        .filter(Matcher::matches)
+        .map(matcher -> Integer.parseInt(matcher.group(1)))
+        .sorted() // ascending
+        .collect(Collectors.toList());
+
+    // create new backup
+    int newIndex = backupIndices.size() > 0
+        ? backupIndices.get(backupIndices.size() - 1) + 1
+        : 0;
+
+    Path backup = Files.createFile(getZipPath.apply(newIndex));
+    this.zipCoach(backup, coachId);
+    logger.info("Created new backup: " + getZipPath.apply(newIndex));
+
+    // only keep 2 old and the new = 3 backups
+    while (backupIndices.size() > 2) {
+      int toRemove = backupIndices.remove(0);
+      logger.info("Remove backup: " + getZipPath.apply(toRemove));
+      Files.delete(getZipPath.apply(toRemove));
     }
   }
 
