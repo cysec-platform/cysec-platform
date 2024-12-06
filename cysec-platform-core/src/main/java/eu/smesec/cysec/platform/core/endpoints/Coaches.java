@@ -385,8 +385,8 @@ public class Coaches {
 
       // If we switch to another instance of the same coach we have to resume it first
       if (!library.getActiveInstance().equals(fqcn.getName())) {
-        library.onResume(questionId, fqcn);
         library.setActiveInstance(fqcn.getName());
+        library.onResume(questionId, fqcn);
       }
 
       Question question = cal.getQuestion(fqcn.getCoachId(), questionId, locale);
