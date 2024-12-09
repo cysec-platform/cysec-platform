@@ -115,7 +115,7 @@ public class Coaches {
    * Resumes a coach.
    * Triggers Library.onResume().
    *
-   * @param id The if of the coach
+   * @param id The id of the coach
    * @return response
    */
   @POST
@@ -129,7 +129,11 @@ public class Coaches {
       library.onResume(fqcn.getCoachId(), fqcn);
 
       // Resume sub coaches of this coach
-      for (FQCN subcoachFqcn : cal.listInstantiatedCoaches(companyId)) {
+      List<FQCN> allSubcoachesFqcn = library.getQuestionnaire().getQuestions().getQuestion().stream()
+              .filter(q -> Objects.equals(q.getType(), "subcoach"))
+              .map(q -> FQCN.fromString(String.format("%s.%s.%s", fqcn.getRootCoachId(), q.getSubcoachId(), q.getInstanceName())))
+              .collect(Collectors.toList());
+      for (FQCN subcoachFqcn : allSubcoachesFqcn) {
         CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
         subcoachLibrary.onResume(subcoachFqcn.getCoachId(), subcoachFqcn);
       }
