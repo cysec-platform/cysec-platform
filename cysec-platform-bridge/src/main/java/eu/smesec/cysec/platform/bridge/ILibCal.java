@@ -79,11 +79,13 @@ public interface ILibCal {
 
   List<Questionnaire> getAllCoaches() throws CacheException;
 
-  void instantiateSubCoach(Questionnaire subCoach, Set<String> selectors)
+  void instantiateSubCoach(Questionnaire subCoach, Set<String> selectors, Metadata parentArgument)
         throws CacheException;
 
-  void instantiateSubCoach(Questionnaire subCoach, FQCN fqcn, Set<String> selectors)
+  void instantiateSubCoach(Questionnaire subCoach, FQCN fqcn, Set<String> selectors, Metadata parentArgument)
           throws CacheException;
+
+  void removeSubCoach(FQCN fqcn) throws CacheException;
 
   @Deprecated
   void setMetadataOnCompany(Metadata metadata) throws CacheException;

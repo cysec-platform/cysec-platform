@@ -41,6 +41,7 @@ import eu.smesec.cysec.platform.bridge.md.State;
 import eu.smesec.cysec.platform.bridge.utils.AuditUtils;
 import eu.smesec.cysec.platform.core.auth.Secured;
 import eu.smesec.cysec.platform.core.auth.SecuredAdmin;
+import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.cache.LibCal;
 import eu.smesec.cysec.platform.core.cache.ResourceManager;
@@ -51,13 +52,7 @@ import eu.smesec.cysec.platform.core.messages.CoachMsg;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -128,7 +123,7 @@ public class Coaches {
    * Resumes a coach.
    * Triggers Library.onResume().
    *
-   * @param id The if of the coach
+   * @param id The id of the coach
    * @return response
    */
   @POST
@@ -140,6 +135,17 @@ public class Coaches {
       FQCN fqcn = FQCN.fromString(id);
       CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
       library.onResume(fqcn.getCoachId(), fqcn);
+
+      // Resume sub coaches of this coach
+      List<FQCN> allSubcoachesFqcn = library.getQuestionnaire().getQuestions().getQuestion().stream()
+              .filter(q -> Objects.equals(q.getType(), "subcoach"))
+              .map(q -> FQCN.fromString(String.format("%s.%s.%s", fqcn.getRootCoachId(), q.getSubcoachId(), q.getInstanceName())))
+              .collect(Collectors.toList());
+      for (FQCN subcoachFqcn : allSubcoachesFqcn) {
+        CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
+        subcoachLibrary.onResume(subcoachFqcn.getCoachId(), subcoachFqcn);
+      }
+
       // update last selected
       LastSelected lastSelected = new LastSelected(fqcn.toString());
       cal.setMetadataOnAnswers(companyId, LibCal.FQCN_COMPANY, MetadataUtils.toMd(lastSelected));
@@ -214,13 +220,7 @@ public class Coaches {
     String companyId = context.getAttribute("company").toString();
     try {
       FQCN fqcn = FQCN.fromString(id);
-      CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
-      Question question = library.getFirstQuestion();
-      Metadata md = cal.getMetadataOnAnswer(companyId, fqcn, MetadataUtils.MD_STATE);
-      if (md != null) {
-        State state = MetadataUtils.fromMd(md, State.class);
-        question = cal.getQuestion(fqcn.getCoachId(), state.getResume());
-      }
+      Question question = cal.getCurrentQuestion(companyId, fqcn);
       return Response.status(200).entity(gson.toJson(question)).build();
     } catch (CacheException ce) {
       logger.log(Level.SEVERE, "Error occured", ce);
@@ -320,7 +320,29 @@ public class Coaches {
             after == null ? "" : after);
         cal.createAuditLog(companyId, audit);
 
-        library.onResponseChange(question, answer, fqcn);
+          // If we are in a parent coach that potentially has subcoaches, we
+          // want to find the subcoaches that were activated during this answer
+          // update so we can reevaluate the subcoaches. To find the new subcoches
+          // we compare the visible subcoach placeholders before and after running
+          // the response change logic
+          if (fqcn.isTopLevel()) {
+            List<Question> subcoachesBeforeUpdate = library.peekQuestions(question).stream()
+                    .filter(q -> Objects.equals(q.getType(), "subcoach")).collect(Collectors.toList());
+            library.onResponseChange(question, answer, fqcn);
+            List<Question> newSubCoaches = library.peekQuestions(question).stream()
+                    .filter(q -> Objects.equals(q.getType(), "subcoach"))
+                    .filter(q -> !subcoachesBeforeUpdate.contains(q))
+                    .collect(Collectors.toList());
+
+            for (Question newSubCoach : newSubCoaches) {
+              FQCN subcoachFqcn = FQCN.fromString(String.format("%s.%s.%s", fqcn.getRootCoachId(), newSubCoach.getSubcoachId(), newSubCoach.getInstanceName()));
+              CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
+              subcoachLibrary.onResume(subcoachFqcn.getCoachId(), subcoachFqcn);
+            }
+          } else {
+            // If we are in a subcoach we can simply run the response change logic
+            library.onResponseChange(question, answer, fqcn);
+          }
       }
       Question next = library.getNextQuestion(question, fqcn);
       List<Question> active = library.peekQuestions(question);
@@ -409,7 +431,17 @@ public class Coaches {
     try {
       FQCN fqcn = FQCN.fromString(id);
       context.setAttribute("fqcn", id);
+
+      FQCN parentFqcn = fqcn.isTopLevel() ? fqcn : fqcn.getParent();
+      CoachLibrary parentLibrary = cal.getLibrariesForQuestionnaire(fqcn.getRootCoachId()).get(0);
       CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+
+      // If we switch to another instance of the same coach we have to resume it first
+      if (!library.getActiveInstance().equals(fqcn.getName())) {
+        library.setActiveInstance(fqcn.getName());
+        library.onResume(questionId, fqcn);
+      }
+
       Question question = cal.getQuestion(fqcn.getCoachId(), questionId, locale);
       if (question == null) {
         return Response.status(404).build();
@@ -421,36 +453,36 @@ public class Coaches {
       // summary page
       String summaryUrl = res.hasResource(fqcn.getCoachId(), library.getId(), "/assets/jsp/summary.jsp")
           ? "/api/rest/resources/"
-              + fqcn.getCoachId()
+              + parentFqcn.getCoachId()
               + "/"
-              + library.getId()
+              + parentLibrary.getId()
               + "/assets/jsp/summary.jsp"
           : "/app";
 
       // endpoint will determine the next question when called
-      String nextUrl = "/api/rest/coaches/" + fqcn.getCoachId() + "/questions/" + questionId + "/next";
+      String nextUrl = "/api/rest/coaches/" + fqcn + "/questions/" + questionId + "/next";
 
       // question states for pagination
-      List<Question> actives = library.peekQuestions(question);
-      Map<Question, Answer> answers = actives
-          .stream()
-          .map(q -> {
-            try {
-              return new AbstractMap.SimpleEntry<>(q, cal.getAnswer(companyId, fqcn, q.getId()));
-            } catch (CacheException e) {
-              return new AbstractMap.SimpleEntry<Question, Answer>(q, null);
-            }
-          }).filter(e -> e.getValue() != null)
-          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-      Map<Question, Boolean> flagStatus = actives
-          .stream()
-          .collect(Collectors.toMap(q -> q, q -> {
-            try {
-              return cal.isQuestionFlagged(companyId, fqcn, q.getId());
-            } catch (CacheException e) {
-              return false;
-            }
-          }));
+        List<Tuple<FQCN, Question>> actives = parentLibrary.peekQuestionsIncludingSubcoaches(parentFqcn);
+        Map<Tuple<FQCN, Question>, Answer> answers = actives
+                .stream()
+                .map(tup -> {
+                    try {
+                        return new AbstractMap.SimpleEntry<>(tup, cal.getAnswer(companyId, tup.getFirst(), tup.getSecond().getId()));
+                    } catch (CacheException e) {
+                        return new AbstractMap.SimpleEntry<Tuple<FQCN, Question>, Answer>(tup, null);
+                    }
+                }).filter(e -> e.getValue() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Map<Question, Boolean> flagStatus = actives
+                .stream()
+                .collect(Collectors.toMap(Tuple::getSecond, q -> {
+                    try {
+                        return cal.isQuestionFlagged(companyId, fqcn, q.getSecond().getId());
+                    } catch (CacheException e) {
+                        return false;
+                    }
+                }));
 
       CoachMsg msg = new CoachMsg(locale);
       Map<String, Object> model = new HashMap<>();
@@ -487,6 +519,7 @@ public class Coaches {
   @GET()
   @Path("/{id}/questions/{qid}/next")
   public Response nextQuestion(@PathParam("id") String id, @PathParam("qid") String currentQuestionId) {
+    String companyId = context.getAttribute("company").toString();
     FQCN fqcn = FQCN.fromString(id);
     Locale locale = LocaleUtils.fromString(context.getAttribute("locale").toString());
 
@@ -507,10 +540,24 @@ public class Coaches {
           : "/app";
 
       Question next = library.getNextQuestion(question, fqcn);
-      String nextUrl = next != null
-          ? context.getContextPath() + "/app/coach.jsp?fqcn=" + fqcn.toString() + "&question=" + next.getId()
-          : context.getContextPath() + summaryUrl;
 
+
+      String nextUrl;
+      boolean isSubCoach = library.getQuestionnaire().getParent() != null;
+      if (next == null) { // Are we at the end of the questionnaire?
+        if (isSubCoach) {
+          // If we are in a subcoach and the questionnaire is finished, we need to get the next question
+          // relative to the current question of the parent coach
+          Question currentQuestionParent = cal.getCurrentQuestion(companyId, fqcn.getParent());
+          nextUrl = context.getContextPath() + "/api/rest/coaches/" + fqcn.getParent() + "/questions/" + currentQuestionParent.getId() + "/next";
+        } else {
+          // If are in the root coach, we go to the summary page when the questionnaire is finished
+          nextUrl = context.getContextPath() + summaryUrl;
+        }
+      } else {
+        nextUrl = context.getContextPath() + "/app/coach.jsp?fqcn=" + fqcn + "&question=" + next.getId();
+      }
+      
       return Response.seeOther(URI.create(nextUrl)).build();
     } catch (CacheException e) {
       logger.log(Level.SEVERE, "Error occurred", e);
@@ -521,7 +568,7 @@ public class Coaches {
   /**
    * Export all coach (and sub coaches) data by exporting the stored answers
    * file(s).
-   * 
+   *
    * @param id The id of the coach
    * @return   Coach data as zip archive
    */
@@ -544,7 +591,7 @@ public class Coaches {
 
   /**
    * Import all coach (and sub coaches) data by <b>overwriting</b> the stored answers.
-   * 
+   *
    * @param id              The id of the coach.
    * @param zipUploadStream Coach data as zip (expected to match the file system structure).
    * @param fileData        File metadata.

@@ -100,7 +100,9 @@ public class Dashboard {
       // fetch dashboard data
       Map<String, Questionnaire> loadedCoaches =
           cal.getAllCoaches(locale).stream()
-              .collect(Collectors.toMap(Questionnaire::getId, q -> q));
+                  // filter out subcoaches, since we don't want to see them on the dashboard
+                  .filter(q -> q.getParent() == null)
+                  .collect(Collectors.toMap(Questionnaire::getId, q -> q));
       Map<String, Answers> answersMap = cal.getAllAnswersMap(companyId);
       Map<Questionnaire, Map<FQCN, Answers>> coachAnswersMap = new HashMap<>();
       for (Map.Entry<String, Answers> answers : answersMap.entrySet()) {

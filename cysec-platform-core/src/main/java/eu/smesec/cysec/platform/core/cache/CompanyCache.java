@@ -43,13 +43,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -631,7 +625,7 @@ class CompanyCache extends Cache {
 
   /**
    * Export coach (and sub coaches) data as zip archive.
-   * 
+   *
    * @param dest    The path of the new zip file.
    * @param coachId The id of the coach (not instance) to export.
    * @throws CacheException
@@ -662,7 +656,7 @@ class CompanyCache extends Cache {
   /**
    * Import coach (and sub coaches) data from a zip archive. This operation will
    * <b>overwrite</b> any existing data.
-   * 
+   *
    * @param zipInputStream The archive is expected to match the filesystem
    *                       structure of a coach.
    * @param coachId        The id of the coach (not the instance) to overwrite
@@ -756,9 +750,9 @@ class CompanyCache extends Cache {
    * Verify wether all uploaded files are valid
    * {@link eu.smesec.cysec.platform.bridge.generated.Answers} XML files
    * or not.
-   * 
+   *
    * Non XML files will be ignored.
-   * 
+   *
    * @param root Path to the uploaded (extracted) files.
    * @return Wether the files are valid Answers XML files or not.
    * @throws IOException
@@ -797,10 +791,10 @@ class CompanyCache extends Cache {
   /**
    * Before importing (and overwriting) a new coach, a zip export of the current
    * state is stored locally. Up to 3 backups per coach are stored.
-   * 
+   *
    * Note that this feature is not meant to be user facing but as a "last resort"
    * for system admins.
-   * 
+   *
    * @param coachId
    */
   private void backupCoachBeforeImport(String coachId) throws IOException, CacheException {
@@ -859,22 +853,27 @@ class CompanyCache extends Cache {
         throw new CacheNotFoundException("Parent directory " + parentDir + " does not exists");
       }
       Path coachDir = parentDir.resolve(coach.getId());
-      if (Files.exists(coachDir)) {
-        throw new CacheAlreadyExistsException("Coach directory " + coachDir + " already exists");
+      if (!Files.exists(coachDir)) {
+        Files.createDirectories(coachDir);
       }
-      Files.createDirectories(coachDir);
       Answers answers = CacheFactory.createAnswersFromCoach(coach);
       FlaggedQuestions flaggedQuestions = CacheFactory.createFlaggedQuestionsFromCoach(coach);
       Mapper<Answers> answersMapper = CacheFactory.createMapper(Answers.class);
       Mapper<FlaggedQuestions> flaggedQuestionsMapper = CacheFactory.createMapper(FlaggedQuestions.class);
       if (names != null) {
         for (String name : names) {
-          answersMapper.init(coachDir.resolve(name + ".xml"), answers);
-          flaggedQuestionsMapper.init(coachDir.resolve(name + "-flags.xml"), flaggedQuestions);
+          Path path = coachDir.resolve(name + ".xml");
+          if (!Files.exists(path)) {
+            mapper.init(path, answers);
+            flaggedQuestionsMapper.init(coachDir.resolve(name + "-flags.xml"), flaggedQuestions);
+          }
         }
       } else {
-        answersMapper.init(coachDir.resolve(DEFAULT_ANSWERS_XML), answers);
-        flaggedQuestionsMapper.init(coachDir.resolve(DEFAULT_FLAGS_XML), flaggedQuestions);
+        Path path = coachDir.resolve(DEFAULT_ANSWERS_XML + ".xml");
+        if (!Files.exists(path)) {
+          mapper.init(path, answers);
+          flaggedQuestionsMapper.init(coachDir.resolve(DEFAULT_FLAGS_XML), flaggedQuestions);
+        }
       }
     } catch (IOException ioe) {
       throw new CacheException("IO error during coach instantiation: " + ioe.getMessage());
@@ -907,6 +906,28 @@ class CompanyCache extends Cache {
     } catch (IOException ioe) {
       throw new CacheException(
           "Error during deleting answer file " + coach.toString() + ": " + ioe.getMessage());
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  /**
+   * Deletes a sub-coach of a coach
+   * @param subCoachPath The path where the sub-coach is stored
+   * @throws CacheException If something goes wrong, this is thrown
+   */
+  void deleteSubCoach(Path subCoachPath) throws CacheException {
+    Objects.requireNonNull(subCoachPath);
+    Path subCoachFilePath = path.resolve(subCoachPath);
+    writeLock.lock();
+    try {
+      if (!Files.isRegularFile(subCoachFilePath)) {
+        throw new CacheException(String.format("Path %s is not a file", subCoachFilePath));
+      }
+      objectCache.remove(subCoachPath);
+      Files.delete(subCoachFilePath);
+    } catch (IOException e) {
+      throw new CacheException(String.format("Error while deleting file of sub-coach %s: %s", subCoachPath, e.getMessage()));
     } finally {
       writeLock.unlock();
     }

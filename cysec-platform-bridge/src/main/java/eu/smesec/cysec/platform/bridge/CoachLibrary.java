@@ -22,6 +22,7 @@ package eu.smesec.cysec.platform.bridge;
 import eu.smesec.cysec.platform.bridge.generated.Answer;
 import eu.smesec.cysec.platform.bridge.generated.Question;
 import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
+import eu.smesec.cysec.platform.bridge.utils.Tuple;
 
 import java.io.InputStream;
 import java.util.List;
@@ -102,6 +103,10 @@ public interface CoachLibrary {
   @Deprecated
   void setId(String id);
 
+  String getActiveInstance();
+
+  void setActiveInstance(String instance);
+
   /**
    * <p>Ask library to (re)evaluate the current question and return the next question.</p>
    *
@@ -119,6 +124,14 @@ public interface CoachLibrary {
    * @return A list of question objects to display
    */
   List<Question> peekQuestions(Question question);
+
+  /**
+   * Return the active questions of a coach including its subcoaches.
+   * @param fqcn The fqcn of the parent coach
+   * @return List of tuples containing the fqcn of the coach where the
+   * question comes from and the question itself
+   */
+  List<Tuple<FQCN, Question>> peekQuestionsIncludingSubcoaches(FQCN fqcn);
 
   /**
    * Ask the library for the last question of the coach.
@@ -153,6 +166,20 @@ public interface CoachLibrary {
    * @return the requested context
    */
   Object getParent();
+
+  /**
+   * Exposed the executor context of the coach library. This has return type object because
+   * the executor context type is not available in this project. Any consumer of this method
+   * must cast the object in order to do something useful with it.
+   * @return ExecutorContext of coachLibrary
+   */
+  Object getContext();
+
+  /**
+   * Updates the active questions pool based on the current visibility state
+   * of the questions.
+   */
+  void updateActiveQuestions(FQCN fqcn);
 
   /**
    * <p>Gets the model for a *.jsp file.</p>

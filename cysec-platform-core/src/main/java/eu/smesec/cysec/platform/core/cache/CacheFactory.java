@@ -33,6 +33,8 @@ import java.util.Base64;
 public final class CacheFactory {
   private CacheFactory() {}
 
+  private static LibraryClassLoader classLoader = new LibraryClassLoader(Thread.currentThread().getContextClassLoader());
+
   /**
    * Creates a mapper for a generated jaxb2 class.
    *
@@ -96,9 +98,9 @@ public final class CacheFactory {
       throws LibraryException {
     try {
       byte[] decoded = Base64.getDecoder().decode(lib.getValue());
-      LibraryClassLoader loader = new LibraryClassLoader(parent, decoded);
+      classLoader.loadJar(decoded);
       // The id of the library must be the FQCN of the class
-      Class<?> libraryClass = loader.findClass(lib.getId());
+      Class<?> libraryClass = classLoader.findClass(lib.getId());
       // Instantiate the class and give it a reference to the questionnaire
       return (CoachLibrary) libraryClass.newInstance();
     } catch (Exception e) {

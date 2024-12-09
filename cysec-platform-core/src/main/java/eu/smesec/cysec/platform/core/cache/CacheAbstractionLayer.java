@@ -40,6 +40,8 @@ import eu.smesec.cysec.platform.bridge.generated.Question;
 import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
 import eu.smesec.cysec.platform.bridge.generated.Token;
 import eu.smesec.cysec.platform.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.md.MetadataUtils;
+import eu.smesec.cysec.platform.bridge.md.State;
 import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.config.Config;
 import eu.smesec.cysec.platform.core.utils.FileResponse;
@@ -49,14 +51,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import javax.servlet.ServletContext;
@@ -1475,14 +1470,42 @@ public class CacheAbstractionLayer {
    * @param selectors The selectors to identify sub-coach instances.
    */
   public void instantiateSubCoach(
-      String companyId, FQCN fqcn, Questionnaire subCoach, Set<String> selectors)
+      String companyId, FQCN fqcn, Questionnaire subCoach, Set<String> selectors, Metadata parentArgument)
       throws CacheException {
-    data.executeOnCompany(
-        companyId,
-        company -> {
-          company.instantiateCoach(fqcn.toPath().getParent(), subCoach, selectors);
-          return null;
-        });
+      data.executeOnCompany(
+              companyId,
+              company -> {
+                  company.instantiateCoach(fqcn.toPath().getParent(), subCoach, selectors);
+
+                  // Set parent argument in subcoach
+                  String subCoachName = selectors.iterator().next();
+                  FQCN subcoachFqcn = FQCN.fromString(String.format("%s.%s.%s", fqcn.getRootCoachId(), subCoach.getId(), subCoachName));
+                  setMetadataOnAnswers(companyId, subcoachFqcn, parentArgument);
+
+                  // Set parent context in subcoach
+                  CoachLibrary subcoachLibrary = getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
+                  CoachLibrary parentCoachLibrary = getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+                  subcoachLibrary.setParent(parentCoachLibrary.getContext());
+                  return null;
+              });
+  }
+
+    /**
+     * Gets the currently active question of a coach given its company id and its FQCN
+     * @param companyId the company in which the coach is
+     * @param fqcn the name of the coach
+     * @return the currently active question
+     * @throws CacheException if something goes awry
+     */
+  public Question getCurrentQuestion(String companyId, FQCN fqcn) throws CacheException {
+      CoachLibrary library = getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+      Question question = library.getFirstQuestion();
+      Metadata md = getMetadataOnAnswer(companyId, fqcn, MetadataUtils.MD_STATE);
+      if (md != null) {
+          State state = MetadataUtils.fromMd(md, State.class);
+          question = getQuestion(fqcn.getCoachId(), state.getResume());
+      }
+      return question;
   }
 
   /**
@@ -1501,6 +1524,19 @@ public class CacheAbstractionLayer {
           return null;
         });
   }
+
+    /**
+     * Removes a sub-coach from a company
+     * @param companyId ID of the company
+     * @param path The path of the sub-coach
+     * @throws CacheException If any errors happen while deleting the sub-coach
+     */
+    public void removeSubCoach(String companyId, Path path) throws CacheException {
+        data.executeOnCompany(companyId, companyCache -> {
+            companyCache.deleteSubCoach(path);
+            return null;
+        });
+    }
 
   /**
    * Lists all instantiated coaches for a company.

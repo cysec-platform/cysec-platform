@@ -149,13 +149,16 @@
             <xs:attribute name="type" type="questionType" use="required"/>
             <xs:attribute name="hidden" type="xs:boolean" default="true"/>
             <xs:attribute name="extRef" type="xs:string"/>
+            <xs:attribute name="subcoachId" type="xs:string"/>
+            <xs:attribute name="instanceName" type="xs:string"/>
+            <xs:attribute name="parentArgument" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 
     <!-- Types of questions refer to classification from here: https://studmed.unibe.ch/a-z/page.php?id=Pr%FCfungstypen -->
     <xs:simpleType name="questionType">
         <xs:restriction base="xs:string">
-            <xs:pattern value="(A|Astar|Astarexcl|date|likert|text|yesno|info)"/>
+            <xs:pattern value="(A|Astar|Astarexcl|date|likert|text|yesno|info|subcoach)"/>
         </xs:restriction>
     </xs:simpleType>
 
