@@ -19,6 +19,7 @@
  */
 package eu.smesec.cysec.platform.core.cache;
 
+import eu.smesec.cysec.platform.bridge.FQCN;
 import eu.smesec.cysec.platform.bridge.execptions.CacheAlreadyExistsException;
 import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.execptions.CacheNotFoundException;
@@ -50,7 +51,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -115,7 +119,7 @@ class CompanyCache extends Cache {
   /**
    * Creates the company directory and all required files.
    *
-   * @param company Company object containing admin user.
+   * @param company      Company object containing admin user.
    * @param replicaToken Replica token value.
    * @throws CacheException If an error occurs during the company installation
    */
@@ -165,14 +169,13 @@ class CompanyCache extends Cache {
       replicaToken = Files.readAllLines(this.path.resolve(REPLICA_TOKEN_FILE)).get(0);
       Company source = getSource(Paths.get(USER_XML), Company.class);
       if (source != null) {
-        Optional<User> maximum =
-            source.getUser().stream().max(Comparator.comparingLong(User::getId));
+        Optional<User> maximum = source.getUser().stream().max(Comparator.comparingLong(User::getId));
         this.userCount.set(maximum.map(User::getId).orElse(1000L));
       } else {
         this.userCount.set(1000L);
       }
     } catch (IOException ioe) {
-      //        logger.log(Level.WARNING, ioe.getMessage(), ioe);
+      // logger.log(Level.WARNING, ioe.getMessage(), ioe);
       logger.log(
           Level.WARNING, "No replica token defined in company " + path.getFileName().toString());
     } finally {
@@ -192,7 +195,8 @@ class CompanyCache extends Cache {
   /**
    * Return the replica token of this company.
    *
-   * @return The replica token if the replica token file is present, or <code>null</code> otherwise.
+   * @return The replica token if the replica token file is present, or
+   *         <code>null</code> otherwise.
    */
   public String getReplicaToken() {
     readLock.lock();
@@ -206,8 +210,9 @@ class CompanyCache extends Cache {
   /**
    * Returns the readonly flag of this company.
    *
-   * @return <code>true</code> if the company is marked as readonly, or <code>false</code>
-   *     otherwise.
+   * @return <code>true</code> if the company is marked as readonly, or
+   *         <code>false</code>
+   *         otherwise.
    */
   public boolean isReadOnly() {
     readLock.lock();
@@ -219,14 +224,14 @@ class CompanyCache extends Cache {
   }
 
   /////////////////////
-  //  read on caches //
+  // read on caches //
   /////////////////////
 
   /**
    * Executes a read command on the users xml file.
    *
    * @param command The read command to execute.
-   * @param <R> The return type of the read command.
+   * @param <R>     The return type of the read command.
    * @return The result of the read command.
    * @throws CacheException If an error occurs during the command execution.
    */
@@ -238,7 +243,7 @@ class CompanyCache extends Cache {
    * Executes a read command on the audits xml file.
    *
    * @param command The read command to execute.
-   * @param <R> The return type of the read command.
+   * @param <R>     The return type of the read command.
    * @return The result of the read command.
    * @throws CacheException If an error occurs during the command execution.
    */
@@ -250,8 +255,8 @@ class CompanyCache extends Cache {
    * Executes a read command on the answers xml file.
    *
    * @param relative The answer xml file path, relative to the coach directory.
-   * @param command The read command to execute.
-   * @param <R> The return type of the read command.
+   * @param command  The read command to execute.
+   * @param <R>      The return type of the read command.
    * @return The result of the read command.
    * @throws CacheException If an error occurs during the command execution.
    */
@@ -291,7 +296,7 @@ class CompanyCache extends Cache {
    * Executes a read command on each answers xml file.
    *
    * @param command The read command to execute.
-   * @param <R> The return type of the read command.
+   * @param <R>     The return type of the read command.
    * @return The result of the read command.
    * @throws CacheException If an error occurs during the command execution.
    */
@@ -300,8 +305,8 @@ class CompanyCache extends Cache {
     try {
       Map<Path, Answers> map = new TreeMap<>();
       /*
-      use List<Path> for try-with-resource to close directory stream automatically
-      and prevent DirectoryNotEmptyException
+       * use List<Path> for try-with-resource to close directory stream automatically
+       * and prevent DirectoryNotEmptyException
        */
       List<Path> subdirs;
       try (Stream<Path> stream = Files.list(path).filter(Files::isDirectory)) {
@@ -330,8 +335,8 @@ class CompanyCache extends Cache {
   private void visitCoachFiles(Path path, ICommand<Path, Void> command) throws CacheException {
     try {
       /*
-      use List<Path> for try-with-resource to close directory stream automatically
-      and prevent DirectoryNotEmptyException
+       * use List<Path> for try-with-resource to close directory stream automatically
+       * and prevent DirectoryNotEmptyException
        */
       List<Path> paths;
       try (Stream<Path> stream = Files.list(path)) {
@@ -354,7 +359,7 @@ class CompanyCache extends Cache {
   }
 
   //////////////////////
-  //  write on caches //
+  // write on caches //
   //////////////////////
 
   /**
@@ -381,7 +386,7 @@ class CompanyCache extends Cache {
    * Executes a write command on the answers xml file.
    *
    * @param relative The answer xml file path, relative to the coach directory.
-   * @param command The write command to execute.
+   * @param command  The write command to execute.
    * @throws CacheException If an error occurs during the command execution.
    */
   void writeOnAnswers(Path relative, ICommand<Answers, Void> command) throws CacheException {
@@ -425,8 +430,7 @@ class CompanyCache extends Cache {
     synchronized (objectCache) {
       if (!objectCache.containsKey(path)) {
         Path path1 = this.path.resolve(path);
-        CachedObject<T> cachedObject =
-            new CachedObject<>(path1, CacheFactory.createMapper(classOfT));
+        CachedObject<T> cachedObject = new CachedObject<>(path1, CacheFactory.createMapper(classOfT));
         logger.log(Level.INFO, "Loading cache: " + cachedObject.path);
         cachedObject.load();
         objectCache.put(path, cachedObject);
@@ -439,9 +443,11 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * Saves all cached source objects to their corresponding files and clears the cache
+   * Saves all cached source objects to their corresponding files and clears the
+   * cache
    *
-   * <p>Ignores failed operations.
+   * <p>
+   * Ignores failed operations.
    */
   void saveCachedObjects() {
     writeLock.lock();
@@ -510,14 +516,17 @@ class CompanyCache extends Cache {
   /**
    * Synchronizes a file in this directory.
    *
-   * <p>If the file exists the file will be overwritten.
+   * <p>
+   * If the file exists the file will be overwritten.
    *
-   * <p>WARNING: The readonly flag will be ignored.
+   * <p>
+   * WARNING: The readonly flag will be ignored.
    *
-   * @param relative The file path relative to the company directory.
+   * @param relative    The file path relative to the company directory.
    * @param inputStream The new file content.
-   * @throws CacheException if the file already exists and can not be overwritten, or the
-   *     synchronization fails.
+   * @throws CacheException if the file already exists and can not be overwritten,
+   *                        or the
+   *                        synchronization fails.
    */
   void syncFile(Path relative, InputStream inputStream, boolean overwrite) throws CacheException {
     if (relative == null || inputStream == null) {
@@ -552,7 +561,8 @@ class CompanyCache extends Cache {
    * Creates a response from a file.
    *
    * @param relative The file path relative to the company directory.
-   * @return The file response object if the file was found, or <code>null</code> otherwise.
+   * @return The file response object if the file was found, or <code>null</code>
+   *         otherwise.
    * @throws CacheException If an error occurs during the response creation.
    */
   FileResponse createFileResponse(Path relative) throws CacheException {
@@ -573,11 +583,13 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * Marks the company as readonly or readwrite. If the company is marked as readonly, then no write
+   * Marks the company as readonly or readwrite. If the company is marked as
+   * readonly, then no write
    * commands can be executed anymore, but file synchronization still works.
    *
-   * @param value <code>true</code> to mark the company as readonly, or <code>false</code> to mark
-   *     the company as readwrite.
+   * @param value <code>true</code> to mark the company as readonly, or
+   *              <code>false</code> to mark
+   *              the company as readwrite.
    */
   void setReadOnly(boolean value) {
     this.writeLock.lock();
@@ -596,7 +608,8 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * Creates a *.zip file of this company. The token file and readonly file will be ignored.
+   * Creates a *.zip file of this company. The token file and readonly file will
+   * be ignored.
    *
    * @param dest The path of the new zip file.
    * @throws CacheException If an error during the zipping occurs.
@@ -616,6 +629,210 @@ class CompanyCache extends Cache {
     }
   }
 
+  /**
+   * Export coach (and sub coaches) data as zip archive.
+   * 
+   * @param dest    The path of the new zip file.
+   * @param coachId The id of the coach (not instance) to export.
+   * @throws CacheException
+   */
+  void zipCoach(Path dest, String coachId) throws CacheException {
+    if (dest == null || coachId == null)
+      throw new IllegalArgumentException("dest or coachId is null");
+    FQCN fqcn = FQCN.fromString(coachId);
+    Path coach = fqcn.toPath().getParent(); // zip the entire directory to support sub coaches
+    Path path = this.path.resolve(coach);
+
+    this.saveCachedObjects();
+
+    readLock.lock();
+    try {
+      FileUtils.zip(path, dest);
+    } catch (IOException e) {
+      throw new CacheException(
+          "error during zipping coach "
+              + coach.toString()
+              + ": "
+              + e.getMessage());
+    } finally {
+      readLock.unlock();
+    }
+  }
+
+  /**
+   * Import coach (and sub coaches) data from a zip archive. This operation will
+   * <b>overwrite</b> any existing data.
+   * 
+   * @param zipInputStream The archive is expected to match the filesystem
+   *                       structure of a coach.
+   * @param coachId        The id of the coach (not the instance) to overwrite
+   *                       (must be an instantiated coach to have any effect).
+   * @throws CacheException
+   */
+  void unzipCoach(InputStream zipInputStream, String coachId) throws CacheException {
+    if (zipInputStream == null || coachId == null)
+      throw new IllegalArgumentException("input stream or coachId is null");
+    if (this.readOnly)
+      throw new CacheReadOnlyException("Company " + id + " is read only");
+    if (!isCoachInstantiated(Paths.get(coachId))) {
+      throw new CacheException("Can not import a not yet instantiated coach: " + coachId);
+    }
+
+    Path temp = null;
+    try {
+      Path tempBase = this.path.getParent();
+      /*
+       * tempBase: work on same level as companies to avoid that any temp dir will be
+       * falsy treated as a coach dir. Not using java.nio's default temp dir (by
+       * providing not
+       * path) to ensure we work inside the cysec_data_path (from cysec.conf) to avoid
+       * potential
+       * problems with mounted directories (e.g. when moving files).
+       * https://docs.oracle.com/javase/8/docs/api/java/nio/file/Files.html#move-java.
+       * nio.file.Path-java.nio.file.Path-java.nio.file.CopyOption...-
+       */
+      temp = Files.createTempDirectory(tempBase, coachId);
+      FileUtils.unzip(zipInputStream, temp);
+
+      List<Path> unzipped = Files.list(temp).collect(Collectors.toList());
+      Path newCoach = null;
+
+      if (unzipped.size() == 1 && Files.isDirectory(unzipped.get(0))) {
+        // a coach with sub coaches is extracted as a single folder containing the
+        // contents of the archive into the destination dir
+        newCoach = unzipped.get(0);
+      } else {
+        // a coach with no sub coaches is extracted as files directly into the
+        // destination dir
+        newCoach = temp;
+      }
+
+      logger.info("unzipped coach " + coachId);
+
+      Path oldCoach = this.path.resolve(coachId);
+
+      if (!verifyZipImport(newCoach)) {
+        FileUtils.deleteDir(temp);
+        throw new CacheException("Some files are not valid Answers XML files");
+      }
+
+      backupCoachBeforeImport(coachId);
+
+      this.writeLock.lock();
+      try {
+        // overwrite on disk
+        FileUtils.deleteDir(oldCoach);
+        FileUtils.moveDir(newCoach, oldCoach);
+        logger.info("overwrote " + coachId + " data on disk");
+
+        // invalidate cache
+        this.objectCache.clear();
+        logger.info("invalidated entire cache for company " + this.id);
+      } finally {
+        this.writeLock.unlock();
+        if (Files.exists(temp)) {
+          FileUtils.deleteDir(temp);
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+      try { // since many of the operations above can throw an IOException the temp file is likely to never be deleted
+        if (Files.exists(temp)) {
+          FileUtils.deleteDir(temp);
+        }
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      }
+
+      throw new CacheException(
+          "error during unzipping coach "
+              + coachId
+              + ": "
+              + e.getMessage());
+    }
+  }
+
+  /**
+   * Verify wether all uploaded files are valid
+   * {@link eu.smesec.cysec.platform.bridge.generated.Answers} XML files
+   * or not.
+   * 
+   * Non XML files will be ignored.
+   * 
+   * @param root Path to the uploaded (extracted) files.
+   * @return Wether the files are valid Answers XML files or not.
+   * @throws IOException
+   */
+  private boolean verifyZipImport(Path root) {
+    try {
+      return Files.list(root)
+          .map(path -> {
+            if (Files.isDirectory(path)) {
+              return verifyZipImport(path);
+            } else {
+              // base case: verification
+              String ext = FileUtils.getFileExt(path);
+              ext = ext != null ? ext : "";
+              if (!ext.toLowerCase().equals("xml")) {
+                return true; // ignore all other files
+              }
+
+              Mapper<Answers> mapper = CacheFactory.createMapper(Answers.class);
+              try {
+                mapper.unmarshal(path);
+                return true;
+              } catch (MapperException e) {
+                logger.log(Level.SEVERE, FileUtils.getFileName(path) + " is not a valid Answers XML file", e);
+                return false;
+              }
+            }
+          })
+          .allMatch(Boolean::valueOf);
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, "IO error during verification of zip import", e);
+      return false; // "cast" exceptions to false to enable recursive usage of this method
+    }
+  }
+
+  /**
+   * Before importing (and overwriting) a new coach, a zip export of the current
+   * state is stored locally. Up to 3 backups per coach are stored.
+   * 
+   * Note that this feature is not meant to be user facing but as a "last resort"
+   * for system admins.
+   * 
+   * @param coachId
+   */
+  private void backupCoachBeforeImport(String coachId) throws IOException, CacheException {
+    final Pattern pattern = Pattern.compile(coachId + ".backup-(\\d+).zip");
+    Function<Integer, Path> getZipPath = (index) -> this.path.resolve(coachId + ".backup-" + index + ".zip");
+
+    List<Integer> backupIndices = Files
+        .list(this.path)
+        .map(p -> p.getFileName().toString())
+        .map(fileName -> pattern.matcher(fileName))
+        .filter(Matcher::matches)
+        .map(matcher -> Integer.parseInt(matcher.group(1)))
+        .sorted() // ascending
+        .collect(Collectors.toList());
+
+    // create new backup
+    int newIndex = backupIndices.size() > 0
+        ? backupIndices.get(backupIndices.size() - 1) + 1
+        : 0;
+
+    Path backup = Files.createFile(getZipPath.apply(newIndex));
+    this.zipCoach(backup, coachId);
+    logger.info("Created new backup: " + getZipPath.apply(newIndex));
+
+    // only keep 2 old and the new = 3 backups
+    while (backupIndices.size() > 2) {
+      int toRemove = backupIndices.remove(0);
+      logger.info("Remove backup: " + getZipPath.apply(toRemove));
+      Files.delete(getZipPath.apply(toRemove));
+    }
+  }
+
   ////////////////////////
   // coach file methods //
   ////////////////////////
@@ -624,11 +841,12 @@ class CompanyCache extends Cache {
    * Instantiate new answer- and flags XML files from a given coach.
    *
    * @param parent relative parent coach directory.
-   * @param coach coach object.
-   * @param names file names, if no names are specified default.xml and default-flags.xml will be used.
-   * @throws CacheNotFoundException if the parent coach was not found.
+   * @param coach  coach object.
+   * @param names  file names, if no names are specified default.xml will be used.
+   * @throws CacheNotFoundException      if the parent coach was not found.
    * @throws CacheAlreadyExistsException if the coach directory already exists.
-   * @throws CacheException If an io error or mapper error occurs during the instantiation.
+   * @throws CacheException              If an io error or mapper error occurs
+   *                                     during the instantiation.
    */
   void instantiateCoach(Path parent, Questionnaire coach, Set<String> names) throws CacheException {
     if (coach == null) {
@@ -671,7 +889,8 @@ class CompanyCache extends Cache {
    * Deletes an existing coach file.
    *
    * @param coach The coach path to delete, relative to the company directory.
-   * @throws CacheException If the coach path is a directory or an io error occurs.
+   * @throws CacheException If the coach path is a directory or an io error
+   *                        occurs.
    */
   void deleteCoach(Path coach) throws CacheException {
     if (coach == null) {
@@ -696,8 +915,10 @@ class CompanyCache extends Cache {
   /**
    * Checks if an answer xml file is present.
    *
-   * @param relative The path of the answer xml file, relative to the company directory.
-   * @return <code>true</code> if the coach file is present, or <code>false</code> otherwise.
+   * @param relative The path of the answer xml file, relative to the company
+   *                 directory.
+   * @return <code>true</code> if the coach file is present, or <code>false</code>
+   *         otherwise.
    */
   boolean isCoachInstantiated(Path relative) {
     readLock.lock();
@@ -719,8 +940,8 @@ class CompanyCache extends Cache {
     try {
       List<Path> names = new ArrayList<>();
       /*
-      use List<Path> for try-with-resource to close directory stream automatically
-      and prevent DirectoryNotEmptyException
+       * use List<Path> for try-with-resource to close directory stream automatically
+       * and prevent DirectoryNotEmptyException
        */
       List<Path> subdirs;
       try (Stream<Path> stream = Files.list(path).filter(Files::isDirectory)) {

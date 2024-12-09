@@ -77,4 +77,52 @@ const instantiate = (coachId) => {
     });
 };
 
+/**
+ * Inject the coach id of the selected coach into the generic modal.
+ * @param {string} coachId - full coach id
+ */
+const openAdminModal = (coachId) => {
+    const modal = $("#adminCoachModal .modal-body");
+    const exportButton = modal.children("a")[0];
+    /** @type{HTMLFormElement} */
+    const importForm = modal.children("form")[0];
+
+    exportButton.download = `${coachId}.zip`;
+    exportButton.href = buildUrl(`/api/rest/coaches/${coachId}/export`);
+
+    importForm.onsubmit = (event) => {
+        event.preventDefault();
+        submitImportForm(importForm, coachId)
+    };
+};
+
+
+/**
+ * Overwriting the default behavior of an HTML form to handle 
+ * both the error and the success case client side.
+ * 
+ * @param {HTMLFormElement} form 
+ * @param {string} coachId
+ */
+const submitImportForm = (form, coachId) => {
+    const url = buildUrl(`/api/rest/coaches/${coachId}/import`);
+    const formData = new FormData(form);
+
+    fetch(url, {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+    }).then(response => {
+        if (response.ok) {
+            displaySuccess("Imported coach");
+        } else {
+            displayError("POST " + url + "<br>status code: " + response.status);
+            console.debug(response.status);
+        }
+    }).finally(() => {
+        bootstrap.Modal.getInstance($("#adminCoachModal")).hide();
+        form.reset();
+    });
+}
+
 window.addEventListener("load", getDashboard);

@@ -6,28 +6,29 @@ const init = () => {
 
 const getAdminPage = () => {
     const url = buildUrl(endpoint);
-    fetch(url, {
-        credentials: "include"
-    }).then(response => {
-            if (response.ok) {
-                response.text().then(adminPage => {
-                    $("#wrapper").append(adminPage);
-                })
-            } else {
-                displayError("Couldn't access admin on: " + url + ": " + response.status);
-                console.debug(response.status);
-            }
-        });
+    loadContent(url, "#wrapper");
 };
 
 const loadAudits = (companyId) => {
     const url = buildUrl(`${endpoint}/audits/${companyId}`);
+    loadContent(url, "#admin-wrapper");
+};
+
+/**
+ * Fetch content from an endpoint and append the response to `domId`.
+ * 
+ * @param {string | URL} url 
+ * @param {string} domId - id where to append the fetched content
+ */
+const loadContent = (url, domId) => {
+    const id = domId.startsWith("#") ? domId : `#${domId}`;
+
     fetch(url, {
         credentials: "include"
     }).then(response => {
         if (response.ok) {
-            response.text().then(audits => {
-                $("#audits").empty().append(audits);
+            response.text().then(content => {
+                $(id).empty().append(content);
             })
         } else {
             displayError("Couldn't access admin on: " + url + ": " + response.status);

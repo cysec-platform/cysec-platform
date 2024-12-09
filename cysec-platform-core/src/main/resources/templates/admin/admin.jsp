@@ -16,7 +16,9 @@
                             <li class="list-group-item">
                                 <h3>${company.getId()}</h3>
                                 <div>${company.getCompanyname()}</div>
-                                <a href="javascript:;" onclick="loadAudits('${company.getId()}')">show audits</a>
+                                <a class="btn btn-link" href="javascript:;" onclick="loadAudits('${company.getId()}')">
+                                    show audits
+                                </a>
                             </li>
                         </c:forEach>
                     </ul>
@@ -26,7 +28,7 @@
                 </c:otherwise>
             </c:choose>
         </div>
-        <div id="audits" class="col col-8 h-100 overflow-y-auto">
+        <div id="admin-wrapper" class="col col-8 h-100 overflow-y-auto">
         </div>
     </div>
 </div>

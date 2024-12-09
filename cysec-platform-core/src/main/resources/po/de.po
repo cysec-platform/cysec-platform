@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-10 11:14+0000\n"
+"POT-Creation-Date: 2024-12-06 14:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Claudio Seitz <claudio.seitz@fhnw.ch>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -240,3 +240,19 @@ msgstr "Keine Errungenschaften wurden freigeschalten"
 #: DashboardMsg.java:57
 msgid "show all"
 msgstr "alle anzeigen"
+
+#: DashboardMsg.java:58
+msgid "more"
+msgstr "mehr"
+
+#: DashboardMsg.java:59
+msgid "Admin actions"
+msgstr "Admin Aktionen"
+
+#: DashboardMsg.java:60
+msgid "Export"
+msgstr "Exportieren"
+
+#: DashboardMsg.java:61
+msgid "Import"
+msgstr "Importieren"

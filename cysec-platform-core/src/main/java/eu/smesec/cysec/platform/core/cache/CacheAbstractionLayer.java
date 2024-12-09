@@ -43,7 +43,6 @@ import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.config.Config;
 import eu.smesec.cysec.platform.core.utils.FileResponse;
-
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -1615,5 +1614,53 @@ public class CacheAbstractionLayer {
           cache.setReadOnly(readonly);
           return null;
         });
+  }
+
+  // ---------------------
+  // -- Import / Export --
+  // ---------------------
+
+  /**
+   * Import coach (and sub coaches) data from a zip archive. This operation will
+
+   * @param companyId       The id of the company.
+   * @param coachId         The id of the coach (not the instance) to export.
+   * @return                Exported data as <code>FileResponse</code> of zip archive.
+   * @throws CacheException
+   */
+  public FileResponse zipCoach(String companyId, String coachId) throws CacheException {
+    return data.executeOnCompany(
+        companyId,
+        companyCache -> {
+          try {
+            Path temp = Files.createTempFile(data.path, companyId, null);
+            try {
+              companyCache.zipCoach(temp, coachId);
+              return new FileResponse(Files.readAllBytes(temp));
+            } finally {
+              Files.delete(temp);
+            }
+          } catch (Exception e) {
+            throw new CacheException(e.getMessage());
+          }
+        });
+  }
+
+  /**
+   * Import coach (and sub coaches) data from a zip archive. This operation will
+   * <b>overwrite</b> any existing data.
+   * 
+   * @param companyId       The id of the company.
+   * @param coachId         The id of the coach (not the instance) to overwrite.
+   * @param zipUploadStream The archive is expected to match the filesystem structure of a coach.
+   * @throws CacheException
+   */
+  public void unzipCoach(String companyId, String coachId, InputStream zipUploadStream) throws CacheException {    
+    data.executeOnCompany(
+      companyId,
+      companyCache -> {
+        companyCache.unzipCoach(zipUploadStream, coachId);
+        return null;
+      });
   }
 }
