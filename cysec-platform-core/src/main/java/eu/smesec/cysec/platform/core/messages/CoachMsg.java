@@ -33,5 +33,7 @@ public class CoachMsg extends Message {
     messages.put("readmore", i18n.tr("read more"));
     messages.put("next", i18n.tr("next"));
     messages.put("summary", i18n.tr("Summary"));
+    messages.put("unflagQuestion", i18n.tr("Remove the flag on this question"));
+    messages.put("flagQuestion", i18n.tr("Flag this question for later"));
   }
 }

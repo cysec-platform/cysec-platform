@@ -28,6 +28,7 @@ import eu.smesec.cysec.platform.bridge.execptions.MapperException;
 import eu.smesec.cysec.platform.bridge.generated.Answers;
 import eu.smesec.cysec.platform.bridge.generated.Audits;
 import eu.smesec.cysec.platform.bridge.generated.Company;
+import eu.smesec.cysec.platform.bridge.generated.FlaggedQuestions;
 import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
 import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.core.utils.FileUtils;
@@ -69,6 +70,7 @@ class CompanyCache extends Cache {
   static final String USER_XML = "users.xml";
   static final String AUDITS_XML = "audits.xml";
   static final String DEFAULT_ANSWERS_XML = "default.xml";
+  static final String DEFAULT_FLAGS_XML = "default-flags.xml";
   static final String REPLICA_TOKEN_FILE = "replica_token";
   static final String READ_ONLY_FILE = "readonly";
 
@@ -262,6 +264,19 @@ class CompanyCache extends Cache {
     return readOnCache(relative, Answers.class, command);
   }
 
+  /**
+   * Executes a read command on the flags xml file.
+   *
+   * @param relative The flags xml file path, relative to the coach directory.
+   * @param command The read command to execute.
+   * @param <R> The return type of the read command.
+   * @return The result of the read command.
+   * @throws CacheException If an error occurs during the command execution.
+   */
+  <R> R readOnFlags(Path relative, ICommand<FlaggedQuestions, R> command) throws CacheException {
+    return readOnCache(relative, FlaggedQuestions.class, command);
+  }
+
   private <T extends CopyTo2, R> R readOnCache(Path path, Class<T> classOfT, ICommand<T, R> command)
       throws CacheException {
     if (path == null || classOfT == null || command == null) {
@@ -331,8 +346,11 @@ class CompanyCache extends Cache {
       for (Path path1 : paths) {
         if (Files.isDirectory(path1)) {
           visitCoachFiles(path1, command);
-        } else if (path1.getFileName().toString().endsWith(".xml")) {
-          command.execute(path1);
+        } else {
+          String filename = path1.getFileName().toString();
+          if(filename.endsWith(".xml") && !filename.endsWith("-flags.xml")) {
+            command.execute(path1);
+          }
         }
       }
     } catch (IOException ioe) {
@@ -373,6 +391,17 @@ class CompanyCache extends Cache {
    */
   void writeOnAnswers(Path relative, ICommand<Answers, Void> command) throws CacheException {
     writeOnCache(relative, Answers.class, command);
+  }
+
+  /**
+   * Executes a write command on the flags xml file.
+   *
+   * @param relative The flags xml file path, relative to the coach directory.
+   * @param command The write command to execute.
+   * @throws CacheException If an error occurs during the command execution.
+   */
+  void writeOnFlags(Path relative, ICommand<FlaggedQuestions, Void> command) throws CacheException {
+    writeOnCache(relative, FlaggedQuestions.class, command);
   }
 
   private <T extends CopyTo2> void writeOnCache(
@@ -809,7 +838,7 @@ class CompanyCache extends Cache {
   ////////////////////////
 
   /**
-   * Instantiate a new answer.xml file from a given coach.
+   * Instantiate new answer- and flags XML files from a given coach.
    *
    * @param parent relative parent coach directory.
    * @param coach  coach object.
@@ -835,13 +864,17 @@ class CompanyCache extends Cache {
       }
       Files.createDirectories(coachDir);
       Answers answers = CacheFactory.createAnswersFromCoach(coach);
-      Mapper<Answers> mapper = CacheFactory.createMapper(Answers.class);
+      FlaggedQuestions flaggedQuestions = CacheFactory.createFlaggedQuestionsFromCoach(coach);
+      Mapper<Answers> answersMapper = CacheFactory.createMapper(Answers.class);
+      Mapper<FlaggedQuestions> flaggedQuestionsMapper = CacheFactory.createMapper(FlaggedQuestions.class);
       if (names != null) {
         for (String name : names) {
-          mapper.init(coachDir.resolve(name + ".xml"), answers);
+          answersMapper.init(coachDir.resolve(name + ".xml"), answers);
+          flaggedQuestionsMapper.init(coachDir.resolve(name + "-flags.xml"), flaggedQuestions);
         }
       } else {
-        mapper.init(coachDir.resolve(DEFAULT_ANSWERS_XML), answers);
+        answersMapper.init(coachDir.resolve(DEFAULT_ANSWERS_XML), answers);
+        flaggedQuestionsMapper.init(coachDir.resolve(DEFAULT_FLAGS_XML), flaggedQuestions);
       }
     } catch (IOException ioe) {
       throw new CacheException("IO error during coach instantiation: " + ioe.getMessage());

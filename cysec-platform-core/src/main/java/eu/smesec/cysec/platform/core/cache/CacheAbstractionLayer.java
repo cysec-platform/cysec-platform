@@ -32,6 +32,8 @@ import eu.smesec.cysec.platform.bridge.generated.Answers;
 import eu.smesec.cysec.platform.bridge.generated.Audit;
 import eu.smesec.cysec.platform.bridge.generated.Audits;
 import eu.smesec.cysec.platform.bridge.generated.Company;
+import eu.smesec.cysec.platform.bridge.generated.FlaggedQuestion;
+import eu.smesec.cysec.platform.bridge.generated.FlaggedQuestions;
 import eu.smesec.cysec.platform.bridge.generated.Metadata;
 import eu.smesec.cysec.platform.bridge.generated.Mvalue;
 import eu.smesec.cysec.platform.bridge.generated.Question;
@@ -634,6 +636,86 @@ public class CacheAbstractionLayer {
           return null;
         });
   }
+
+  // -----------------
+  // ----- Flags -----
+  // -----------------
+
+  private <R> R readOnFlags(String companyId, FQCN fqcn, ICommand<FlaggedQuestions, R> command)
+      throws CacheException {
+    return data.executeOnCompany(companyId, company -> company.readOnFlags(fqcn.toFlagsPath(), command));
+  }
+
+  private void writeOnFlags(String companyId, FQCN fqcn, ICommand<FlaggedQuestions, Void> command)
+      throws CacheException {
+    data.executeOnCompany(
+        companyId,
+        company -> {
+          company.writeOnFlags(fqcn.toFlagsPath(), command);
+          return null;
+        });
+  }
+
+  /**
+   * Removes the flag for a specific question.
+   *
+   * @param companyId The id of the company.
+   * @param fqcn the full qualified coach name
+   * @param questionId The id of a question.
+   * @param flagged Whether the question should be flagged or unflagged.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
+   */
+  public void flagQuestion(String companyId, FQCN fqcn, String questionId, boolean flagged) throws CacheException {
+    writeOnFlags(
+        companyId,
+        fqcn,
+        flags -> {
+          ListIterator<FlaggedQuestion> it = flags.getFlaggedQuestion().listIterator();
+          while (it.hasNext()) {
+            FlaggedQuestion q = it.next();
+            if (q.getQid().equals(questionId)) {
+              if(!flagged) {
+                it.remove();
+              }
+              return null;
+            }
+          }
+          if(flagged) {
+            FlaggedQuestion newFlag = new FlaggedQuestion();
+            newFlag.setQid(questionId);
+            flags.getFlaggedQuestion().add(newFlag);
+          }
+          return null;
+        });
+  }
+
+  /**
+   * Returns whether a question is flagged.
+   *
+   * @param companyId The id of the company.
+   * @param fqcn the full qualified coach name.
+   * @param questionId The id of the question.
+   * @return <code>true</code> if the question was flagged, <code>false</code> otherwise.
+   * @throws CacheNotFoundException If the company was not found.
+   * @throws CacheNotFoundException If the instance was not found.
+   */
+  public boolean isQuestionFlagged(String companyId, FQCN fqcn, Object questionId) throws CacheException {
+    return readOnFlags(
+        companyId,
+        fqcn,
+        flags -> {
+          ListIterator<FlaggedQuestion> it = flags.getFlaggedQuestion().listIterator();
+          while (it.hasNext()) {
+            FlaggedQuestion q = it.next();
+            if (q.getQid().equals(questionId)) {
+              return true;
+            }
+          }
+          return false;
+        });
+  }
+
 
   // ---------------------
   // ----- Metadata  -----

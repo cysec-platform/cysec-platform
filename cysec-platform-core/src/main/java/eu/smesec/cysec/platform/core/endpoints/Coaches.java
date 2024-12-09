@@ -353,6 +353,47 @@ public class Coaches {
   }
 
   /**
+   * Updates the flagged state of a given Question.
+   */
+  @POST
+  @Path("/{id}/questions/{qid}/flag")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response updateFlaggedState(@PathParam("id") String id, @PathParam("qid") String questionId, String value) {
+    String companyId = context.getAttribute("company").toString();
+    String userId = context.getAttribute("user").toString();
+    try {
+      FQCN fqcn = FQCN.fromString(id);
+      String coachId = fqcn.getCoachId();
+      Questionnaire coach = cal.getCoach(coachId);
+      if (coach == null) {
+        logger.warning("cannot find coach " + coachId);
+        return Response.status(404).build();
+      }
+
+      boolean newFlaggedState = Boolean.parseBoolean(value);
+
+      // check question exists
+      Question question = cal.getQuestion(coachId, questionId);
+      if (question == null) {
+        logger.warning("cannot find question " + questionId);
+        return Response.status(404).build();
+      }
+
+      cal.flagQuestion(companyId, fqcn, questionId, newFlaggedState);
+
+      // todo active
+      return Response.status(204).build();
+
+    }catch (CacheException ce) {
+      logger.warning(ce.getMessage());
+      return Response.status(400).build();
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Error occured", e);
+    }
+    return Response.status(500).build();
+  }
+
+  /**
    * Renders a question.
    *
    * @param id         The id of the coach
@@ -390,7 +431,8 @@ public class Coaches {
       String nextUrl = "/api/rest/coaches/" + fqcn.getCoachId() + "/questions/" + questionId + "/next";
 
       // question states for pagination
-      List<AbstractMap.SimpleEntry<Question, Answer>> actives = library.peekQuestions(question)
+      List<Question> actives = library.peekQuestions(question);
+      Map<Question, Answer> answers = actives
           .stream()
           .map(q -> {
             try {
@@ -398,7 +440,17 @@ public class Coaches {
             } catch (CacheException e) {
               return new AbstractMap.SimpleEntry<Question, Answer>(q, null);
             }
-          }).collect(Collectors.toList());
+          }).filter(e -> e.getValue() != null)
+          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+      Map<Question, Boolean> flagStatus = actives
+          .stream()
+          .collect(Collectors.toMap(q -> q, q -> {
+            try {
+              return cal.isQuestionFlagged(companyId, fqcn, q.getId());
+            } catch (CacheException e) {
+              return false;
+            }
+          }));
 
       CoachMsg msg = new CoachMsg(locale);
       Map<String, Object> model = new HashMap<>();
@@ -410,6 +462,8 @@ public class Coaches {
       model.put("next", nextUrl);
       model.put("summary", summaryUrl);
       model.put("actives", actives);
+      model.put("answers", answers);
+      model.put("flagStatus", flagStatus);
       model.put("aidList", answer != null && answer.getAidList() != null
           ? Arrays.asList(answer.getAidList().split(" "))
           : Arrays.asList());

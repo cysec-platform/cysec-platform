@@ -679,3 +679,8 @@ html {
     overflow-wrap: anywhere;
 }
 
+#question-flag {
+    font-size: 1.2em;
+    background: none;
+    border: none;
+}
