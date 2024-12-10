@@ -496,6 +496,7 @@ public class Coaches {
       model.put("actives", actives);
       model.put("answers", answers);
       model.put("flagStatus", flagStatus);
+      model.put("flagStatusKey", new Tuple<>(fqcn, question)); // Needed for Flag Status lookup to work.
       model.put("aidList", answer != null && answer.getAidList() != null
           ? Arrays.asList(answer.getAidList().split(" "))
           : Arrays.asList());

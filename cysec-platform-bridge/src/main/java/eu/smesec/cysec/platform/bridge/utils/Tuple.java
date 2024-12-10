@@ -19,6 +19,8 @@
  */
 package eu.smesec.cysec.platform.bridge.utils;
 
+import java.util.Objects;
+
 public class Tuple<A, B> {
   private A first;
   private B second;
@@ -34,5 +36,17 @@ public class Tuple<A, B> {
 
   public B getSecond() {
     return second;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    Tuple<?, ?> tuple = (Tuple<?, ?>) o;
+    return Objects.equals(first, tuple.first) && Objects.equals(second, tuple.second);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(first, second);
   }
 }
