@@ -1499,7 +1499,7 @@ public class CacheAbstractionLayer {
      */
   public Question getCurrentQuestion(String companyId, FQCN fqcn) throws CacheException {
       CoachLibrary library = getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
-      Question question = library.getFirstQuestion();
+      Question question = library.getFirstQuestion(fqcn.getName());
       Metadata md = getMetadataOnAnswer(companyId, fqcn, MetadataUtils.MD_STATE);
       if (md != null) {
           State state = MetadataUtils.fromMd(md, State.class);

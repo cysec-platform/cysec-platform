@@ -143,7 +143,7 @@ public interface CoachLibrary {
    * Ask the library for the first question of the coach.
    * @return A Question object or null (if coach has no questions)
    */
-  Question getFirstQuestion();
+  Question getFirstQuestion(String instanceName);
 
   /**
    * <p>Sets the given object as its parent.</p>

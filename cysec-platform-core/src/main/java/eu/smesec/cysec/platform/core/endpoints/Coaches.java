@@ -172,7 +172,7 @@ public class Coaches {
     try {
       FQCN fqcn = FQCN.fromString(id);
       CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
-      Question first = library.getFirstQuestion();
+      Question first = library.getFirstQuestion(fqcn.getName());
       return Response.status(200).entity(gson.toJson(first)).build();
     } catch (CacheException ce) {
       logger.warning(ce.getMessage());
