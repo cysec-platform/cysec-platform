@@ -868,7 +868,7 @@ class CompanyCache extends Cache {
           }
         }
       } else {
-        Path path = coachDir.resolve(DEFAULT_ANSWERS_XML + ".xml");
+        Path path = coachDir.resolve(DEFAULT_ANSWERS_XML);
         if (!Files.exists(path)) {
           answersMapper.init(path, answers);
           flaggedQuestionsMapper.init(coachDir.resolve(DEFAULT_FLAGS_XML), flaggedQuestions);
