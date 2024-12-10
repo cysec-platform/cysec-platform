@@ -189,8 +189,7 @@ class CompanyCache extends Cache {
   /**
    * Return the replica token of this company.
    *
-   * @return The replica token if the replica token file is present, or
-   *         <code>null</code> otherwise.
+   * @return The replica token if the replica token file is present, or <code>null</code> otherwise.
    */
   public String getReplicaToken() {
     readLock.lock();
@@ -864,14 +863,14 @@ class CompanyCache extends Cache {
         for (String name : names) {
           Path path = coachDir.resolve(name + ".xml");
           if (!Files.exists(path)) {
-            mapper.init(path, answers);
+            answersMapper.init(path, answers);
             flaggedQuestionsMapper.init(coachDir.resolve(name + "-flags.xml"), flaggedQuestions);
           }
         }
       } else {
         Path path = coachDir.resolve(DEFAULT_ANSWERS_XML + ".xml");
         if (!Files.exists(path)) {
-          mapper.init(path, answers);
+          answersMapper.init(path, answers);
           flaggedQuestionsMapper.init(coachDir.resolve(DEFAULT_FLAGS_XML), flaggedQuestions);
         }
       }

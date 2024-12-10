@@ -474,9 +474,9 @@ public class Coaches {
                     }
                 }).filter(e -> e.getValue() != null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        Map<Question, Boolean> flagStatus = actives
+        Map<Tuple<FQCN, Question>, Boolean> flagStatus = actives
                 .stream()
-                .collect(Collectors.toMap(Tuple::getSecond, q -> {
+                .collect(Collectors.toMap(q -> q, q -> {
                     try {
                         return cal.isQuestionFlagged(companyId, fqcn, q.getSecond().getId());
                     } catch (CacheException e) {

@@ -6,10 +6,10 @@
     <div class="d-flex w-100 justify-content-between">
         <div class="">
             <c:forEach var="active" items="${it.actives}">
-                <c:set var="question" value="${active.getKey().getSecond()}" />
-                <c:set var="questionFqcn" value="${active.getKey().getFirst()}" />
-                <c:set var="answer" value="${it.answers.get(question)}" />
-                <c:set var="isFlagged" value="${it.flagStatus.get(question)}" />
+                <c:set var="question" value="${active.getSecond()}" />
+                <c:set var="questionFqcn" value="${active.getFirst()}" />
+                <c:set var="answer" value="${it.answers.get(active)}" />
+                <c:set var="isFlagged" value="${it.flagStatus.get(active)}" />
                 <c:set var="aid" value="${question.getId()}"/>
 
                 <c:set var="text"> <c:out value="${question.getText()}"/></c:set> <%-- use c:out to escape strings --%>
