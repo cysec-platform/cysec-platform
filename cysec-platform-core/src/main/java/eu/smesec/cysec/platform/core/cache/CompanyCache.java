@@ -757,6 +757,9 @@ class CompanyCache extends Cache {
    * @throws IOException
    */
   private boolean verifyZipImport(Path root) {
+    Mapper<FlaggedQuestions> flagMapper = CacheFactory.createMapper(FlaggedQuestions.class);
+    Mapper<Answers> answersMapper = CacheFactory.createMapper(Answers.class);
+
     try {
       return Files.list(root)
           .map(path -> {
@@ -770,7 +773,10 @@ class CompanyCache extends Cache {
                 return true; // ignore all other files
               }
 
-              Mapper<Answers> mapper = CacheFactory.createMapper(Answers.class);
+              Mapper<?> mapper = FileUtils.getFileName(path).endsWith("-flags.xml") 
+                ? flagMapper 
+                : answersMapper;
+
               try {
                 mapper.unmarshal(path);
                 return true;
