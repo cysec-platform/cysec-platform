@@ -747,10 +747,11 @@ class CompanyCache extends Cache {
 
   /**
    * Verify wether all uploaded files are valid
-   * {@link eu.smesec.cysec.platform.bridge.generated.Answers} XML files
+   * {@link eu.smesec.cysec.platform.bridge.generated.Answers} or 
+   * {@link eu.smesec.cysec.platform.bridge.generated.FlaggedQuestions} XML files
    * or not.
    *
-   * Non XML files will be ignored.
+   * Non XML files are ignored.
    *
    * @param root Path to the uploaded (extracted) files.
    * @return Wether the files are valid Answers XML files or not.
