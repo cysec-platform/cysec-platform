@@ -9,7 +9,8 @@
                 <c:set var="question" value="${active.getSecond()}" />
                 <c:set var="questionFqcn" value="${active.getFirst()}" />
                 <c:set var="answer" value="${it.answers.get(active)}" />
-                <c:set var="isFlagged" value="${it.flagStatus.get(active)}" />
+                <c:set var="questionIdUnique" value="${questionFqcn.toString()}:${question.getId()}" />
+                <c:set var="isFlagged" value="${it.flagStatus.get(questionIdUnique)}" />
                 <c:set var="aid" value="${question.getId()}"/>
 
                 <c:set var="text"> <c:out value="${question.getText()}"/></c:set> <%-- use c:out to escape strings --%>
