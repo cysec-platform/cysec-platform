@@ -28,11 +28,11 @@
                         class="pagination-img"
                         src="${baseUrl}/assets/${it.question.getId().equals(aid)
                             ? 'status_in_progress.png'
-                            : answer != null
-                                ? 'status_done.png'
-                                : isFlagged
+                            : isFlagged
                                     ? 'status_flagged.png'
-                                    : 'status_empty.png'}"
+                                    : answer != null
+                                        ? 'status_done.png'
+                                        : 'status_empty.png'}"
                     >
                 </a>
             </c:forEach>

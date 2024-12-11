@@ -8,6 +8,5 @@
     </div>
     <div id="documentation-wrapper" class="col col-5 bg-lightbluegrey">
         <c:import url="instuction.jsp"/>
-        <c:import url="flagging.jsp"/>
     </div>
 </div>
