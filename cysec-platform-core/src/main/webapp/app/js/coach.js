@@ -7,6 +7,7 @@ const init = () => {
     if (!redirectQuestion(fqcn, qid)) {
         load();
     }
+    registerDebugInfoShortcut();
 };
 
 const load = () => {
@@ -33,6 +34,15 @@ const load = () => {
         }
     });
 };
+
+const registerDebugInfoShortcut = () => {
+    document.addEventListener("keydown", e => {
+        if (e.altKey && e.shiftKey && e.code === 'KeyD') {
+            const modal = new bootstrap.Modal(document.getElementById('coachDebugModal'));
+            modal.show();
+        }
+    })
+}
 
 const toggleFlagged = () => {
     const currentFlaggedState = !!$("#question-flag").data("flagged");

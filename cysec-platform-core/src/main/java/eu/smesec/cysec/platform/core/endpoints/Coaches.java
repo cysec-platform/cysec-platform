@@ -2,7 +2,7 @@
  * #%L
  * CYSEC Platform Core
  * %%
- * Copyright (C) 2020 - 2024 FHNW (University of Applied Sciences and Arts Northwestern Switzerland)
+ * Copyright (C) 2020 - 2025 FHNW (University of Applied Sciences and Arts Northwestern Switzerland)
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -487,6 +487,7 @@ public class Coaches {
       CoachMsg msg = new CoachMsg(locale);
       Map<String, Object> model = new HashMap<>();
       Answer answer = cal.getAnswer(companyId, fqcn, questionId);
+      model.put("libJspModel", library.getJspModel(""));
       model.put("msg", msg.getMessages());
       model.put("question", question);
       model.put("answer", answer);
