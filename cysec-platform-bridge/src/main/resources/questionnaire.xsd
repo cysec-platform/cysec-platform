@@ -237,10 +237,25 @@
             <xs:sequence>
                 <xs:element ref="text"/>
                 <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="subcoachInstances" minOccurs="0" /> <!-- This is only relevant for question with question type = subcoachInstantiator-->
+
             </xs:sequence>
             <!--            <xs:attribute name="qid" type="xs:IDREF" use="required"/>-->
             <xs:attribute name="qid" type="xs:ID" use="required"/>
             <xs:attribute name="aid-list" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="subcoachInstances">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="subcoachInstance" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="subcoachId" use="required"/>
+                        <xs:attribute name="parentArgument" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 

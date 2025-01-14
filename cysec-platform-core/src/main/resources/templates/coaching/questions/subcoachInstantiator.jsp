@@ -6,34 +6,34 @@
 
     <h3>Bestehende</h3>
     <c:choose>
-        <c:when test="${fn:length(it.subcoachInstantiatorAnswers) == 0 }">
+        <c:when test="${fn:length(it.answer.subcoachInstances.subcoachInstance) == 0 }">
             <p>Noch keine Einträge erfasst</p>
         </c:when>
         <c:otherwise>
-            <c:forEach items="${it.subcoachInstantiatorAnswers}" var="answer">
+            <c:forEach items="${it.answer.subcoachInstances.subcoachInstance}" var="instance">
                 <div class="row gx-3 mb-3 subcoach-instance existing-instance">
                     <div class="col-5">
                         <div class="form-floating">
-                            <input type="text" readonly class="form-control-plaintext m-0 pt-5" id="parentArgumentText-${answer.key}" placeholder="lorem" value="${answer.value}">
-                            <label id="parentArgumentText-${answer.key}">${it.question.parentArgumentValues.label}</label>
+                            <input type="text" readonly class="form-control-plaintext m-0 pt-5" id="parentArgumentText-${instance.subcoachId}" placeholder="lorem" value="${instance.parentArgument}">
+                            <label id="parentArgumentText-${instance.subcoachId}">${it.question.parentArgumentValues.label}</label>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-floating">
-                            <input type="text" readonly class="form-control-plaintext m-0 pt-5" id="subcoachIdText-${answer.key}" placeholder="lorem" value="${answer.key}">
-                            <label id="subcoachIdText-${answer.key}">${it.question.subcoachIdLabel}</label>
+                            <input type="text" readonly class="form-control-plaintext m-0 pt-5" id="subcoachIdText-${instance.subcoachId}" placeholder="lorem" value="${instance.subcoachId}">
+                            <label id="subcoachIdText-${instance.subcoachId}">${it.question.subcoachIdLabel}</label>
                         </div>
                     </div>
                     <div class="col-3">
-                        <button type="button" class="btn btn-danger w-100 h-100" onclick="deleteSubcoachInstance('${answer.key}')">Entfernen</button>
+                        <button type="button" class="btn btn-danger w-100 h-100" onclick="deleteSubcoachInstance('${instance.subcoachId}')">Entfernen</button>
                     </div>
 
                     <select hidden class="form-select parent-argument-select">
                         <c:forEach items="${it.question.parentArgumentValues.value}" var="parentArgumentValue">
-                            <option ${answer.value == parentArgumentValue ? "selected" : ""} value="${parentArgumentValue}">${parentArgumentValue}</option>
+                            <option ${instance.parentArgument == parentArgumentValue ? "selected" : ""} value="${parentArgumentValue}">${parentArgumentValue}</option>
                         </c:forEach>
                     </select>
-                    <input hidden type="text" class="form-control m-0 subcoach-id-input"  value="${answer.key}"/>
+                    <input hidden type="text" class="form-control m-0 subcoach-id-input"  value="${instance.subcoachId}"/>
                 </div>
             </c:forEach>
         </c:otherwise>

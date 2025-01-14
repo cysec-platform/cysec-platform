@@ -19,6 +19,7 @@
  */
 package eu.smesec.cysec.platform.core.endpoints;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,13 +30,7 @@ import eu.smesec.cysec.platform.bridge.CoachLibrary;
 import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.execptions.ElementAlreadyExistsException;
 import eu.smesec.cysec.platform.bridge.execptions.ElementNotFoundException;
-import eu.smesec.cysec.platform.bridge.generated.Answer;
-import eu.smesec.cysec.platform.bridge.generated.Audit;
-import eu.smesec.cysec.platform.bridge.generated.Metadata;
-import eu.smesec.cysec.platform.bridge.generated.Mvalue;
-import eu.smesec.cysec.platform.bridge.generated.Question;
-import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
-import eu.smesec.cysec.platform.bridge.generated.UserAction;
+import eu.smesec.cysec.platform.bridge.generated.*;
 import eu.smesec.cysec.platform.bridge.md.LastSelected;
 import eu.smesec.cysec.platform.bridge.md.MetadataUtils;
 import eu.smesec.cysec.platform.bridge.md.State;
@@ -257,6 +252,7 @@ public class Coaches {
       }
       CoachLibrary library = cal.getLibrariesForQuestionnaire(coachId).get(0);
 
+      String unescapedValue = value;
       value = StringEscapeUtils.escapeHtml4(value);
 
       // check question exists
@@ -290,7 +286,19 @@ public class Coaches {
             String newOptions = String.join(" ", options);
             after = newOptions;
             answer.setAidList(newOptions);
+          } else if (question.getType().equals("subcoachInstantiator")) {
+            TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
+            Map<String, String> subcoachInstanceData = new ObjectMapper().readValue(unescapedValue, typeRef);
 
+            SubcoachInstances instances = new SubcoachInstances();
+            subcoachInstanceData.forEach((key, val) -> {
+              SubcoachInstances.SubcoachInstance instance = new SubcoachInstances.SubcoachInstance();
+              instance.setSubcoachId(key);
+              instance.setParentArgument(val);
+              instances.getSubcoachInstance().add(instance);
+            });
+
+            answer.setSubcoachInstances(instances);
           } else {
             before = answer.getText();
             after = value;
@@ -492,9 +500,6 @@ public class Coaches {
       model.put("msg", msg.getMessages());
       model.put("question", question);
       model.put("answer", answer);
-      model.put("subcoachInstantiatorAnswers", answer != null && question.getType().equals("subcoachInstantiator")
-              ? new ObjectMapper().readValue(StringEscapeUtils.unescapeHtml4(answer.getText()), HashMap.class)
-              : "");
       model.put("fqcn", id);
       model.put("next", nextUrl);
       model.put("summary", summaryUrl);
