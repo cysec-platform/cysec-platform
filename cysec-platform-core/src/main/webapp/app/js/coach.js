@@ -65,12 +65,14 @@ const toggleFlagged = () => {
 };
 
 const updateAnswer = (event) => {
-    // separate comma from coach string in window location
+    sendAnswer(event.target.value);
+};
+
+const sendAnswer = (answerPayload) => {
     const url = buildUrl("/api/rest/coaches/" + fqcn + "/answers/" + qid);
-    const answer = event.target.value;
     fetch(url, {
         method: "POST",
-        body: answer,
+        body: answerPayload,
         credentials: "include",
     }).then(response => {
         $("#next-button").prop("disabled", false);
@@ -88,6 +90,61 @@ const updateAnswer = (event) => {
        the server will not route the user (request to .../next) to a
        wrong question by using the "old state". */
     $("#next-button").prop("disabled", true);
+};
+
+const getSubcoachInstanceFromEl = (el) => {
+    const formEl = document.querySelector("#subcoachInstantiatorForm");
+
+    const parentArgumentSelectEl = el.querySelector(".parent-argument-select");
+    const subcoachIdInputEl = el.querySelector(".subcoach-id-input");
+
+    const parentArgument = parentArgumentSelectEl.value;
+    const subcoachId = subcoachIdInputEl.value;
+
+    const subcoachIdRegex = formEl.getAttribute('data-subcoach-id-regex');
+    if (subcoachIdRegex && !new RegExp(subcoachIdRegex).test(subcoachId)) {
+        displayWarning("Invalid input, cannot add")
+        return;
+    }
+    return [subcoachId, parentArgument];
+}
+
+const getExistingSubcoachInstances = () => {
+    // Extract input data and validate
+    const formEl = document.querySelector("#subcoachInstantiatorForm");
+
+    // Build up payload by looking at each subcoach instance
+    let payload = {};
+    const subcoachInstanceEls = [...formEl.querySelectorAll(".subcoach-instance.existing-instance")];
+    for (let instanceEl of subcoachInstanceEls) {
+        const [subcoachId, parentArgument] = getSubcoachInstanceFromEl(instanceEl);
+        payload[subcoachId] = parentArgument;
+    }
+
+    return payload;
+}
+
+const getNewSubcoachInstance = () => {
+    const subcoachInstanceEl = document.querySelector("#subcoachInstantiatorForm .subcoach-instance.new-instance");
+    const [subcoachId, parentArgument] = getSubcoachInstanceFromEl(subcoachInstanceEl);
+    const instance = {};
+    instance[subcoachId] = parentArgument;
+    return instance;
+}
+
+const updateSubcoachInstantiatorAnswer = (event) => {
+    event.preventDefault();
+    const subcoachInstances = {
+        ...getExistingSubcoachInstances(),
+        ...getNewSubcoachInstance()
+    };
+    sendAnswer(JSON.stringify(subcoachInstances));
+};
+
+const deleteSubcoachInstance = (subcoachId) => {
+    const subcoachInstances = getExistingSubcoachInstances();
+    delete subcoachInstances[subcoachId];
+    sendAnswer(JSON.stringify(subcoachInstances));
 };
 
 const toggleReadMore = (event) => {

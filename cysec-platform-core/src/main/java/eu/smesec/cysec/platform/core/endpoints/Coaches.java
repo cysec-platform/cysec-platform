@@ -19,6 +19,7 @@
  */
 package eu.smesec.cysec.platform.core.endpoints;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -491,6 +492,9 @@ public class Coaches {
       model.put("msg", msg.getMessages());
       model.put("question", question);
       model.put("answer", answer);
+      model.put("subcoachInstantiatorAnswers", answer != null && question.getType().equals("subcoachInstantiator")
+              ? new ObjectMapper().readValue(StringEscapeUtils.unescapeHtml4(answer.getText()), HashMap.class)
+              : "");
       model.put("fqcn", id);
       model.put("next", nextUrl);
       model.put("summary", summaryUrl);

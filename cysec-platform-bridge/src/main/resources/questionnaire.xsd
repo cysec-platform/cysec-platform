@@ -144,6 +144,7 @@
                 <xs:element ref="listeners" minOccurs="0"/>
                 <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="instruction" minOccurs="0"/>
+                <xs:element ref="parentArgumentValues" minOccurs="0"/> <!-- Only relevant for questionType = subcoachInstantiator -->
             </xs:sequence>
             <xs:attribute name="id" type="xs:ID" use="required"/>
             <xs:attribute name="type" type="questionType" use="required"/>
@@ -152,13 +153,16 @@
             <xs:attribute name="subcoachId" type="xs:string"/>
             <xs:attribute name="instanceName" type="xs:string"/>
             <xs:attribute name="parentArgument" type="xs:string"/>
+            <xs:attribute name="subcoachInstantiatorId" type="xs:string"/> <!-- Only relevant for questionType = subcoachInstantiator -->
+            <xs:attribute name="subcoachIdLabel" type="xs:string" /> <!-- Only relevant for questionType = subcoachInstantiator -->
+            <xs:attribute name="subcoachIdRegex" type="xs:string" /> <!-- Only relevant for questionType = subcoachInstantiator -->
         </xs:complexType>
     </xs:element>
 
     <!-- Types of questions refer to classification from here: https://studmed.unibe.ch/a-z/page.php?id=Pr%FCfungstypen -->
     <xs:simpleType name="questionType">
         <xs:restriction base="xs:string">
-            <xs:pattern value="(A|Astar|Astarexcl|date|likert|text|yesno|info|subcoach)"/>
+            <xs:pattern value="(A|Astar|Astarexcl|date|likert|text|yesno|info|subcoach|subcoachInstantiator|subcoachInstantiatorOutlet)"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -189,6 +193,15 @@
             </xs:sequence>
             <xs:attribute name="id" type="xs:ID" use="required"/>
             <xs:attribute name="short" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="parentArgumentValues">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="value" type="xs:string" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="label" type="xs:string"/> <!-- Label of the parent argument for example "Protocol" -->
         </xs:complexType>
     </xs:element>
 
