@@ -36,11 +36,11 @@ import eu.smesec.cysec.platform.bridge.md.MetadataUtils;
 import eu.smesec.cysec.platform.bridge.md.State;
 import eu.smesec.cysec.platform.bridge.utils.AuditUtils;
 import eu.smesec.cysec.platform.core.auth.Secured;
-import eu.smesec.cysec.platform.core.auth.SecuredAdmin;
 import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.cache.LibCal;
 import eu.smesec.cysec.platform.core.cache.ResourceManager;
+import eu.smesec.cysec.platform.core.helpers.subcoach.SubcoachHelper;
 import eu.smesec.cysec.platform.core.utils.FileResponse;
 import eu.smesec.cysec.platform.core.utils.LocaleUtils;
 import eu.smesec.cysec.platform.core.json.MValueAdapter;
@@ -287,6 +287,11 @@ public class Coaches {
             after = newOptions;
             answer.setAidList(newOptions);
           } else if (question.getType().equals("subcoachInstantiator")) {
+            Set<SubcoachInstances.SubcoachInstance> instancesBefore = answer.getSubcoachInstances() == null
+                    ? new HashSet<>()
+                    : new HashSet<>(answer.getSubcoachInstances().getSubcoachInstance());
+
+            // Parse the JSON and update the answer
             TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
             Map<String, String> subcoachInstanceData = new ObjectMapper().readValue(unescapedValue, typeRef);
 
@@ -299,6 +304,30 @@ public class Coaches {
             });
 
             answer.setSubcoachInstances(instances);
+
+            // Now let's actually instantiate the subcoaches
+            Set<SubcoachInstances.SubcoachInstance> instancesNow = new HashSet<>(instances.getSubcoachInstance());
+            Set<SubcoachInstances.SubcoachInstance> addedInstances = instancesNow
+                    .stream()
+                    .filter(i -> !instancesBefore.contains(i))
+                    .collect(Collectors.toSet());
+
+            for (SubcoachInstances.SubcoachInstance instance : addedInstances) {
+              FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getSubcoachId());
+              Questionnaire subcoach = cal.getCoach(question.getSubcoachId());
+              Metadata metadata = new Metadata();
+              metadata.setKey("subcoach-data");
+              Mvalue parentArgument = MetadataUtils.createMvalueStr("parent-argument", instance.getParentArgument());
+              Mvalue subcoachInstantiatorId = MetadataUtils.createMvalueStr("subcoach-instantiator-id", question.getId());
+              metadata.getMvalue().add(parentArgument);
+              metadata.getMvalue().add(subcoachInstantiatorId);
+              Set<String> selectors = new HashSet<>(Collections.singletonList(instance.getSubcoachId()));
+
+              // Create and resume coach
+              cal.instantiateSubCoach(companyId, fqcn, subcoach, selectors, metadata);
+              CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
+              subcoachLibrary.onResume(subcoachFqcn.getCoachId(), subcoachFqcn);
+            }
           } else {
             before = answer.getText();
             after = value;
@@ -510,6 +539,10 @@ public class Coaches {
       model.put("aidList", answer != null && answer.getAidList() != null
           ? Arrays.asList(answer.getAidList().split(" "))
           : Arrays.asList());
+      if (question.getType().equals("subcoachInstantiatorOutlet")) {
+          model.put("subcoachFqcn", SubcoachHelper.getFirstFqcn(companyId, fqcn, cal, question.getSubcoachInstantiatorId()));
+      }
+
       return Response.status(200).entity(new Viewable("/coaching/coach", model)).build();
     } catch (CacheException ce) {
       logger.severe(ce.getMessage());

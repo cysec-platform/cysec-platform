@@ -168,4 +168,8 @@ public class FQCN {
           segments[0], "default"
     });
   }
+
+  public static FQCN from(String rootCoachId, String subcoachId, String instanceName) {
+    return new FQCN(new String[] { rootCoachId, subcoachId, instanceName });
+  }
 }

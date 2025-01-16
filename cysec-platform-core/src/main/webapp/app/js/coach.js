@@ -181,9 +181,8 @@ const exclusiveCheck = (event) => {
     }
 };
 
-const loadSubcoach = (rootId, coachName, instanceName) => {
-    const fqcn = [rootId, coachName, instanceName].join('.');
-    const redirectUrl = buildUrl("/app/coach.jsp?fqcn=" + fqcn + "&question=_first");
+const loadSubcoach = (subcoachFqcn) => {
+    const redirectUrl = buildUrl("/app/coach.jsp?fqcn=" + subcoachFqcn + "&question=_first");
     window.location.replace(redirectUrl);
 }
 
