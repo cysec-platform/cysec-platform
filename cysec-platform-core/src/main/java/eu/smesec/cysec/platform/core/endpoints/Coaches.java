@@ -311,7 +311,12 @@ public class Coaches {
                     .stream()
                     .filter(i -> !instancesBefore.contains(i))
                     .collect(Collectors.toSet());
+            Set<SubcoachInstances.SubcoachInstance> removedInstances = instancesBefore
+                    .stream()
+                    .filter(i -> !instancesNow.contains(i))
+                    .collect(Collectors.toSet());
 
+            // instantiate newly added instances
             for (SubcoachInstances.SubcoachInstance instance : addedInstances) {
               FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getSubcoachId());
               Questionnaire subcoach = cal.getCoach(question.getSubcoachId());
@@ -327,6 +332,12 @@ public class Coaches {
               cal.instantiateSubCoach(companyId, fqcn, subcoach, selectors, metadata);
               CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
               subcoachLibrary.onResume(subcoachFqcn.getCoachId(), subcoachFqcn);
+            }
+
+            // remove all instances that were removed by user
+            for (SubcoachInstances.SubcoachInstance instance : removedInstances) {
+              FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getSubcoachId());
+              cal.removeSubCoach(companyId, subcoachFqcn);
             }
           } else {
             before = answer.getText();
