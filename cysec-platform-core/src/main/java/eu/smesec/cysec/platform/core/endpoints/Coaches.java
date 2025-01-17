@@ -498,6 +498,12 @@ public class Coaches {
       // update state
       State state = new State(questionId, null);
       cal.setMetadataOnAnswers(companyId, fqcn, MetadataUtils.toMd(state));
+      Optional<String> subcoachInstantiatorId = SubcoachHelper.getSubcoachInstantiatorId(companyId, fqcn, cal);
+      if (subcoachInstantiatorId.isPresent()) {
+        Answer answer = cal.getAnswer(companyId, fqcn.getParent(), subcoachInstantiatorId.get());
+        answer.setCurrentSubcoachInstance(fqcn.getName());
+        cal.updateAnswer(companyId, fqcn.getParent(), answer);
+      }
 
       // summary page
       String summaryUrl = res.hasResource(fqcn.getCoachId(), library.getId(), "/assets/jsp/summary.jsp")
@@ -598,13 +604,20 @@ public class Coaches {
 
 
       String nextUrl;
-      boolean isSubCoach = library.getQuestionnaire().getParent() != null;
       if (next == null) { // Are we at the end of the questionnaire?
-        if (isSubCoach) {
-          // If we are in a subcoach and the questionnaire is finished, we need to get the next question
-          // relative to the current question of the parent coach
-          Question currentQuestionParent = cal.getCurrentQuestion(companyId, fqcn.getParent());
-          nextUrl = context.getContextPath() + "/api/rest/coaches/" + fqcn.getParent() + "/questions/" + currentQuestionParent.getId() + "/next";
+        // Let's check if we are in a subcoach managed through an instantiator
+        Optional<String> subcoachInstantiatorId = SubcoachHelper.getSubcoachInstantiatorId(companyId, fqcn, cal);
+        if (subcoachInstantiatorId.isPresent()) {
+          Optional<FQCN> nextSubcoachInstance = SubcoachHelper.getNextSubcoachInstance(companyId, fqcn, cal);
+          if (nextSubcoachInstance.isPresent()) {
+            // We are in a subcoach and there is a next subcoach instance
+            nextUrl = context.getContextPath() + "/app/coach.jsp?fqcn=" + nextSubcoachInstance.get() + "&question=_first";
+          } else {
+            // In this case we are at the end of the subcoach instantiator outlet, so we go to the next question in the
+            // parent coach after the outlet
+            Question currentQuestionParent = cal.getCurrentQuestion(companyId, fqcn.getParent());
+            nextUrl = context.getContextPath() + "/api/rest/coaches/" + fqcn.getParent() + "/questions/" + currentQuestionParent.getId() + "/next";
+          }
         } else {
           // If are in the root coach, we go to the summary page when the questionnaire is finished
           nextUrl = context.getContextPath() + summaryUrl;

@@ -238,7 +238,7 @@
                 <xs:element ref="text"/>
                 <xs:element ref="metadata" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="subcoachInstances" minOccurs="0" /> <!-- This is only relevant for question with question type = subcoachInstantiator-->
-
+                <xs:element name="currentSubcoachInstance" type="xs:string" minOccurs="0" /> <!-- This is only relevant for question with question type = subcoachInstantiator-->
             </xs:sequence>
             <!--            <xs:attribute name="qid" type="xs:IDREF" use="required"/>-->
             <xs:attribute name="qid" type="xs:ID" use="required"/>
