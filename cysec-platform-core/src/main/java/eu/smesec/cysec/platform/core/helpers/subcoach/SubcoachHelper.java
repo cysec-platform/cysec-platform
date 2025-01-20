@@ -19,6 +19,7 @@
  */
 package eu.smesec.cysec.platform.core.helpers.subcoach;
 
+import eu.smesec.cysec.platform.bridge.CoachLibrary;
 import eu.smesec.cysec.platform.bridge.FQCN;
 import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.generated.Answer;
@@ -27,8 +28,10 @@ import eu.smesec.cysec.platform.bridge.generated.Question;
 import eu.smesec.cysec.platform.bridge.generated.SubcoachInstances;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SubcoachHelper {
 
@@ -85,6 +88,25 @@ public class SubcoachHelper {
         return Optional.empty();
     }
 
+    public static List<InstantiatorData> getAllInstantiatorsInCoach(String companyId, FQCN fqcn, CacheAbstractionLayer cal) throws CacheException {
+        // First we find all subcoach instantiators in this coach
+        CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+        List<String> instantiatorIds = library.getQuestionnaire()
+                .getQuestions()
+                .getQuestion()
+                .stream()
+                .filter(q -> q.getType().equals("subcoachInstantiator"))
+                .map(Question::getId)
+                .collect(Collectors.toList());
+
+        // Get data of instantiators and return it
+        List<InstantiatorData> instantiators = new ArrayList<>();
+        for (String id : instantiatorIds) {
+            instantiators.add(InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, id));
+        }
+        return instantiators;
+    }
+
 
     public final static class InstantiatorData {
         private final String instantiatorId;
@@ -101,6 +123,18 @@ public class SubcoachHelper {
             Answer answer = cal.getAnswer(companyId, fqcn.getRoot(), instantiatorId);
             Question instantiatorQuestion = cal.getQuestion(fqcn.getRootCoachId(), instantiatorId);
             return new InstantiatorData(instantiatorId, instantiatorQuestion.getSubcoachId(), answer.getSubcoachInstances().getSubcoachInstance());
+        }
+
+        public String getInstantiatorId() {
+            return instantiatorId;
+        }
+
+        public String getSubcoachId() {
+            return subcoachId;
+        }
+
+        public List<SubcoachInstances.SubcoachInstance> getInstances() {
+            return instances;
         }
     }
 }

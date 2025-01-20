@@ -132,14 +132,14 @@ public class Coaches {
       CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
       library.onResume(fqcn.getCoachId(), fqcn);
 
-      // Resume sub coaches of this coach
-      List<FQCN> allSubcoachesFqcn = library.getQuestionnaire().getQuestions().getQuestion().stream()
-              .filter(q -> Objects.equals(q.getType(), "subcoach"))
-              .map(q -> FQCN.fromString(String.format("%s.%s.%s", fqcn.getRootCoachId(), q.getSubcoachId(), q.getInstanceName())))
-              .collect(Collectors.toList());
-      for (FQCN subcoachFqcn : allSubcoachesFqcn) {
-        CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
-        subcoachLibrary.onResume(subcoachFqcn.getCoachId(), subcoachFqcn);
+      // Resume subcoaches
+      List<SubcoachHelper.InstantiatorData> instantiators = SubcoachHelper.getAllInstantiatorsInCoach(companyId, fqcn, cal);
+      for (SubcoachHelper.InstantiatorData instantiator : instantiators) {
+        for (SubcoachInstances.SubcoachInstance instance : instantiator.getInstances()) {
+          CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(instantiator.getSubcoachId()).get(0);
+          FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), instantiator.getSubcoachId(), instance.getSubcoachId());
+          subcoachLibrary.onResume(instance.getSubcoachId(), subcoachFqcn);
+        }
       }
 
       // update last selected
