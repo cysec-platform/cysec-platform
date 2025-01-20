@@ -96,17 +96,17 @@ const getSubcoachInstanceFromEl = (el) => {
     const formEl = document.querySelector("#subcoachInstantiatorForm");
 
     const parentArgumentSelectEl = el.querySelector(".parent-argument-select");
-    const subcoachIdInputEl = el.querySelector(".subcoach-id-input");
+    const instanceNameEl = el.querySelector(".instance-name-input");
 
     const parentArgument = parentArgumentSelectEl.value;
-    const subcoachId = subcoachIdInputEl.value;
+    const instanceName = instanceNameEl.value;
 
-    const subcoachIdRegex = formEl.getAttribute('data-subcoach-id-regex');
-    if (subcoachIdRegex && !new RegExp(subcoachIdRegex).test(subcoachId)) {
+    const instanceNameRegex = formEl.getAttribute('data-instance-name-regex');
+    if (instanceNameRegex && !new RegExp(instanceNameRegex).test(instanceName)) {
         displayWarning("Invalid input, cannot add")
         return;
     }
-    return [subcoachId, parentArgument];
+    return [instanceName, parentArgument];
 }
 
 const getExistingSubcoachInstances = () => {
@@ -117,8 +117,8 @@ const getExistingSubcoachInstances = () => {
     let payload = {};
     const subcoachInstanceEls = [...formEl.querySelectorAll(".subcoach-instance.existing-instance")];
     for (let instanceEl of subcoachInstanceEls) {
-        const [subcoachId, parentArgument] = getSubcoachInstanceFromEl(instanceEl);
-        payload[subcoachId] = parentArgument;
+        const [instanceName, parentArgument] = getSubcoachInstanceFromEl(instanceEl);
+        payload[instanceName] = parentArgument;
     }
 
     return payload;
@@ -126,9 +126,9 @@ const getExistingSubcoachInstances = () => {
 
 const getNewSubcoachInstance = () => {
     const subcoachInstanceEl = document.querySelector("#subcoachInstantiatorForm .subcoach-instance.new-instance");
-    const [subcoachId, parentArgument] = getSubcoachInstanceFromEl(subcoachInstanceEl);
+    const [instanceName, parentArgument] = getSubcoachInstanceFromEl(subcoachInstanceEl);
     const instance = {};
-    instance[subcoachId] = parentArgument;
+    instance[instanceName] = parentArgument;
     return instance;
 }
 
@@ -141,9 +141,9 @@ const updateSubcoachInstantiatorAnswer = (event) => {
     sendAnswer(JSON.stringify(subcoachInstances));
 };
 
-const deleteSubcoachInstance = (subcoachId) => {
+const deleteSubcoachInstance = (instanceName) => {
     const subcoachInstances = getExistingSubcoachInstances();
-    delete subcoachInstances[subcoachId];
+    delete subcoachInstances[instanceName];
     sendAnswer(JSON.stringify(subcoachInstances));
 };
 

@@ -2,7 +2,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 
-<form class="container" id="subcoachInstantiatorForm" onsubmit="updateSubcoachInstantiatorAnswer(event)" data-subcoach-id-regex="${it.question.subcoachIdRegex}">
+<form class="container" id="subcoachInstantiatorForm" onsubmit="updateSubcoachInstantiatorAnswer(event)" data-instance-name-regex="${it.question.instanceNameRegex}">
 
     <h3>Bestehende</h3>
     <c:choose>
@@ -14,18 +14,18 @@
                 <div class="row gx-3 mb-3 subcoach-instance existing-instance">
                     <div class="col-5">
                         <div class="form-floating">
-                            <input type="text" readonly class="form-control-plaintext m-0 pt-5" id="parentArgumentText-${instance.subcoachId}" placeholder="lorem" value="${instance.parentArgument}">
-                            <label id="parentArgumentText-${instance.subcoachId}">${it.question.parentArgumentValues.label}</label>
+                            <input type="text" readonly class="form-control-plaintext m-0 pt-5" id="parentArgumentText-${instance.instanceName}" placeholder="lorem" value="${instance.parentArgument}">
+                            <label id="parentArgumentText-${instance.instanceName}">${it.question.parentArgumentValues.label}</label>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-floating">
-                            <input type="text" readonly class="form-control-plaintext m-0 pt-5" id="subcoachIdText-${instance.subcoachId}" placeholder="lorem" value="${instance.subcoachId}">
-                            <label id="subcoachIdText-${instance.subcoachId}">${it.question.subcoachIdLabel}</label>
+                            <input type="text" readonly class="form-control-plaintext m-0 pt-5" id="instanceNameText-${instance.instanceName}" placeholder="lorem" value="${instance.instanceName}">
+                            <label id="instanceNameText-${instance.instanceName}">${it.question.instanceNameLabel}</label>
                         </div>
                     </div>
                     <div class="col-3">
-                        <button type="button" class="btn btn-danger w-100 h-100" onclick="deleteSubcoachInstance('${instance.subcoachId}')">Entfernen</button>
+                        <button type="button" class="btn btn-danger w-100 h-100" onclick="deleteSubcoachInstance('${instance.instanceName}')">Entfernen</button>
                     </div>
 
                     <select hidden class="form-select parent-argument-select">
@@ -33,7 +33,7 @@
                             <option ${instance.parentArgument == parentArgumentValue ? "selected" : ""} value="${parentArgumentValue}">${parentArgumentValue}</option>
                         </c:forEach>
                     </select>
-                    <input hidden type="text" class="form-control m-0 subcoach-id-input"  value="${instance.subcoachId}"/>
+                    <input hidden type="text" class="form-control m-0 instance-name-input"  value="${instance.instanceName}"/>
                 </div>
             </c:forEach>
         </c:otherwise>
@@ -53,8 +53,8 @@
         </div>
         <div class="col-4">
             <div class="form-floating">
-                <input type="text" class="form-control m-0 subcoach-id-input" id="subcoachId" placeholder="loremipsum"/>
-                <label for="subcoachId">${it.question.subcoachIdLabel}</label>
+                <input type="text" class="form-control m-0 instance-name-input" id="instanceName" placeholder="loremipsum"/>
+                <label for="instanceName">${it.question.instanceNameLabel}</label>
             </div>
         </div>
         <div class="col-3">

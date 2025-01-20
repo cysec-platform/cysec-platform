@@ -154,8 +154,8 @@
             <xs:attribute name="instanceName" type="xs:string"/>
             <xs:attribute name="parentArgument" type="xs:string"/>
             <xs:attribute name="subcoachInstantiatorId" type="xs:string"/> <!-- Only relevant for questionType = subcoachInstantiator -->
-            <xs:attribute name="subcoachIdLabel" type="xs:string" /> <!-- Only relevant for questionType = subcoachInstantiator -->
-            <xs:attribute name="subcoachIdRegex" type="xs:string" /> <!-- Only relevant for questionType = subcoachInstantiator -->
+            <xs:attribute name="instanceNameLabel" type="xs:string" /> <!-- Only relevant for questionType = subcoachInstantiator -->
+            <xs:attribute name="instanceNameRegex" type="xs:string" /> <!-- Only relevant for questionType = subcoachInstantiator -->
         </xs:complexType>
     </xs:element>
 
@@ -251,7 +251,7 @@
             <xs:sequence>
                 <xs:element name="subcoachInstance" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
-                        <xs:attribute name="subcoachId" use="required"/>
+                        <xs:attribute name="instanceName" use="required"/>
                         <xs:attribute name="parentArgument" use="required"/>
                     </xs:complexType>
                 </xs:element>

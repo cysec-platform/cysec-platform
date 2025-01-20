@@ -42,12 +42,12 @@ public class SubcoachHelper {
     private final static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
     public static FQCN getFirstFqcn(String companyId, FQCN fqcn, CacheAbstractionLayer cal, String instantiatorId) throws CacheException {
-        InstantiatorData data = InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, instantiatorId);
-        if (data.instances.isEmpty()) {
+        Optional<InstantiatorData> data = InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, instantiatorId);
+        if (!data.isPresent() || data.get().instances.isEmpty()) {
             throw new IllegalStateException("Cannot get first instance if no subcoaches are instantiated");
         }
 
-        return FQCN.from(fqcn.getRootCoachId(), data.subcoachId, data.instances.get(0).getSubcoachId());
+        return FQCN.from(fqcn.getRootCoachId(), data.get().subcoachId, data.get().instances.get(0).getInstanceName());
     }
 
     public static Optional<String> getSubcoachInstantiatorId(String companyId, FQCN fqcn, CacheAbstractionLayer cal) throws CacheException {
@@ -65,19 +65,20 @@ public class SubcoachHelper {
         Optional<String> instantiatorId = getSubcoachInstantiatorId(companyId, fqcn, cal);
         Optional<String> currentInstanceName = getCurrentSubcoachInstance(companyId, fqcn, cal);
         if (instantiatorId.isPresent() && currentInstanceName.isPresent()) {
-            InstantiatorData data = InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, instantiatorId.get());
+            Optional<InstantiatorData> data = InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, instantiatorId.get());
+            if (!data.isPresent()) return Optional.empty();
 
             int currentIndex = 0;
-            for (int i = 0; i < data.instances.size(); i++) {
-                if (data.instances.get(i).getSubcoachId().equals(currentInstanceName.get())) break;
+            for (int i = 0; i < data.get().instances.size(); i++) {
+                if (data.get().instances.get(i).getInstanceName().equals(currentInstanceName.get())) break;
                 currentIndex++;
             }
 
             int nextIndex = currentIndex + 1;
 
             // Return fqcn of next subcoach if there is one
-            if (data.instances.size() > nextIndex) {
-                FQCN nextFqcn = FQCN.from(fqcn.getRootCoachId(), fqcn.getCoachId(), data.instances.get(nextIndex).getSubcoachId());
+            if (data.get().instances.size() > nextIndex) {
+                FQCN nextFqcn = FQCN.from(fqcn.getRootCoachId(), fqcn.getCoachId(), data.get().instances.get(nextIndex).getInstanceName());
                 return Optional.of(nextFqcn);
             }
         }
@@ -107,9 +108,8 @@ public class SubcoachHelper {
 
         // Get data of instantiators and return it
         List<InstantiatorData> instantiators = new ArrayList<>();
-        for (String id : instantiatorIds) {
-            instantiators.add(InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, id));
-        }
+        for (String id : instantiatorIds)
+            InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, id).ifPresent(instantiators::add);
         return instantiators;
     }
 
@@ -119,12 +119,14 @@ public class SubcoachHelper {
             try {
                 // If the question is a subcoach outlet we insert all questions of the subcoach at the position of the outlet
                 if (question.getType().equals("subcoachInstantiatorOutlet")) {
-                    InstantiatorData instantiator = InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, question.getSubcoachInstantiatorId());
+                    Optional<InstantiatorData> instantiator = InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, question.getSubcoachInstantiatorId());
+                    if (!instantiator.isPresent())
+                        return Stream.of(questionTuple);
 
                     // Find all questions of the subcoach outlet
                     List<Tuple<FQCN, Question>> subcoachQuestions = new ArrayList<>();
-                    for (SubcoachInstances.SubcoachInstance instance : instantiator.getInstances()) {
-                        FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), instantiator.subcoachId, instance.getSubcoachId());
+                    for (SubcoachInstances.SubcoachInstance instance : instantiator.get().getInstances()) {
+                        FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), instantiator.get().subcoachId, instance.getInstanceName());
                         CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
 
                         List<String> activeQuestionIds = subcoachLibrary.getActiveQuestions(subcoachFqcn);
@@ -155,10 +157,14 @@ public class SubcoachHelper {
             this.instances = instances;
         }
 
-        public static InstantiatorData ofInstantiatorId(String companyId, FQCN fqcn, CacheAbstractionLayer cal, String instantiatorId) throws CacheException {
+        public static Optional<InstantiatorData> ofInstantiatorId(String companyId, FQCN fqcn, CacheAbstractionLayer cal, String instantiatorId) throws CacheException {
             Answer answer = cal.getAnswer(companyId, fqcn.getRoot(), instantiatorId);
+            if (answer == null) return Optional.empty();
             Question instantiatorQuestion = cal.getQuestion(fqcn.getRootCoachId(), instantiatorId);
-            return new InstantiatorData(instantiatorId, instantiatorQuestion.getSubcoachId(), answer.getSubcoachInstances().getSubcoachInstance());
+            List<SubcoachInstances.SubcoachInstance> instances = answer.getSubcoachInstances() == null
+                    ? new ArrayList<>()
+                    : answer.getSubcoachInstances().getSubcoachInstance();
+            return Optional.of(new InstantiatorData(instantiatorId, instantiatorQuestion.getSubcoachId(), instances));
         }
 
         public String getInstantiatorId() {

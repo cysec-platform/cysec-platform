@@ -137,8 +137,8 @@ public class Coaches {
       for (SubcoachHelper.InstantiatorData instantiator : instantiators) {
         for (SubcoachInstances.SubcoachInstance instance : instantiator.getInstances()) {
           CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(instantiator.getSubcoachId()).get(0);
-          FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), instantiator.getSubcoachId(), instance.getSubcoachId());
-          subcoachLibrary.onResume(instance.getSubcoachId(), subcoachFqcn);
+          FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), instantiator.getSubcoachId(), instance.getInstanceName());
+          subcoachLibrary.onResume(instance.getInstanceName(), subcoachFqcn);
         }
       }
 
@@ -298,7 +298,7 @@ public class Coaches {
             SubcoachInstances instances = new SubcoachInstances();
             subcoachInstanceData.forEach((key, val) -> {
               SubcoachInstances.SubcoachInstance instance = new SubcoachInstances.SubcoachInstance();
-              instance.setSubcoachId(key);
+              instance.setInstanceName(key);
               instance.setParentArgument(val);
               instances.getSubcoachInstance().add(instance);
             });
@@ -318,7 +318,7 @@ public class Coaches {
 
             // instantiate newly added instances
             for (SubcoachInstances.SubcoachInstance instance : addedInstances) {
-              FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getSubcoachId());
+              FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getInstanceName());
               Questionnaire subcoach = cal.getCoach(question.getSubcoachId());
               Metadata metadata = new Metadata();
               metadata.setKey("subcoach-data");
@@ -326,7 +326,7 @@ public class Coaches {
               Mvalue subcoachInstantiatorId = MetadataUtils.createMvalueStr("subcoach-instantiator-id", question.getId());
               metadata.getMvalue().add(parentArgument);
               metadata.getMvalue().add(subcoachInstantiatorId);
-              Set<String> selectors = new HashSet<>(Collections.singletonList(instance.getSubcoachId()));
+              Set<String> selectors = new HashSet<>(Collections.singletonList(instance.getInstanceName()));
 
               // Create and resume coach
               cal.instantiateSubCoach(companyId, fqcn, subcoach, selectors, metadata);
@@ -336,7 +336,7 @@ public class Coaches {
 
             // remove all instances that were removed by user
             for (SubcoachInstances.SubcoachInstance instance : removedInstances) {
-              FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getSubcoachId());
+              FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getInstanceName());
               cal.removeSubCoach(companyId, subcoachFqcn);
             }
           } else {
