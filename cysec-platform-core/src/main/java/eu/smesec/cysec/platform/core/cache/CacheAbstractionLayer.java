@@ -1545,6 +1545,9 @@ public class CacheAbstractionLayer {
      * @throws CacheException If any errors happen while deleting the sub-coach
      */
     public void removeSubCoach(String companyId, FQCN fqcn) throws CacheException {
+        CoachLibrary library = getLibrariesForQuestionnaire(fqcn.getRootCoachId()).get(0);
+        library.onRemove(fqcn);
+
         removeSubCoach(companyId, fqcn.toPath());
         removeSubCoach(companyId, fqcn.toFlagsPath());
     }

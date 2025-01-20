@@ -139,6 +139,7 @@ public class Coaches {
           CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(instantiator.getSubcoachId()).get(0);
           FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), instantiator.getSubcoachId(), instance.getInstanceName());
           subcoachLibrary.onResume(instance.getInstanceName(), subcoachFqcn);
+          subcoachLibrary.setParent(library.getContext());
         }
       }
 

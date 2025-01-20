@@ -74,6 +74,11 @@ public interface CoachLibrary {
   List<Command> onResume(String questionId, FQCN fqcn);
 
   /**
+   * This method is called before a coach or a subcoach is removed.
+   */
+  void onRemove(FQCN fqcn);
+
+  /**
    * <p>A routine executed every time a client adds text to question or selects an option.</p>
    *
    * <p>The library will evaluate the question that will update scoring, add metadata or hide questions</p>
