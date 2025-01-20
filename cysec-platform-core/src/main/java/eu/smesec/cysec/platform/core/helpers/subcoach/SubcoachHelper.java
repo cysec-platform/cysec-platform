@@ -26,14 +26,20 @@ import eu.smesec.cysec.platform.bridge.generated.Answer;
 import eu.smesec.cysec.platform.bridge.generated.Metadata;
 import eu.smesec.cysec.platform.bridge.generated.Question;
 import eu.smesec.cysec.platform.bridge.generated.SubcoachInstances;
+import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
+import org.glassfish.jersey.logging.LoggingFeature;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SubcoachHelper {
+
+    private final static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
     public static FQCN getFirstFqcn(String companyId, FQCN fqcn, CacheAbstractionLayer cal, String instantiatorId) throws CacheException {
         InstantiatorData data = InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, instantiatorId);
@@ -105,6 +111,36 @@ public class SubcoachHelper {
             instantiators.add(InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, id));
         }
         return instantiators;
+    }
+
+    public static List<Tuple<FQCN, Question>> insertSubcoachQuestions(String companyId, FQCN fqcn, CacheAbstractionLayer cal, List<Question> questions) {
+        return questions.stream().flatMap(question -> {
+            Tuple<FQCN, Question> questionTuple = new Tuple<>(fqcn, question);
+            try {
+                // If the question is a subcoach outlet we insert all questions of the subcoach at the position of the outlet
+                if (question.getType().equals("subcoachInstantiatorOutlet")) {
+                    InstantiatorData instantiator = InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, question.getSubcoachInstantiatorId());
+
+                    // Find all questions of the subcoach outlet
+                    List<Tuple<FQCN, Question>> subcoachQuestions = new ArrayList<>();
+                    for (SubcoachInstances.SubcoachInstance instance : instantiator.getInstances()) {
+                        FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), instantiator.subcoachId, instance.getSubcoachId());
+                        CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
+
+                        List<String> activeQuestionIds = subcoachLibrary.getActiveQuestions(subcoachFqcn);
+                        for (String qid : activeQuestionIds)
+                            subcoachQuestions.add(new Tuple<>(subcoachFqcn, cal.getQuestion(subcoachFqcn.getCoachId(), qid)));
+                    }
+
+                    return Stream.concat(Stream.of(questionTuple), subcoachQuestions.stream());
+                } else {
+                    return Stream.of(questionTuple);
+                }
+            } catch (CacheException e) {
+                logger.severe("An error occurred while getting active questions of subcoaches");
+                return Stream.of(questionTuple);
+            }
+        }).collect(Collectors.toList());
     }
 
 

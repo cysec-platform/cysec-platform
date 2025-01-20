@@ -126,6 +126,14 @@ public interface CoachLibrary {
   List<Question> peekQuestions(Question question);
 
   /**
+   * Get all active questions of a certain (sub)coach.
+   * @param fqcn The FQCN of the coach to get the active questions from.
+   * @return A list of question IDs of the requested coach. This does not include
+   * question IDs of subcoach questions, only the question ID of the outlet is included.
+   */
+  List<String> getActiveQuestions(FQCN fqcn);
+
+  /**
    * Return the active questions of a coach including its subcoaches.
    * @param fqcn The fqcn of the parent coach
    * @return List of tuples containing the fqcn of the coach where the

@@ -517,27 +517,29 @@ public class Coaches {
       // endpoint will determine the next question when called
       String nextUrl = "/api/rest/coaches/" + fqcn + "/questions/" + questionId + "/next";
 
-      // question states for pagination
-        List<Tuple<FQCN, Question>> actives = parentLibrary.peekQuestionsIncludingSubcoaches(parentFqcn);
-        Map<Tuple<FQCN, Question>, Answer> answers = actives
-                .stream()
-                .map(tup -> {
-                    try {
-                        return new AbstractMap.SimpleEntry<>(tup, cal.getAnswer(companyId, tup.getFirst(), tup.getSecond().getId()));
-                    } catch (CacheException e) {
-                        return new AbstractMap.SimpleEntry<Tuple<FQCN, Question>, Answer>(tup, null);
-                    }
-                }).filter(e -> e.getValue() != null)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        Map<String, Boolean> flagStatus = actives
-                .stream()
-                .collect(Collectors.toMap(q -> q.getFirst() + ":" + q.getSecond().getId(), q -> {
-                    try {
-                        return cal.isQuestionFlagged(companyId, q.getFirst(), q.getSecond().getId());
-                    } catch (CacheException e) {
-                        return false;
-                    }
-                }));
+
+      // fetch data for pagination
+      List<Question> questions = parentLibrary.peekQuestions(question);
+      List<Tuple<FQCN, Question>> actives = SubcoachHelper.insertSubcoachQuestions(companyId, parentFqcn, cal, questions);
+      Map<Tuple<FQCN, Question>, Answer> answers = actives
+              .stream()
+              .map(tup -> {
+                  try {
+                      return new AbstractMap.SimpleEntry<>(tup, cal.getAnswer(companyId, tup.getFirst(), tup.getSecond().getId()));
+                  } catch (CacheException e) {
+                      return new AbstractMap.SimpleEntry<Tuple<FQCN, Question>, Answer>(tup, null);
+                  }
+              }).filter(e -> e.getValue() != null)
+              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+      Map<String, Boolean> flagStatus = actives
+              .stream()
+              .collect(Collectors.toMap(q -> q.getFirst() + ":" + q.getSecond().getId(), q -> {
+                  try {
+                      return cal.isQuestionFlagged(companyId, q.getFirst(), q.getSecond().getId());
+                  } catch (CacheException e) {
+                      return false;
+                  }
+              }));
 
       CoachMsg msg = new CoachMsg(locale);
       Map<String, Object> model = new HashMap<>();
