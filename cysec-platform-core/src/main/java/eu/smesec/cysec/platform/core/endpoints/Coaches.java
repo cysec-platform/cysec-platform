@@ -338,7 +338,14 @@ public class Coaches {
             // remove all instances that were removed by user
             for (SubcoachInstances.SubcoachInstance instance : removedInstances) {
               FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getInstanceName());
-              cal.removeSubCoach(companyId, subcoachFqcn);
+
+              try {
+                // We need to wrap this call in a try-catch to make sure the answer is actually updated even
+                // if the coach file does not exist for whatever reason
+                cal.removeSubCoach(companyId, subcoachFqcn);
+              } catch (CacheException e) {
+                logger.warning(e.getMessage());
+              }
             }
           } else {
             before = answer.getText();
