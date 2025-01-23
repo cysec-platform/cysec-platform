@@ -567,7 +567,7 @@ public class Coaches {
           ? Arrays.asList(answer.getAidList().split(" "))
           : Arrays.asList());
       if (question.getType().equals("subcoachInstantiatorOutlet")) {
-          model.put("subcoachFqcn", SubcoachHelper.getFirstFqcn(companyId, fqcn, cal, question.getSubcoachInstantiatorId()));
+          model.put("subcoachFqcn", SubcoachHelper.getFirstFqcn(companyId, fqcn, cal, question.getSubcoachInstantiatorId()).orElse(null));
       }
 
       return Response.status(200).entity(new Viewable("/coaching/coach", model)).build();

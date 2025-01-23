@@ -41,13 +41,10 @@ public class SubcoachHelper {
 
     private final static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
-    public static FQCN getFirstFqcn(String companyId, FQCN fqcn, CacheAbstractionLayer cal, String instantiatorId) throws CacheException {
-        Optional<InstantiatorData> data = InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, instantiatorId);
-        if (!data.isPresent() || data.get().instances.isEmpty()) {
-            throw new IllegalStateException("Cannot get first instance if no subcoaches are instantiated");
-        }
-
-        return FQCN.from(fqcn.getRootCoachId(), data.get().subcoachId, data.get().instances.get(0).getInstanceName());
+    public static Optional<FQCN> getFirstFqcn(String companyId, FQCN fqcn, CacheAbstractionLayer cal, String instantiatorId) throws CacheException {
+        return InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, instantiatorId)
+                .filter(data -> !data.getInstances().isEmpty())
+                .map(data -> FQCN.from(fqcn.getRootCoachId(), data.subcoachId, data.instances.get(0).getInstanceName()));
     }
 
     public static Optional<String> getSubcoachInstantiatorId(String companyId, FQCN fqcn, CacheAbstractionLayer cal) throws CacheException {
