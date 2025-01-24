@@ -625,8 +625,10 @@ public class Coaches {
           } else {
             // In this case we are at the end of the subcoach instantiator outlet, so we go to the next question in the
             // parent coach after the outlet
-            Question currentQuestionParent = cal.getCurrentQuestion(companyId, fqcn.getParent());
-            nextUrl = context.getContextPath() + "/api/rest/coaches/" + fqcn.getParent() + "/questions/" + currentQuestionParent.getId() + "/next";
+            Optional<String> outletQuestionId = SubcoachHelper.getFirstOutletQuestionId(companyId, fqcn, cal);
+            nextUrl = outletQuestionId
+                    .map(s -> context.getContextPath() + "/api/rest/coaches/" + fqcn.getParent() + "/questions/" + s + "/next")
+                    .orElseGet(() -> context.getContextPath() + "/app/coach.jsp?fqcn=" + fqcn.getParent() + "&question=_first");
           }
         } else {
           // If are in the root coach, we go to the summary page when the questionnaire is finished

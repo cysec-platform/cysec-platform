@@ -58,6 +58,22 @@ public class SubcoachHelper {
         return Optional.empty();
     }
 
+    public static Optional<String> getFirstOutletQuestionId(String companyId, FQCN fqcn, CacheAbstractionLayer cal) throws CacheException {
+        Optional<String> instantiatorId = getSubcoachInstantiatorId(companyId, fqcn, cal);
+        if (instantiatorId.isPresent()) {
+            CoachLibrary lib = cal.getLibrariesForQuestionnaire(fqcn.getParentCoachId()).get(0);
+            return lib.getQuestionnaire()
+                    .getQuestions()
+                    .getQuestion()
+                    .stream()
+                    .filter(q -> q.getType().equals("subcoachInstantiatorOutlet"))
+                    .filter(q -> q.getSubcoachInstantiatorId().equals(instantiatorId.get()))
+                    .map(Question::getId)
+                    .findFirst();
+        }
+        return Optional.empty();
+    }
+
     public static Optional<FQCN> getNextSubcoachInstance(String companyId, FQCN fqcn, CacheAbstractionLayer cal) throws CacheException {
         Optional<String> instantiatorId = getSubcoachInstantiatorId(companyId, fqcn, cal);
         Optional<String> currentInstanceName = getCurrentSubcoachInstance(companyId, fqcn, cal);
