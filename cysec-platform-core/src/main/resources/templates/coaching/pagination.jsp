@@ -27,7 +27,7 @@
                 >
                     <img
                         class="pagination-img"
-                        src="${baseUrl}/assets/${it.question.getId().equals(aid)
+                        src="${baseUrl}/assets/${it.question.getId() == aid && it.fqcn.toString() == questionFqcn
                             ? 'status_in_progress.png'
                             : isFlagged
                                     ? 'status_flagged.png'
