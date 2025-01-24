@@ -31,6 +31,8 @@
                                     <a href="javascript:;" onclick="restart('${coachId}')">${it.msg.coachRestart}</a>
                                     &nbsp; | &nbsp;
                                     <a href="javascript:;" onclick="resume('${coachId}')">${it.msg.coachContinue}</a>
+                                    &nbsp; | &nbsp;
+                                    <a href="javascript:;" onclick="reset('${coachId}')">${it.msg.coachReset}</a>
                                     <c:if test="${it.userIsAdmin}">
                                         &nbsp; | &nbsp;
                                         <a href="javascript:;" onclick="openAdminModal('${coachId}')"

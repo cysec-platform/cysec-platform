@@ -57,6 +57,21 @@ const restart = (fqcn) => {
     });
 };
 
+const reset = (fqcn) => {
+    const resetUrl = buildUrl("/api/rest/coaches/" + fqcn + "/reset");
+    fetch(resetUrl, {
+        method: "POST",
+        credentials: "include"
+    }).then(response => {
+        if (response.ok) {
+            displaySuccess("CySec coach has been reset to its default state");
+        } else {
+            displayError("GET " + resetUrl + "<br>status code: " + response.status);
+            console.debug(response.status);
+        }
+    });
+}
+
 /**
  * Instantiates a new sub-coach
  * @param coachId - full coach id, including parent coach ids

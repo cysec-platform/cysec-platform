@@ -157,6 +157,39 @@ public class Coaches {
   }
 
   /**
+   * Resets a coach to its default state.
+   *
+   * @param id The fqcn of the coach
+   * @return response
+   */
+  @POST
+  @Path("/{id}/reset")
+  public Response reset(@PathParam("id") String id) {
+    String companyId = context.getAttribute("company").toString();
+    context.setAttribute("fqcn", id);
+    FQCN fqcn = FQCN.fromString(id);
+    try {
+      CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+      Questionnaire coach = cal.getCoach(fqcn.getCoachId());
+
+      // Remove coach
+      cal.finalizeCoach(companyId, fqcn.toPath().getParent());
+
+      // And then instantiate it again
+      cal.instantiateCoach(companyId, coach);
+      library.onBegin(FQCN.fromString(id));
+
+      return Response.status(200).build();
+    } catch (CacheException ce) {
+      logger.severe(ce.getMessage());
+      return Response.status(400).build();
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Error occurred", e);
+    }
+    return Response.status(500).build();
+  }
+
+  /**
    * Retrieves the first question of a coach.
    *
    * @param id The id of the coach.
