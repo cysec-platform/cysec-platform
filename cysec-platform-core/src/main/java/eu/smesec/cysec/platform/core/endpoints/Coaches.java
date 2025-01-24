@@ -269,7 +269,7 @@ public class Coaches {
         String before = "";
         if (answer != null) {
           // update existing
-          if (question.getType().startsWith("Astar")) {
+          if (EnumSet.of(QuestionType.ASTAR, QuestionType.ASTAREXCL).contains(question.getType())) {
             // Create new List as Arrays.asList is unmodifiable
             List<String> options;
             if (answer.getAidList() == null) {
@@ -287,7 +287,7 @@ public class Coaches {
             String newOptions = String.join(" ", options);
             after = newOptions;
             answer.setAidList(newOptions);
-          } else if (question.getType().equals("subcoachInstantiator")) {
+          } else if (question.getType().equals(QuestionType.SUBCOACH_INSTANTIATOR)) {
             Set<SubcoachInstances.SubcoachInstance> instancesBefore = answer.getSubcoachInstances() == null
                     ? new HashSet<>()
                     : new HashSet<>(answer.getSubcoachInstances().getSubcoachInstance());
@@ -359,7 +359,7 @@ public class Coaches {
           answer = new Answer();
           answer.setQid(question.getId());
           answer.setText(value);
-          if (question.getType().startsWith("Astar")) {
+          if (EnumSet.of(QuestionType.ASTAR, QuestionType.ASTAREXCL).contains(question.getType())) {
             answer.setAidList(value);
             after = answer.getQid();
           } else {
@@ -384,10 +384,10 @@ public class Coaches {
           // the response change logic
           if (fqcn.isTopLevel()) {
             List<Question> subcoachesBeforeUpdate = library.peekQuestions(question).stream()
-                    .filter(q -> Objects.equals(q.getType(), "subcoach")).collect(Collectors.toList());
+                    .filter(q -> Objects.equals(q.getType(), QuestionType.SUBCOACH)).collect(Collectors.toList());
             library.onResponseChange(question, answer, fqcn);
             List<Question> newSubCoaches = library.peekQuestions(question).stream()
-                    .filter(q -> Objects.equals(q.getType(), "subcoach"))
+                    .filter(q -> Objects.equals(q.getType(), QuestionType.SUBCOACH))
                     .filter(q -> !subcoachesBeforeUpdate.contains(q))
                     .collect(Collectors.toList());
 
@@ -566,7 +566,7 @@ public class Coaches {
       model.put("aidList", answer != null && answer.getAidList() != null
           ? Arrays.asList(answer.getAidList().split(" "))
           : Arrays.asList());
-      if (question.getType().equals("subcoachInstantiatorOutlet")) {
+      if (question.getType().equals(QuestionType.SUBCOACH_INSTANTIATOR_OUTLET)) {
           model.put("subcoachFqcn", SubcoachHelper.getFirstFqcn(companyId, fqcn, cal, question.getSubcoachInstantiatorId()).orElse(null));
       }
 
@@ -582,7 +582,7 @@ public class Coaches {
 
   /**
    * Routing to the next question based on the current question and its state.
-   * 
+   *
    * @param id                The id of the coach
    * @param currentQuestionId The id of the current question
    * @return Redirecting to the next question
@@ -635,7 +635,7 @@ public class Coaches {
       } else {
         nextUrl = context.getContextPath() + "/app/coach.jsp?fqcn=" + fqcn + "&question=" + next.getId();
       }
-      
+
       return Response.seeOther(URI.create(nextUrl)).build();
     } catch (CacheException e) {
       logger.log(Level.SEVERE, "Error occurred", e);

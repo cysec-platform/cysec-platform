@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,6 +31,7 @@ import eu.smesec.cysec.platform.bridge.generated.Library;
 import eu.smesec.cysec.platform.bridge.generated.Option;
 import eu.smesec.cysec.platform.bridge.generated.Options;
 import eu.smesec.cysec.platform.bridge.generated.Question;
+import eu.smesec.cysec.platform.bridge.generated.QuestionType;
 import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
 import eu.smesec.cysec.platform.bridge.generated.Questions;
 import eu.smesec.cysec.platform.core.threading.ThreadFactory;
@@ -95,7 +96,7 @@ public class CoachCacheTest {
     return createTestOption(id, text, null);
   }
 
-  private Question createTestQuestion(String id, String type, String text, String readMore, Option... options) {
+  private Question createTestQuestion(String id, QuestionType type, String text, String readMore, Option... options) {
     Question question = new Question();
     question.setId(id);
     question.setType(type);
@@ -107,7 +108,7 @@ public class CoachCacheTest {
     return question;
   }
 
-  private Question createTestQuestion(String id, String type, String text, Option... options) {
+  private Question createTestQuestion(String id, QuestionType type, String text, Option... options) {
     return createTestQuestion(id, type, text, null, options);
   }
 
@@ -324,13 +325,13 @@ public class CoachCacheTest {
     Path companyFileEn = Paths.get("lib-company/lib-company.xml");
     Questionnaire enCoach = createTestCoach("lib-company", null,
         "Company", 1, libGen,
-        createTestQuestion("company-q10", "A", "Question 1",
+        createTestQuestion("company-q10", QuestionType.A, "Question 1",
             createTestOption("company-q10o1", "Option 1"),
             createTestOption("company-q10o2", "Option 2")
-        ), createTestQuestion("company-q20", "A", "Question 2",
+        ), createTestQuestion("company-q20", QuestionType.A, "Question 2",
             createTestOption("company-q20o1", "Option 1"),
             createTestOption("company-q20o2", "Option 2")
-        ), createTestQuestion("company-q30", "A", "Question 3",
+        ), createTestQuestion("company-q30", QuestionType.A, "Question 3",
             createTestOption("company-q30o1", "Option 1"),
             createTestOption("company-q30o2", "Option 2")
         ));
@@ -373,13 +374,13 @@ public class CoachCacheTest {
     Path companyFileFr = Paths.get("lib-company/lib-company_fr.xml");
     Questionnaire enCoach = createTestCoach(companyId, null,
         "Company", 1, libGen,
-        createTestQuestion("company-q10", "A", "English question 1",
+        createTestQuestion("company-q10", QuestionType.A, "English question 1",
             createTestOption("company-q10o1", "English option 1"),
             createTestOption("company-q10o2", "English option 2")
-        ), createTestQuestion("company-q20", "A", "English question 2",
+        ), createTestQuestion("company-q20", QuestionType.A, "English question 2",
             createTestOption("company-q20o1", "English option 1"),
             createTestOption("company-q20o2", "English option 2")
-        ), createTestQuestion("company-q30", "A", "English question 3",
+        ), createTestQuestion("company-q30", QuestionType.A, "English question 3",
             createTestOption("company-q30o1", "English option 1"),
             createTestOption("company-q30o2", "English option 2")
         ));
@@ -397,13 +398,13 @@ public class CoachCacheTest {
         ));
     Questionnaire result = createTestCoach(companyId, null,
         "Entreprise", 1, null,
-        createTestQuestion("company-q10", "A", "French question 1",
+        createTestQuestion("company-q10", QuestionType.A, "French question 1",
             createTestOption("company-q10o1", "French option 1"),
             createTestOption("company-q10o2", "French option 2")
-        ), createTestQuestion("company-q20", "A", "French question 2",
+        ), createTestQuestion("company-q20", QuestionType.A, "French question 2",
             createTestOption("company-q20o1", "French option 1"),
             createTestOption("company-q20o2", "French option 2")
-        ), createTestQuestion("company-q30", "A", "French question 3",
+        ), createTestQuestion("company-q30", QuestionType.A, "French question 3",
             createTestOption("company-q30o1", "French option 1"),
             createTestOption("company-q30o2", "French option 2")
         ));
@@ -443,14 +444,14 @@ public class CoachCacheTest {
     Path companyFileFr = Paths.get("lib-company/lib-company_fr.xml");
     Questionnaire enCoach = createTestCoach(companyId, null,
         "Company", 1, libGen,
-        createTestQuestion("company-q10", "A", "English question 1",
+        createTestQuestion("company-q10", QuestionType.A, "English question 1",
             createTestOption("company-q10o1", "English option 1"),
             createTestOption("company-q10o2", "English option 2")
-        ), createTestQuestion("company-q20", "A", "English question 2",
+        ), createTestQuestion("company-q20", QuestionType.A, "English question 2",
             createTestOption("company-q20o1", "English option 1"),
             createTestOption("company-q20o2", "English option 2"),
             createTestOption("company-q20o3", "English option 3")
-        ), createTestQuestion("company-q40", "A", "English question 4",
+        ), createTestQuestion("company-q40", QuestionType.A, "English question 4",
             createTestOption("company-q40o1", "English option 1"),
             createTestOption("company-q40o2", "English option 2")
         ));
@@ -469,14 +470,14 @@ public class CoachCacheTest {
         ));
     Questionnaire result = createTestCoach(companyId, null,
         "Entreprise", 1, null,
-        createTestQuestion("company-q10", "A", "French question 1",
+        createTestQuestion("company-q10", QuestionType.A, "French question 1",
             createTestOption("company-q10o1", "French option 1"),
             createTestOption("company-q10o2", "French option 2")
-        ), createTestQuestion("company-q20", "A", "French question 2",
+        ), createTestQuestion("company-q20", QuestionType.A, "French question 2",
             createTestOption("company-q20o1", "French option 1"),
             createTestOption("company-q20o2", "French option 2"),
             createTestOption("company-q20o3", "English option 3")
-        ), createTestQuestion("company-q40", "A", "English question 4",
+        ), createTestQuestion("company-q40", QuestionType.A, "English question 4",
             createTestOption("company-q40o1", "English option 1"),
             createTestOption("company-q40o2", "English option 2")
         ));
@@ -549,14 +550,14 @@ public class CoachCacheTest {
         "Company", 1, libGen);
     Questionnaire subCoach = createTestCoach(subId, companyId,
         "Demo", 1, libSubGen,
-        createTestQuestion("company-q10", "A", "English question 1",
+        createTestQuestion("company-q10", QuestionType.A, "English question 1",
             createTestOption("company-q10o1", "English option 1"),
             createTestOption("company-q10o2", "English option 2")
-        ), createTestQuestion("company-q20", "A", "English question 2",
+        ), createTestQuestion("company-q20", QuestionType.A, "English question 2",
             createTestOption("company-q20o1", "English option 1"),
             createTestOption("company-q20o2", "English option 2"),
             createTestOption("company-q20o3", "English option 3")
-        ), createTestQuestion("company-q40", "A", "English question 4",
+        ), createTestQuestion("company-q40", QuestionType.A, "English question 4",
             createTestOption("company-q40o1", "English option 1"),
             createTestOption("company-q40o2", "English option 2")
         ));
@@ -604,14 +605,14 @@ public class CoachCacheTest {
     Path subFile = Paths.get("lib-company/lib-demo-sub/lib-demo-sub.xml");
     Questionnaire subCoach = createTestCoach(subId, companyId,
         "Demo", 1, libSubGen,
-        createTestQuestion("company-q10", "A", "English question 1",
+        createTestQuestion("company-q10", QuestionType.A, "English question 1",
             createTestOption("company-q10o1", "English option 1"),
             createTestOption("company-q10o2", "English option 2")
-        ), createTestQuestion("company-q20", "A", "English question 2",
+        ), createTestQuestion("company-q20", QuestionType.A, "English question 2",
             createTestOption("company-q20o1", "English option 1"),
             createTestOption("company-q20o2", "English option 2"),
             createTestOption("company-q20o3", "English option 3")
-        ), createTestQuestion("company-q40", "A", "English question 4",
+        ), createTestQuestion("company-q40", QuestionType.A, "English question 4",
             createTestOption("company-q40o1", "English option 1"),
             createTestOption("company-q40o2", "English option 2")
         ));

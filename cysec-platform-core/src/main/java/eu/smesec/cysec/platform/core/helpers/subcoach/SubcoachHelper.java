@@ -7,9 +7,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.generated.Answer;
 import eu.smesec.cysec.platform.bridge.generated.Metadata;
 import eu.smesec.cysec.platform.bridge.generated.Question;
+import eu.smesec.cysec.platform.bridge.generated.QuestionType;
 import eu.smesec.cysec.platform.bridge.generated.SubcoachInstances;
 import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
@@ -99,7 +100,7 @@ public class SubcoachHelper {
                 .getQuestions()
                 .getQuestion()
                 .stream()
-                .filter(q -> q.getType().equals("subcoachInstantiator"))
+                .filter(q -> q.getType().equals(QuestionType.SUBCOACH_INSTANTIATOR))
                 .map(Question::getId)
                 .collect(Collectors.toList());
 
@@ -115,7 +116,7 @@ public class SubcoachHelper {
             Tuple<FQCN, Question> questionTuple = new Tuple<>(fqcn, question);
             try {
                 // If the question is a subcoach outlet we insert all questions of the subcoach at the position of the outlet
-                if (question.getType().equals("subcoachInstantiatorOutlet")) {
+                if (question.getType().equals(QuestionType.SUBCOACH_INSTANTIATOR_OUTLET)) {
                     Optional<InstantiatorData> instantiator = InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, question.getSubcoachInstantiatorId());
                     if (!instantiator.isPresent())
                         return Stream.of(questionTuple);

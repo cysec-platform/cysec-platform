@@ -162,7 +162,17 @@
     <!-- Types of questions refer to classification from here: https://studmed.unibe.ch/a-z/page.php?id=Pr%FCfungstypen -->
     <xs:simpleType name="questionType">
         <xs:restriction base="xs:string">
-            <xs:pattern value="(A|Astar|Astarexcl|date|likert|text|yesno|info|subcoach|subcoachInstantiator|subcoachInstantiatorOutlet)"/>
+            <xs:enumeration value="A" />
+            <xs:enumeration value="Astar" />
+            <xs:enumeration value="Astarexcl" />
+            <xs:enumeration value="date" />
+            <xs:enumeration value="likert" />
+            <xs:enumeration value="text" />
+            <xs:enumeration value="yesno" />
+            <xs:enumeration value="info" />
+            <xs:enumeration value="subcoach" />
+            <xs:enumeration value="subcoachInstantiator" />
+            <xs:enumeration value="subcoachInstantiatorOutlet" />
         </xs:restriction>
     </xs:simpleType>
 
