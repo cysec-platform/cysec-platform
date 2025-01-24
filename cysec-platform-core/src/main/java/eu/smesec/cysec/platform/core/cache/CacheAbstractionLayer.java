@@ -33,7 +33,6 @@ import eu.smesec.cysec.platform.bridge.generated.Audit;
 import eu.smesec.cysec.platform.bridge.generated.Audits;
 import eu.smesec.cysec.platform.bridge.generated.Company;
 import eu.smesec.cysec.platform.bridge.generated.FlaggedQuestion;
-import eu.smesec.cysec.platform.bridge.generated.FlaggedQuestions;
 import eu.smesec.cysec.platform.bridge.generated.Metadata;
 import eu.smesec.cysec.platform.bridge.generated.Mvalue;
 import eu.smesec.cysec.platform.bridge.generated.Question;
@@ -636,21 +635,6 @@ public class CacheAbstractionLayer {
   // ----- Flags -----
   // -----------------
 
-  private <R> R readOnFlags(String companyId, FQCN fqcn, ICommand<FlaggedQuestions, R> command)
-      throws CacheException {
-    return data.executeOnCompany(companyId, company -> company.readOnFlags(fqcn.toFlagsPath(), command));
-  }
-
-  private void writeOnFlags(String companyId, FQCN fqcn, ICommand<FlaggedQuestions, Void> command)
-      throws CacheException {
-    data.executeOnCompany(
-        companyId,
-        company -> {
-          company.writeOnFlags(fqcn.toFlagsPath(), command);
-          return null;
-        });
-  }
-
   /**
    * Removes the flag for a specific question.
    *
@@ -662,11 +646,11 @@ public class CacheAbstractionLayer {
    * @throws CacheNotFoundException If the instance was not found.
    */
   public void flagQuestion(String companyId, FQCN fqcn, String questionId, boolean flagged) throws CacheException {
-    writeOnFlags(
+    writeOnAnswers(
         companyId,
         fqcn,
-        flags -> {
-          ListIterator<FlaggedQuestion> it = flags.getFlaggedQuestion().listIterator();
+        answers -> {
+          ListIterator<FlaggedQuestion> it = answers.getFlaggedQuestion().listIterator();
           while (it.hasNext()) {
             FlaggedQuestion q = it.next();
             if (q.getQid().equals(questionId)) {
@@ -679,7 +663,7 @@ public class CacheAbstractionLayer {
           if(flagged) {
             FlaggedQuestion newFlag = new FlaggedQuestion();
             newFlag.setQid(questionId);
-            flags.getFlaggedQuestion().add(newFlag);
+            answers.getFlaggedQuestion().add(newFlag);
           }
           return null;
         });
@@ -696,11 +680,11 @@ public class CacheAbstractionLayer {
    * @throws CacheNotFoundException If the instance was not found.
    */
   public boolean isQuestionFlagged(String companyId, FQCN fqcn, Object questionId) throws CacheException {
-    return readOnFlags(
+    return readOnAnswers(
         companyId,
         fqcn,
-        flags -> {
-          ListIterator<FlaggedQuestion> it = flags.getFlaggedQuestion().listIterator();
+        answers -> {
+          ListIterator<FlaggedQuestion> it = answers.getFlaggedQuestion().listIterator();
           while (it.hasNext()) {
             FlaggedQuestion q = it.next();
             if (q.getQid().equals(questionId)) {
@@ -1549,7 +1533,6 @@ public class CacheAbstractionLayer {
         library.onRemove(fqcn);
 
         removeSubCoach(companyId, fqcn.toPath());
-        removeSubCoach(companyId, fqcn.toFlagsPath());
     }
 
   /**
@@ -1699,13 +1682,13 @@ public class CacheAbstractionLayer {
   /**
    * Import coach (and sub coaches) data from a zip archive. This operation will
    * <b>overwrite</b> any existing data.
-   * 
+   *
    * @param companyId       The id of the company.
    * @param coachId         The id of the coach (not the instance) to overwrite.
    * @param zipUploadStream The archive is expected to match the filesystem structure of a coach.
    * @throws CacheException
    */
-  public void unzipCoach(String companyId, String coachId, InputStream zipUploadStream) throws CacheException {    
+  public void unzipCoach(String companyId, String coachId, InputStream zipUploadStream) throws CacheException {
     data.executeOnCompany(
       companyId,
       companyCache -> {

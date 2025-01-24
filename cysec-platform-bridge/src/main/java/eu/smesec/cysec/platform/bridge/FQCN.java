@@ -28,8 +28,7 @@ import java.util.stream.StreamSupport;
 
 /**
  * <p>Full qualified coach name.
- * Points to an answer *.xml file
- * and an accompanying *-flags.xml file</p>
+ * Points to an answer *.xml file</p>
  */
 public class FQCN {
   private static Pattern regex = Pattern.compile("^[\\w-]+(\\.[\\w-]+)*$");
@@ -105,10 +104,6 @@ public class FQCN {
 
   public Path toPath() {
     return Paths.get(String.join("/", segments) + ".xml");
-  }
-
-  public Path toFlagsPath() {
-    return Paths.get(String.join("/", segments) + "-flags.xml");
   }
 
   @Override

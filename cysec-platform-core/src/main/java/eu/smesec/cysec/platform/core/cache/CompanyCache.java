@@ -28,7 +28,6 @@ import eu.smesec.cysec.platform.bridge.execptions.MapperException;
 import eu.smesec.cysec.platform.bridge.generated.Answers;
 import eu.smesec.cysec.platform.bridge.generated.Audits;
 import eu.smesec.cysec.platform.bridge.generated.Company;
-import eu.smesec.cysec.platform.bridge.generated.FlaggedQuestions;
 import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
 import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.core.utils.FileUtils;
@@ -64,7 +63,6 @@ class CompanyCache extends Cache {
   static final String USER_XML = "users.xml";
   static final String AUDITS_XML = "audits.xml";
   static final String DEFAULT_ANSWERS_XML = "default.xml";
-  static final String DEFAULT_FLAGS_XML = "default-flags.xml";
   static final String REPLICA_TOKEN_FILE = "replica_token";
   static final String READ_ONLY_FILE = "readonly";
 
@@ -257,19 +255,6 @@ class CompanyCache extends Cache {
     return readOnCache(relative, Answers.class, command);
   }
 
-  /**
-   * Executes a read command on the flags xml file.
-   *
-   * @param relative The flags xml file path, relative to the coach directory.
-   * @param command The read command to execute.
-   * @param <R> The return type of the read command.
-   * @return The result of the read command.
-   * @throws CacheException If an error occurs during the command execution.
-   */
-  <R> R readOnFlags(Path relative, ICommand<FlaggedQuestions, R> command) throws CacheException {
-    return readOnCache(relative, FlaggedQuestions.class, command);
-  }
-
   private <T extends CopyTo2, R> R readOnCache(Path path, Class<T> classOfT, ICommand<T, R> command)
       throws CacheException {
     if (path == null || classOfT == null || command == null) {
@@ -341,7 +326,7 @@ class CompanyCache extends Cache {
           visitCoachFiles(path1, command);
         } else {
           String filename = path1.getFileName().toString();
-          if(filename.endsWith(".xml") && !filename.endsWith("-flags.xml")) {
+          if(filename.endsWith(".xml")) {
             command.execute(path1);
           }
         }
@@ -384,17 +369,6 @@ class CompanyCache extends Cache {
    */
   void writeOnAnswers(Path relative, ICommand<Answers, Void> command) throws CacheException {
     writeOnCache(relative, Answers.class, command);
-  }
-
-  /**
-   * Executes a write command on the flags xml file.
-   *
-   * @param relative The flags xml file path, relative to the coach directory.
-   * @param command The write command to execute.
-   * @throws CacheException If an error occurs during the command execution.
-   */
-  void writeOnFlags(Path relative, ICommand<FlaggedQuestions, Void> command) throws CacheException {
-    writeOnCache(relative, FlaggedQuestions.class, command);
   }
 
   private <T extends CopyTo2> void writeOnCache(
@@ -746,11 +720,10 @@ class CompanyCache extends Cache {
   }
 
   /**
-   * Verify wether all uploaded files are valid
-   * {@link eu.smesec.cysec.platform.bridge.generated.Answers} or 
-   * {@link eu.smesec.cysec.platform.bridge.generated.FlaggedQuestions} XML files
+   * Verify whether all uploaded files are valid
+   * {@link eu.smesec.cysec.platform.bridge.generated.Answers} XML files
    * or not.
-   *
+   * <br>
    * Non XML files are ignored.
    *
    * @param root Path to the uploaded (extracted) files.
@@ -758,36 +731,27 @@ class CompanyCache extends Cache {
    * @throws IOException
    */
   private boolean verifyZipImport(Path root) {
-    Mapper<FlaggedQuestions> flagMapper = CacheFactory.createMapper(FlaggedQuestions.class);
     Mapper<Answers> answersMapper = CacheFactory.createMapper(Answers.class);
 
-    try {
-      return Files.list(root)
-          .map(path -> {
-            if (Files.isDirectory(path)) {
-              return verifyZipImport(path);
-            } else {
-              // base case: verification
-              String ext = FileUtils.getFileExt(path);
-              ext = ext != null ? ext : "";
-              if (!ext.toLowerCase().equals("xml")) {
-                return true; // ignore all other files
-              }
+    try(Stream<Path> files = Files.list(root)) {
+      return files.allMatch(path -> {
+        if (Files.isDirectory(path)) {
+          return verifyZipImport(path);
+        } else {
+          // base case: verification
+          if(!"xml".equalsIgnoreCase(FileUtils.getFileExt(path))) {
+            return true; // ignore all other files
+          }
 
-              Mapper<?> mapper = FileUtils.getFileName(path).endsWith("-flags.xml") 
-                ? flagMapper 
-                : answersMapper;
-
-              try {
-                mapper.unmarshal(path);
-                return true;
-              } catch (MapperException e) {
-                logger.log(Level.SEVERE, FileUtils.getFileName(path) + " is not a valid Answers XML file", e);
-                return false;
-              }
-            }
-          })
-          .allMatch(Boolean::valueOf);
+          try {
+            answersMapper.unmarshal(path);
+            return true;
+          } catch (MapperException e) {
+            logger.log(Level.SEVERE, FileUtils.getFileName(path) + " is not a valid Answers XML file", e);
+            return false;
+          }
+        }
+      });
     } catch (IOException e) {
       logger.log(Level.SEVERE, "IO error during verification of zip import", e);
       return false; // "cast" exceptions to false to enable recursive usage of this method
@@ -863,22 +827,18 @@ class CompanyCache extends Cache {
         Files.createDirectories(coachDir);
       }
       Answers answers = CacheFactory.createAnswersFromCoach(coach);
-      FlaggedQuestions flaggedQuestions = CacheFactory.createFlaggedQuestionsFromCoach(coach);
       Mapper<Answers> answersMapper = CacheFactory.createMapper(Answers.class);
-      Mapper<FlaggedQuestions> flaggedQuestionsMapper = CacheFactory.createMapper(FlaggedQuestions.class);
       if (names != null) {
         for (String name : names) {
           Path path = coachDir.resolve(name + ".xml");
           if (!Files.exists(path)) {
             answersMapper.init(path, answers);
-            flaggedQuestionsMapper.init(coachDir.resolve(name + "-flags.xml"), flaggedQuestions);
           }
         }
       } else {
         Path path = coachDir.resolve(DEFAULT_ANSWERS_XML);
         if (!Files.exists(path)) {
           answersMapper.init(path, answers);
-          flaggedQuestionsMapper.init(coachDir.resolve(DEFAULT_FLAGS_XML), flaggedQuestions);
         }
       }
     } catch (IOException ioe) {
