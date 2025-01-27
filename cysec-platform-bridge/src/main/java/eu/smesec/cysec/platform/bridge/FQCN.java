@@ -169,6 +169,13 @@ public class FQCN {
     });
   }
 
+  /**
+   * Constructs a FQCN of a subcoach given the root coach ID, the subcoach ID and the instance Name of the subcoach
+   * @param rootCoachId The coach ID of the root (parent) coach
+   * @param subcoachId The coach ID of the subcoach
+   * @param instanceName The instance name of the coach
+   * @return a new FQCN containing the passed information
+   */
   public static FQCN from(String rootCoachId, String subcoachId, String instanceName) {
     return new FQCN(new String[] { rootCoachId, subcoachId, instanceName });
   }

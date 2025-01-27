@@ -134,7 +134,8 @@ public class Coaches {
       library.onResume(fqcn.getCoachId(), fqcn);
 
       // Resume subcoaches
-      List<SubcoachHelper.InstantiatorData> instantiators = SubcoachHelper.getAllInstantiatorsInCoach(companyId, fqcn, cal);
+      List<SubcoachHelper.InstantiatorData> instantiators = SubcoachHelper.of(companyId, fqcn, cal)
+              .getAllInstantiatorsInCoach();
       for (SubcoachHelper.InstantiatorData instantiator : instantiators) {
         for (SubcoachInstances.SubcoachInstance instance : instantiator.getInstances()) {
           CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(instantiator.getSubcoachId()).get(0);
@@ -538,6 +539,7 @@ public class Coaches {
     try {
       FQCN fqcn = FQCN.fromString(id);
       context.setAttribute("fqcn", id);
+      SubcoachHelper scHelper = SubcoachHelper.of(companyId, fqcn, cal);
 
       FQCN parentFqcn = fqcn.isTopLevel() ? fqcn : fqcn.getParent();
       CoachLibrary parentLibrary = cal.getLibrariesForQuestionnaire(fqcn.getRootCoachId()).get(0);
@@ -556,7 +558,10 @@ public class Coaches {
       // update state
       State state = new State(questionId, null);
       cal.setMetadataOnAnswers(companyId, fqcn, MetadataUtils.toMd(state));
-      Optional<String> subcoachInstantiatorId = SubcoachHelper.getSubcoachInstantiatorId(companyId, fqcn, cal);
+
+      // We need to update the current subcoach instance if we are in a subcoach to make sure that
+      // the navigation between the different subcoach instances works correctly
+      Optional<String> subcoachInstantiatorId = scHelper.getSubcoachInstantiatorId();
       if (subcoachInstantiatorId.isPresent()) {
         Answer answer = cal.getAnswer(companyId, fqcn.getParent(), subcoachInstantiatorId.get());
         answer.setCurrentSubcoachInstance(fqcn.getName());
@@ -578,7 +583,8 @@ public class Coaches {
 
       // fetch data for pagination
       List<Question> questions = parentLibrary.peekQuestions(question);
-      List<Tuple<FQCN, Question>> actives = SubcoachHelper.insertSubcoachQuestions(companyId, parentFqcn, cal, questions);
+      List<Tuple<FQCN, Question>> actives = SubcoachHelper.of(companyId, parentFqcn, cal)
+              .insertSubcoachQuestions(questions);
       Map<Tuple<FQCN, Question>, Answer> answers = actives
               .stream()
               .map(tup -> {
@@ -617,7 +623,7 @@ public class Coaches {
           ? Arrays.asList(answer.getAidList().split(" "))
           : Arrays.asList());
       if (question.getType().equals("subcoachInstantiatorOutlet")) {
-          model.put("subcoachFqcn", SubcoachHelper.getFirstFqcn(companyId, fqcn, cal, question.getSubcoachInstantiatorId()).orElse(null));
+          model.put("subcoachFqcn", scHelper.getFirstFqcn(question.getSubcoachInstantiatorId()).orElse(null));
       }
 
       return Response.status(200).entity(new Viewable("/coaching/coach", model)).build();
@@ -664,18 +670,19 @@ public class Coaches {
 
 
       String nextUrl;
+      SubcoachHelper scHelper = SubcoachHelper.of(companyId, fqcn, cal);
       if (next == null) { // Are we at the end of the questionnaire?
         // Let's check if we are in a subcoach managed through an instantiator
-        Optional<String> subcoachInstantiatorId = SubcoachHelper.getSubcoachInstantiatorId(companyId, fqcn, cal);
+        Optional<String> subcoachInstantiatorId = scHelper.getSubcoachInstantiatorId();
         if (subcoachInstantiatorId.isPresent()) {
-          Optional<FQCN> nextSubcoachInstance = SubcoachHelper.getNextSubcoachInstance(companyId, fqcn, cal);
+          Optional<FQCN> nextSubcoachInstance = scHelper.getNextSubcoachInstance();
           if (nextSubcoachInstance.isPresent()) {
             // We are in a subcoach and there is a next subcoach instance
             nextUrl = context.getContextPath() + "/app/coach.jsp?fqcn=" + nextSubcoachInstance.get() + "&question=_first";
           } else {
             // In this case we are at the end of the subcoach instantiator outlet, so we go to the next question in the
             // parent coach after the outlet
-            Optional<String> outletQuestionId = SubcoachHelper.getFirstOutletQuestionId(companyId, fqcn, cal);
+            Optional<String> outletQuestionId = scHelper.getFirstOutletQuestionId();
             nextUrl = outletQuestionId
                     .map(s -> context.getContextPath() + "/api/rest/coaches/" + fqcn.getParent() + "/questions/" + s + "/next")
                     .orElseGet(() -> context.getContextPath() + "/app/coach.jsp?fqcn=" + fqcn.getParent() + "&question=_first");

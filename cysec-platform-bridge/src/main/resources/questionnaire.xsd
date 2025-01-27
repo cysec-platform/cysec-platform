@@ -196,6 +196,10 @@
         </xs:complexType>
     </xs:element>
 
+    <!--
+        A list of possible values for the parent argument of a subcoach instantiator.
+        Note: This element is only used in questions of type = subcoachInstantiator
+    -->
     <xs:element name="parentArgumentValues">
         <xs:complexType>
             <xs:sequence>
@@ -246,6 +250,10 @@
         </xs:complexType>
     </xs:element>
 
+    <!--
+        This is an element that is used for the answer of a subcoachInstantiator question. It contains a list of
+        all instantiated subcoaches of the corresponding subcoach instantiator.
+    -->
     <xs:element name="subcoachInstances">
         <xs:complexType>
             <xs:sequence>
