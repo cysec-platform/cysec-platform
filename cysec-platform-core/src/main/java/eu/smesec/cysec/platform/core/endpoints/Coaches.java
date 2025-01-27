@@ -46,6 +46,7 @@ import eu.smesec.cysec.platform.core.utils.LocaleUtils;
 import eu.smesec.cysec.platform.core.json.MValueAdapter;
 import eu.smesec.cysec.platform.core.messages.CoachMsg;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.*;
@@ -321,65 +322,7 @@ public class Coaches {
             after = newOptions;
             answer.setAidList(newOptions);
           } else if (question.getType().equals("subcoachInstantiator")) {
-            Set<SubcoachInstances.SubcoachInstance> instancesBefore = answer.getSubcoachInstances() == null
-                    ? new HashSet<>()
-                    : new HashSet<>(answer.getSubcoachInstances().getSubcoachInstance());
-
-            // Parse the JSON and update the answer
-            TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
-            Map<String, String> subcoachInstanceData = new ObjectMapper().readValue(unescapedValue, typeRef);
-
-            SubcoachInstances instances = new SubcoachInstances();
-            subcoachInstanceData.forEach((key, val) -> {
-              SubcoachInstances.SubcoachInstance instance = new SubcoachInstances.SubcoachInstance();
-              instance.setInstanceName(key);
-              instance.setParentArgument(val);
-              instances.getSubcoachInstance().add(instance);
-            });
-
-            answer.setSubcoachInstances(instances);
-
-            // Now let's actually instantiate the subcoaches
-            Set<SubcoachInstances.SubcoachInstance> instancesNow = new HashSet<>(instances.getSubcoachInstance());
-            Set<SubcoachInstances.SubcoachInstance> addedInstances = instancesNow
-                    .stream()
-                    .filter(i -> !instancesBefore.contains(i))
-                    .collect(Collectors.toSet());
-            Set<SubcoachInstances.SubcoachInstance> removedInstances = instancesBefore
-                    .stream()
-                    .filter(i -> !instancesNow.contains(i))
-                    .collect(Collectors.toSet());
-
-            // instantiate newly added instances
-            for (SubcoachInstances.SubcoachInstance instance : addedInstances) {
-              FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getInstanceName());
-              Questionnaire subcoach = cal.getCoach(question.getSubcoachId());
-              Metadata metadata = new Metadata();
-              metadata.setKey("subcoach-data");
-              Mvalue parentArgument = MetadataUtils.createMvalueStr("parent-argument", instance.getParentArgument());
-              Mvalue subcoachInstantiatorId = MetadataUtils.createMvalueStr("subcoach-instantiator-id", question.getId());
-              metadata.getMvalue().add(parentArgument);
-              metadata.getMvalue().add(subcoachInstantiatorId);
-              Set<String> selectors = new HashSet<>(Collections.singletonList(instance.getInstanceName()));
-
-              // Create and resume coach
-              cal.instantiateSubCoach(companyId, fqcn, subcoach, selectors, metadata);
-              CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
-              subcoachLibrary.onResume(subcoachFqcn.getCoachId(), subcoachFqcn);
-            }
-
-            // remove all instances that were removed by user
-            for (SubcoachInstances.SubcoachInstance instance : removedInstances) {
-              FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getInstanceName());
-
-              try {
-                // We need to wrap this call in a try-catch to make sure the answer is actually updated even
-                // if the coach file does not exist for whatever reason
-                cal.removeSubCoach(companyId, subcoachFqcn);
-              } catch (CacheException e) {
-                logger.warning(e.getMessage());
-              }
-            }
+            handleSubcoachInstantiatorUpdateAnswer(unescapedValue, answer, fqcn, question, companyId);
           } else {
             before = answer.getText();
             after = value;
@@ -395,6 +338,8 @@ public class Coaches {
           if (question.getType().startsWith("Astar")) {
             answer.setAidList(value);
             after = answer.getQid();
+          } else if (question.getType().equals("subcoachInstantiator")) {
+            handleSubcoachInstantiatorUpdateAnswer(unescapedValue, answer, fqcn, question, companyId);
           } else {
             after = value;
           }
@@ -462,6 +407,78 @@ public class Coaches {
       logger.log(Level.SEVERE, "Error occured", e);
     }
     return Response.status(500).build();
+  }
+
+  /**
+   * This is a helper method which handles the special case of updating the answer of a subcoach instantiator question.
+   * @param unescapedValue The unescaped answer value
+   * @param answer The answer object to update
+   * @param fqcn The FQCN of the current coach
+   * @param question The question of which to update the answer
+   * @param companyId current company ID
+   * @throws IOException
+   * @throws CacheException
+   */
+  private void handleSubcoachInstantiatorUpdateAnswer(String unescapedValue, Answer answer, FQCN fqcn, Question question, String companyId) throws IOException, CacheException {
+    Set<SubcoachInstances.SubcoachInstance> instancesBefore = answer.getSubcoachInstances() == null
+            ? new HashSet<>()
+            : new HashSet<>(answer.getSubcoachInstances().getSubcoachInstance());
+
+    // Parse the JSON and update the answer
+    TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
+    Map<String, String> subcoachInstanceData = new ObjectMapper().readValue(unescapedValue, typeRef);
+
+    SubcoachInstances instances = new SubcoachInstances();
+    subcoachInstanceData.forEach((key, val) -> {
+      SubcoachInstances.SubcoachInstance instance = new SubcoachInstances.SubcoachInstance();
+      instance.setInstanceName(key);
+      instance.setParentArgument(val);
+      instances.getSubcoachInstance().add(instance);
+    });
+
+    answer.setSubcoachInstances(instances);
+
+    // Now let's actually instantiate the subcoaches
+    Set<SubcoachInstances.SubcoachInstance> instancesNow = new HashSet<>(instances.getSubcoachInstance());
+    Set<SubcoachInstances.SubcoachInstance> addedInstances = instancesNow
+            .stream()
+            .filter(i -> !instancesBefore.contains(i))
+            .collect(Collectors.toSet());
+    Set<SubcoachInstances.SubcoachInstance> removedInstances = instancesBefore
+            .stream()
+            .filter(i -> !instancesNow.contains(i))
+            .collect(Collectors.toSet());
+
+    // instantiate newly added instances
+    for (SubcoachInstances.SubcoachInstance instance : addedInstances) {
+      FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getInstanceName());
+      Questionnaire subcoach = cal.getCoach(question.getSubcoachId());
+      Metadata metadata = new Metadata();
+      metadata.setKey("subcoach-data");
+      Mvalue parentArgument = MetadataUtils.createMvalueStr("parent-argument", instance.getParentArgument());
+      Mvalue subcoachInstantiatorId = MetadataUtils.createMvalueStr("subcoach-instantiator-id", question.getId());
+      metadata.getMvalue().add(parentArgument);
+      metadata.getMvalue().add(subcoachInstantiatorId);
+      Set<String> selectors = new HashSet<>(Collections.singletonList(instance.getInstanceName()));
+
+      // Create and resume coach
+      cal.instantiateSubCoach(companyId, fqcn, subcoach, selectors, metadata);
+      CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
+      subcoachLibrary.onResume(subcoachFqcn.getCoachId(), subcoachFqcn);
+    }
+
+    // remove all instances that were removed by user
+    for (SubcoachInstances.SubcoachInstance instance : removedInstances) {
+      FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getInstanceName());
+
+      try {
+        // We need to wrap this call in a try-catch to make sure the answer is actually updated even
+        // if the coach file does not exist for whatever reason
+        cal.removeSubCoach(companyId, subcoachFqcn);
+      } catch (CacheException e) {
+        logger.warning(e.getMessage());
+      }
+    }
   }
 
   /**
