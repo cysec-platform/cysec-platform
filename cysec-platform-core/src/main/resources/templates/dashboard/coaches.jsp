@@ -2,6 +2,13 @@
 
 <div class="col-xs-12 pb-3">
     <h4 class="text-center pt-5 pb-3">${it.msg.coaches}</h4>
+
+    <div class="alert alert-warning" role="alert">
+        <strong>Note:</strong>
+        All users work on the same instance of the Coach. It is strongly recommended that only one user works with the
+        Coach at any one time.
+    </div>
+
     <c:choose>
         <c:when test="${ not empty it.instantiated }">
             <c:forEach var="coach" items="${it.instantiated}">
@@ -31,6 +38,8 @@
                                     <a href="javascript:;" onclick="restart('${coachId}')">${it.msg.coachRestart}</a>
                                     &nbsp; | &nbsp;
                                     <a href="javascript:;" onclick="resume('${coachId}')">${it.msg.coachContinue}</a>
+                                    &nbsp; | &nbsp;
+                                    <a href="javascript:;" onclick="reset('${coachId}')">${it.msg.coachReset}</a>
                                     <c:if test="${it.userIsAdmin}">
                                         &nbsp; | &nbsp;
                                         <a href="javascript:;" onclick="openAdminModal('${coachId}')"

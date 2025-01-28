@@ -46,6 +46,7 @@ import eu.smesec.cysec.platform.core.utils.LocaleUtils;
 import eu.smesec.cysec.platform.core.json.MValueAdapter;
 import eu.smesec.cysec.platform.core.messages.CoachMsg;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.*;
@@ -133,7 +134,8 @@ public class Coaches {
       library.onResume(fqcn.getCoachId(), fqcn);
 
       // Resume subcoaches
-      List<SubcoachHelper.InstantiatorData> instantiators = SubcoachHelper.getAllInstantiatorsInCoach(companyId, fqcn, cal);
+      List<SubcoachHelper.InstantiatorData> instantiators = SubcoachHelper.of(companyId, fqcn, cal)
+              .getAllInstantiatorsInCoach();
       for (SubcoachHelper.InstantiatorData instantiator : instantiators) {
         for (SubcoachInstances.SubcoachInstance instance : instantiator.getInstances()) {
           CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(instantiator.getSubcoachId()).get(0);
@@ -146,6 +148,39 @@ public class Coaches {
       // update last selected
       LastSelected lastSelected = new LastSelected(fqcn.toString());
       cal.setMetadataOnAnswers(companyId, LibCal.FQCN_COMPANY, MetadataUtils.toMd(lastSelected));
+      return Response.status(200).build();
+    } catch (CacheException ce) {
+      logger.severe(ce.getMessage());
+      return Response.status(400).build();
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Error occurred", e);
+    }
+    return Response.status(500).build();
+  }
+
+  /**
+   * Resets a coach to its default state.
+   *
+   * @param id The fqcn of the coach
+   * @return response
+   */
+  @POST
+  @Path("/{id}/reset")
+  public Response reset(@PathParam("id") String id) {
+    String companyId = context.getAttribute("company").toString();
+    context.setAttribute("fqcn", id);
+    FQCN fqcn = FQCN.fromString(id);
+    try {
+      CoachLibrary library = cal.getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0);
+      Questionnaire coach = cal.getCoach(fqcn.getCoachId());
+
+      // Remove coach
+      cal.finalizeCoach(companyId, fqcn.toPath().getParent());
+
+      // And then instantiate it again
+      cal.instantiateCoach(companyId, coach);
+      library.onBegin(FQCN.fromString(id));
+
       return Response.status(200).build();
     } catch (CacheException ce) {
       logger.severe(ce.getMessage());
@@ -288,65 +323,7 @@ public class Coaches {
             after = newOptions;
             answer.setAidList(newOptions);
           } else if (question.getType().equals(QuestionType.SUBCOACH_INSTANTIATOR)) {
-            Set<SubcoachInstances.SubcoachInstance> instancesBefore = answer.getSubcoachInstances() == null
-                    ? new HashSet<>()
-                    : new HashSet<>(answer.getSubcoachInstances().getSubcoachInstance());
-
-            // Parse the JSON and update the answer
-            TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
-            Map<String, String> subcoachInstanceData = new ObjectMapper().readValue(unescapedValue, typeRef);
-
-            SubcoachInstances instances = new SubcoachInstances();
-            subcoachInstanceData.forEach((key, val) -> {
-              SubcoachInstances.SubcoachInstance instance = new SubcoachInstances.SubcoachInstance();
-              instance.setInstanceName(key);
-              instance.setParentArgument(val);
-              instances.getSubcoachInstance().add(instance);
-            });
-
-            answer.setSubcoachInstances(instances);
-
-            // Now let's actually instantiate the subcoaches
-            Set<SubcoachInstances.SubcoachInstance> instancesNow = new HashSet<>(instances.getSubcoachInstance());
-            Set<SubcoachInstances.SubcoachInstance> addedInstances = instancesNow
-                    .stream()
-                    .filter(i -> !instancesBefore.contains(i))
-                    .collect(Collectors.toSet());
-            Set<SubcoachInstances.SubcoachInstance> removedInstances = instancesBefore
-                    .stream()
-                    .filter(i -> !instancesNow.contains(i))
-                    .collect(Collectors.toSet());
-
-            // instantiate newly added instances
-            for (SubcoachInstances.SubcoachInstance instance : addedInstances) {
-              FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getInstanceName());
-              Questionnaire subcoach = cal.getCoach(question.getSubcoachId());
-              Metadata metadata = new Metadata();
-              metadata.setKey("subcoach-data");
-              Mvalue parentArgument = MetadataUtils.createMvalueStr("parent-argument", instance.getParentArgument());
-              Mvalue subcoachInstantiatorId = MetadataUtils.createMvalueStr("subcoach-instantiator-id", question.getId());
-              metadata.getMvalue().add(parentArgument);
-              metadata.getMvalue().add(subcoachInstantiatorId);
-              Set<String> selectors = new HashSet<>(Collections.singletonList(instance.getInstanceName()));
-
-              // Create and resume coach
-              cal.instantiateSubCoach(companyId, fqcn, subcoach, selectors, metadata);
-              CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
-              subcoachLibrary.onResume(subcoachFqcn.getCoachId(), subcoachFqcn);
-            }
-
-            // remove all instances that were removed by user
-            for (SubcoachInstances.SubcoachInstance instance : removedInstances) {
-              FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getInstanceName());
-
-              try {
-                // We need to wrap this call in a try-catch to make sure the answer is actually updated even
-                // if the coach file does not exist for whatever reason
-                cal.removeSubCoach(companyId, subcoachFqcn);
-              } catch (CacheException e) {
-                logger.warning(e.getMessage());
-              }
-            }
+            handleSubcoachInstantiatorUpdateAnswer(unescapedValue, answer, fqcn, question, companyId);
           } else {
             before = answer.getText();
             after = value;
@@ -362,6 +339,8 @@ public class Coaches {
           if (EnumSet.of(QuestionType.ASTAR, QuestionType.ASTAREXCL).contains(question.getType())) {
             answer.setAidList(value);
             after = answer.getQid();
+          } else if (question.getType().equals(QuestionType.SUBCOACH_INSTANTIATOR)) {
+            handleSubcoachInstantiatorUpdateAnswer(unescapedValue, answer, fqcn, question, companyId);
           } else {
             after = value;
           }
@@ -432,6 +411,78 @@ public class Coaches {
   }
 
   /**
+   * This is a helper method which handles the special case of updating the answer of a subcoach instantiator question.
+   * @param unescapedValue The unescaped answer value
+   * @param answer The answer object to update
+   * @param fqcn The FQCN of the current coach
+   * @param question The question of which to update the answer
+   * @param companyId current company ID
+   * @throws IOException
+   * @throws CacheException
+   */
+  private void handleSubcoachInstantiatorUpdateAnswer(String unescapedValue, Answer answer, FQCN fqcn, Question question, String companyId) throws IOException, CacheException {
+    Set<SubcoachInstances.SubcoachInstance> instancesBefore = answer.getSubcoachInstances() == null
+            ? new HashSet<>()
+            : new HashSet<>(answer.getSubcoachInstances().getSubcoachInstance());
+
+    // Parse the JSON and update the answer
+    TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
+    Map<String, String> subcoachInstanceData = new ObjectMapper().readValue(unescapedValue, typeRef);
+
+    SubcoachInstances instances = new SubcoachInstances();
+    subcoachInstanceData.forEach((key, val) -> {
+      SubcoachInstances.SubcoachInstance instance = new SubcoachInstances.SubcoachInstance();
+      instance.setInstanceName(key);
+      instance.setParentArgument(val);
+      instances.getSubcoachInstance().add(instance);
+    });
+
+    answer.setSubcoachInstances(instances);
+
+    // Now let's actually instantiate the subcoaches
+    Set<SubcoachInstances.SubcoachInstance> instancesNow = new HashSet<>(instances.getSubcoachInstance());
+    Set<SubcoachInstances.SubcoachInstance> addedInstances = instancesNow
+            .stream()
+            .filter(i -> !instancesBefore.contains(i))
+            .collect(Collectors.toSet());
+    Set<SubcoachInstances.SubcoachInstance> removedInstances = instancesBefore
+            .stream()
+            .filter(i -> !instancesNow.contains(i))
+            .collect(Collectors.toSet());
+
+    // instantiate newly added instances
+    for (SubcoachInstances.SubcoachInstance instance : addedInstances) {
+      FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getInstanceName());
+      Questionnaire subcoach = cal.getCoach(question.getSubcoachId());
+      Metadata metadata = new Metadata();
+      metadata.setKey("subcoach-data");
+      Mvalue parentArgument = MetadataUtils.createMvalueStr("parent-argument", instance.getParentArgument());
+      Mvalue subcoachInstantiatorId = MetadataUtils.createMvalueStr("subcoach-instantiator-id", question.getId());
+      metadata.getMvalue().add(parentArgument);
+      metadata.getMvalue().add(subcoachInstantiatorId);
+      Set<String> selectors = new HashSet<>(Collections.singletonList(instance.getInstanceName()));
+
+      // Create and resume coach
+      cal.instantiateSubCoach(companyId, fqcn, subcoach, selectors, metadata);
+      CoachLibrary subcoachLibrary = cal.getLibrariesForQuestionnaire(subcoachFqcn.getCoachId()).get(0);
+      subcoachLibrary.onResume(subcoachFqcn.getCoachId(), subcoachFqcn);
+    }
+
+    // remove all instances that were removed by user
+    for (SubcoachInstances.SubcoachInstance instance : removedInstances) {
+      FQCN subcoachFqcn = FQCN.from(fqcn.getRootCoachId(), question.getSubcoachId(), instance.getInstanceName());
+
+      try {
+        // We need to wrap this call in a try-catch to make sure the answer is actually updated even
+        // if the coach file does not exist for whatever reason
+        cal.removeSubCoach(companyId, subcoachFqcn);
+      } catch (CacheException e) {
+        logger.warning(e.getMessage());
+      }
+    }
+  }
+
+  /**
    * Updates the flagged state of a given Question.
    */
   @POST
@@ -488,6 +539,7 @@ public class Coaches {
     try {
       FQCN fqcn = FQCN.fromString(id);
       context.setAttribute("fqcn", id);
+      SubcoachHelper scHelper = SubcoachHelper.of(companyId, fqcn, cal);
 
       FQCN parentFqcn = fqcn.isTopLevel() ? fqcn : fqcn.getParent();
       CoachLibrary parentLibrary = cal.getLibrariesForQuestionnaire(fqcn.getRootCoachId()).get(0);
@@ -506,7 +558,10 @@ public class Coaches {
       // update state
       State state = new State(questionId, null);
       cal.setMetadataOnAnswers(companyId, fqcn, MetadataUtils.toMd(state));
-      Optional<String> subcoachInstantiatorId = SubcoachHelper.getSubcoachInstantiatorId(companyId, fqcn, cal);
+
+      // We need to update the current subcoach instance if we are in a subcoach to make sure that
+      // the navigation between the different subcoach instances works correctly
+      Optional<String> subcoachInstantiatorId = scHelper.getSubcoachInstantiatorId();
       if (subcoachInstantiatorId.isPresent()) {
         Answer answer = cal.getAnswer(companyId, fqcn.getParent(), subcoachInstantiatorId.get());
         answer.setCurrentSubcoachInstance(fqcn.getName());
@@ -528,7 +583,8 @@ public class Coaches {
 
       // fetch data for pagination
       List<Question> questions = parentLibrary.peekQuestions(question);
-      List<Tuple<FQCN, Question>> actives = SubcoachHelper.insertSubcoachQuestions(companyId, parentFqcn, cal, questions);
+      List<Tuple<FQCN, Question>> actives = SubcoachHelper.of(companyId, parentFqcn, cal)
+              .insertSubcoachQuestions(questions);
       Map<Tuple<FQCN, Question>, Answer> answers = actives
               .stream()
               .map(tup -> {
@@ -567,7 +623,7 @@ public class Coaches {
           ? Arrays.asList(answer.getAidList().split(" "))
           : Arrays.asList());
       if (question.getType().equals(QuestionType.SUBCOACH_INSTANTIATOR_OUTLET)) {
-          model.put("subcoachFqcn", SubcoachHelper.getFirstFqcn(companyId, fqcn, cal, question.getSubcoachInstantiatorId()).orElse(null));
+          model.put("subcoachFqcn", scHelper.getFirstFqcn(question.getSubcoachInstantiatorId()).orElse(null));
       }
 
       return Response.status(200).entity(new Viewable("/coaching/coach", model)).build();
@@ -614,19 +670,22 @@ public class Coaches {
 
 
       String nextUrl;
+      SubcoachHelper scHelper = SubcoachHelper.of(companyId, fqcn, cal);
       if (next == null) { // Are we at the end of the questionnaire?
         // Let's check if we are in a subcoach managed through an instantiator
-        Optional<String> subcoachInstantiatorId = SubcoachHelper.getSubcoachInstantiatorId(companyId, fqcn, cal);
+        Optional<String> subcoachInstantiatorId = scHelper.getSubcoachInstantiatorId();
         if (subcoachInstantiatorId.isPresent()) {
-          Optional<FQCN> nextSubcoachInstance = SubcoachHelper.getNextSubcoachInstance(companyId, fqcn, cal);
+          Optional<FQCN> nextSubcoachInstance = scHelper.getNextSubcoachInstance();
           if (nextSubcoachInstance.isPresent()) {
             // We are in a subcoach and there is a next subcoach instance
             nextUrl = context.getContextPath() + "/app/coach.jsp?fqcn=" + nextSubcoachInstance.get() + "&question=_first";
           } else {
             // In this case we are at the end of the subcoach instantiator outlet, so we go to the next question in the
             // parent coach after the outlet
-            Question currentQuestionParent = cal.getCurrentQuestion(companyId, fqcn.getParent());
-            nextUrl = context.getContextPath() + "/api/rest/coaches/" + fqcn.getParent() + "/questions/" + currentQuestionParent.getId() + "/next";
+            Optional<String> outletQuestionId = scHelper.getFirstOutletQuestionId();
+            nextUrl = outletQuestionId
+                    .map(s -> context.getContextPath() + "/api/rest/coaches/" + fqcn.getParent() + "/questions/" + s + "/next")
+                    .orElseGet(() -> context.getContextPath() + "/app/coach.jsp?fqcn=" + fqcn.getParent() + "&question=_first");
           }
         } else {
           // If are in the root coach, we go to the summary page when the questionnaire is finished

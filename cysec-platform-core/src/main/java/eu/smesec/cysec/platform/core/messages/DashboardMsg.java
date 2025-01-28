@@ -43,6 +43,7 @@ public class DashboardMsg extends Message {
     messages.put("noCoachesStartedInfo", i18n.tr("No coaches started yet"));
     messages.put("coachRestart", i18n.tr("restart"));
     messages.put("coachContinue", i18n.tr("continue"));
+    messages.put("coachReset", i18n.tr("reset"));
     messages.put("remaining", i18n.trn("Remaining coach", "Remaining coaches", remaining));
     messages.put("noRemaining", i18n.tr("All available coaches started."));
     messages.put("skills", i18n.tr("skills"));

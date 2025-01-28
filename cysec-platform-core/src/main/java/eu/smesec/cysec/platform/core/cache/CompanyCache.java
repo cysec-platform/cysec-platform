@@ -854,7 +854,7 @@ class CompanyCache extends Cache {
    * Deletes an existing coach file.
    *
    * @param coach The coach path to delete, relative to the company directory.
-   * @throws CacheException If the coach path is a directory or an io error
+   * @throws CacheException If the coach path is not a directory or an io error
    *                        occurs.
    */
   void deleteCoach(Path coach) throws CacheException {
@@ -867,7 +867,9 @@ class CompanyCache extends Cache {
       if (!Files.isDirectory(coachDir)) {
         throw new CacheException("Path " + coachDir.toString() + " is not a directory");
       }
-      objectCache.remove(coach);
+
+      // Let's remove all objects from the cache that are part of this coach and then actually remove the files on disk
+      objectCache.entrySet().removeIf(entry -> entry.getKey().startsWith(coach));
       FileUtils.deleteDir(coachDir);
     } catch (IOException ioe) {
       throw new CacheException(
