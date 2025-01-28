@@ -32,7 +32,7 @@
             </div>
         </div>
         <div>
-            <jsp:include page="questions/${ question.getType() }.jsp"/>
+            <jsp:include page="questions/${ question.getType().toString().toLowerCase() }.jsp"/>
         </div>
         <c:if test="${ question.getReadMore() != null}">
             <div class="readmore-container">
