@@ -18,9 +18,9 @@ const load = () => {
     }).then(response => {
         if (response.ok) {
             response.text().then(question => {
-                const wrapper = $("#wrapper");
-                wrapper.empty();
-                wrapper.append(question);
+                const newContent = document.getElementById('wrapper').cloneNode(true);
+                newContent.innerHTML = question;
+                morphdom(document.getElementById('wrapper'), newContent)
                 $(function() {
                     // opt-in bootstrap tooltips for pagination (do it here and not on init, since the navigation can be replaced at any time)
                     $('[data-bs-toggle="tooltip"]').each(function () {

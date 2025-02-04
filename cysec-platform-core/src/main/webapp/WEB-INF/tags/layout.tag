@@ -25,6 +25,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="${context}/public/css/bootstrap-customization.css"/>
 
+    <!-- Merge DOM elements when reloading the sections of the page using this library-->
+    <script src="https://cdn.jsdelivr.net/npm/morphdom@2.7.4/dist/morphdom-umd.min.js"></script>
+
     <link rel="stylesheet" type="text/css" href="${context}/public/font-awesome-4.7.0/css/font-awesome.css">
     <link rel="stylesheet" type="text/css" href="${context}/public/css/fonts.css"/>
     <link rel="stylesheet" type="text/css" href="${context}/public/css/colors.css"/>
