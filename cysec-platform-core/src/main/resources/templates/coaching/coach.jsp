@@ -6,12 +6,12 @@
         <c:import url="question.jsp"/>
         <c:import url="pagination.jsp"/>
     </div>
-    <div id="documentation-wrapper" class="col col-5 bg-lightbluegrey">
+    <div id="documentation-wrapper" class="col col-5 bg-lightbluegrey overflow-auto">
         <c:import url="instuction.jsp"/>
     </div>
 </div>
 
-<div class="modal modal-xl fade" id="coachDebugModal" data-bs-keyboard="false" tabindex="-1">
+<div class="modal modal-xl fade" id="coachDebugModal" data-bs-keyboard="true" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
