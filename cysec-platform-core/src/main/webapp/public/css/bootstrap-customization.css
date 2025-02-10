@@ -53,3 +53,8 @@ a {
         --bs-btn-disabled-border-color: var(--cy-primary);
     }
 }
+
+/* Specificity hack */
+.form-floating.form-floating.form-floating.form-floating.form-floating.form-floating.form-floating label:after {
+    background-color: transparent;
+}
