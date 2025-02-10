@@ -1,5 +1,32 @@
 let fqcn, qid;
 
+// These options for morphdom solves the problem that script tags are not interpreted by default when using morphdom
+// Code taken from: https://github.com/patrick-steele-idem/morphdom/issues/178#issuecomment-652562769
+const morphdomOptions = {
+    onNodeAdded: function (node) {
+        if (node.nodeName === 'SCRIPT') {
+            var script = document.createElement('script');
+            //copy over the attributes
+            [...node.attributes].forEach( attr => { script.setAttribute(attr.nodeName ,attr.nodeValue) })
+
+            script.innerHTML = node.innerHTML;
+            node.replaceWith(script)
+        }
+    },
+    onBeforeElUpdated: function (fromEl, toEl) {
+        if (fromEl.nodeName === "SCRIPT" && toEl.nodeName === "SCRIPT") {
+            var script = document.createElement('script');
+            //copy over the attributes
+            [...toEl.attributes].forEach( attr => { script.setAttribute(attr.nodeName ,attr.nodeValue) })
+
+            script.innerHTML = toEl.innerHTML;
+            fromEl.replaceWith(script)
+            return false;
+        }
+        return true;
+    }
+};
+
 const init = () => {
     const queryParam = new URLSearchParams(window.location.search);
     fqcn = queryParam.get('fqcn');
@@ -18,9 +45,11 @@ const load = () => {
     }).then(response => {
         if (response.ok) {
             response.text().then(question => {
+                // Update the content of the question wrapper with the new question
                 const newContent = document.getElementById('wrapper').cloneNode(true);
                 newContent.innerHTML = question;
-                morphdom(document.getElementById('wrapper'), newContent)
+                morphdom(document.getElementById('wrapper'), newContent, morphdomOptions);
+
                 $(function() {
                     // opt-in bootstrap tooltips for pagination (do it here and not on init, since the navigation can be replaced at any time)
                     $('[data-bs-toggle="tooltip"]').each(function () {
