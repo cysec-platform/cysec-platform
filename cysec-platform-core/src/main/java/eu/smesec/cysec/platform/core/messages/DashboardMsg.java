@@ -41,7 +41,7 @@ public class DashboardMsg extends Message {
         i18n.tr("If there are recommended next steps, they will be displayed here."));
     messages.put("coaches", i18n.trn("Coach", "Coaches", instantiated));
     messages.put("noCoachesStartedInfo", i18n.tr("No coaches started yet"));
-    messages.put("coachRestart", i18n.tr("restart"));
+    messages.put("coachStart", i18n.tr("start"));
     messages.put("coachContinue", i18n.tr("continue"));
     messages.put("coachReset", i18n.tr("reset"));
     messages.put("remaining", i18n.trn("Remaining coach", "Remaining coaches", remaining));

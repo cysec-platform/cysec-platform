@@ -35,7 +35,7 @@
                                     </div>
                                 </h4>
                                 <h5>
-                                    <a href="javascript:;" onclick="restart('${coachId}')">${it.msg.coachRestart}</a>
+                                    <a href="javascript:;" onclick="restart('${coachId}')">${it.msg.coachStart}</a>
                                     &nbsp; | &nbsp;
                                     <a href="javascript:;" onclick="resume('${coachId}')">${it.msg.coachContinue}</a>
                                     &nbsp; | &nbsp;
