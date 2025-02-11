@@ -9,6 +9,15 @@
 
 <div class="flex-grow-1 overflow-y-auto">
     <div class="container question panel" id="${ question.getId() }}">
+        <div class="mb-3 fw-medium">
+            <nav style="--bs-breadcrumb-divider: '>';">
+                <ol class="breadcrumb">
+                    <c:forEach var="breadcrumb" items="${it.breadcrumbs}">
+                        <li class="breadcrumb-item">${breadcrumb}</li>
+                    </c:forEach>
+                </ol>
+            </nav>
+        </div>
         <div class="d-flex justify-content-between">
             <div>
                 <c:if test="${ question.getIntroduction() != null}">

@@ -118,7 +118,7 @@ public class SubcoachHelper {
      */
     public Optional<FQCN> getNextSubcoachInstance() throws CacheException {
         Optional<String> instantiatorId = getSubcoachInstantiatorId();
-        Optional<String> currentInstanceName = getCurrentSubcoachInstance();
+        Optional<String> currentInstanceName = getCurrentSubcoachInstanceName();
         if (instantiatorId.isPresent() && currentInstanceName.isPresent()) {
             Optional<InstantiatorData> data = InstantiatorData.ofInstantiatorId(companyId, fqcn, cal, instantiatorId.get());
             if (!data.isPresent()) return Optional.empty();
@@ -148,13 +148,38 @@ public class SubcoachHelper {
      * @return Optional containing the current subcoach instance name
      * @throws CacheException if something goes wrong when accessing CAL
      */
-    public Optional<String> getCurrentSubcoachInstance() throws CacheException {
+    public Optional<String> getCurrentSubcoachInstanceName() throws CacheException {
         Optional<String> subcoachInstantiatorId = getSubcoachInstantiatorId();
         if (subcoachInstantiatorId.isPresent()) {
             Answer answer = cal.getAnswer(companyId, fqcn.getRoot(), subcoachInstantiatorId.get());
             return Optional.ofNullable(answer.getCurrentSubcoachInstance());
         }
         return Optional.empty();
+    }
+
+    /**
+     * Gets the currently active subcoach instance of the current subcoach instantiator
+     * @return Optional containing the current subcoach instance
+     * @throws CacheException if something goes wrong when accessing CAL
+     */
+    public Optional<SubcoachInstances.SubcoachInstance> getCurrentSubcoachInstance() throws CacheException {
+        Optional<String> currentSubcoachInstanceName = getCurrentSubcoachInstanceName();
+        if (currentSubcoachInstanceName.isPresent()) {
+            Optional<String> instantiatorId = getSubcoachInstantiatorId();
+            if (instantiatorId.isPresent()) {
+                SubcoachHelper parentHelper = SubcoachHelper.of(companyId, fqcn.getParent(), cal);
+                return parentHelper.getAllInstantiatorsInCoach().stream()
+                        .filter(data -> data.getInstantiatorId().equals(instantiatorId.get()))
+                        .findFirst()
+                        .flatMap(data -> data.getInstances().stream()
+                                .filter(instance -> instance.getInstanceName().equals(currentSubcoachInstanceName.get()))
+                                .findFirst());
+            } else {
+                return Optional.empty();
+            }
+        } else {
+            return Optional.empty();
+        }
     }
 
     /**

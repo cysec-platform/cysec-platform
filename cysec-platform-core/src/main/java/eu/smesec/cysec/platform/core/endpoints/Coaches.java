@@ -605,6 +605,20 @@ public class Coaches {
                   }
               }));
 
+      // construct readable breadcrumbs to show on question page
+      List<String> breadcrumbs = new ArrayList<>();
+      breadcrumbs.add(parentLibrary.getQuestionnaire().getReadableName());
+      Optional<SubcoachInstances.SubcoachInstance> currentSubcoachInstance = SubcoachHelper.of(companyId, fqcn, cal).getCurrentSubcoachInstance();
+      if (currentSubcoachInstance.isPresent()) { // Is Subcoach
+        breadcrumbs.add(library.getQuestionnaire().getReadableName());
+        String readableInstance = String.format("%s (%s)", currentSubcoachInstance.get().getInstanceName(), currentSubcoachInstance.get().getParentArgument());
+        breadcrumbs.add(readableInstance);
+      } else { // Is parent coach
+        if (!fqcn.getName().equals("default")) {
+          breadcrumbs.add(fqcn.getName());
+        }
+      }
+
       CoachMsg msg = new CoachMsg(locale);
       Map<String, Object> model = new HashMap<>();
       Answer answer = cal.getAnswer(companyId, fqcn, questionId);
@@ -625,6 +639,7 @@ public class Coaches {
       if (question.getType().equals(QuestionType.SUBCOACH_INSTANTIATOR_OUTLET)) {
           model.put("subcoachFqcn", scHelper.getFirstFqcn(question.getSubcoachInstantiatorId()).orElse(null));
       }
+      model.put("breadcrumbs", breadcrumbs);
 
       return Response.status(200).entity(new Viewable("/coaching/coach", model)).build();
     } catch (CacheException ce) {
