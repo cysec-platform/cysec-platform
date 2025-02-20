@@ -43,6 +43,7 @@ import eu.smesec.cysec.platform.bridge.md.MetadataUtils;
 import eu.smesec.cysec.platform.bridge.md.State;
 import eu.smesec.cysec.platform.bridge.utils.Tuple;
 import eu.smesec.cysec.platform.core.config.Config;
+import eu.smesec.cysec.platform.core.helpers.subcoach.SubcoachHelper;
 import eu.smesec.cysec.platform.core.utils.FileResponse;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -1696,4 +1697,19 @@ public class CacheAbstractionLayer {
         return null;
       });
   }
+
+    /**
+     * Exposes all currently active questions inlcuding subcoach questions.
+     * @param companyId The id of the company
+     * @param fqcn The FQCN
+     * @return List of tuple from FQCN to question. The FQCN is helpful to know from which subcoach instance a question
+     * is hailing.
+     * @throws CacheException If something goes wrong accessing the cache
+     */
+    public List<Tuple<FQCN, Question>> getActiveQuestionsWithFqcn(String companyId, FQCN fqcn) throws CacheException {
+        List<Question> questions = getLibrariesForQuestionnaire(fqcn.getCoachId()).get(0).peekQuestions(null);
+        return SubcoachHelper
+                .of(companyId, fqcn, this)
+                .insertSubcoachQuestions(questions);
+    }
 }

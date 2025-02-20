@@ -22,7 +22,9 @@ package eu.smesec.cysec.platform.bridge;
 import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.generated.Answer;
 import eu.smesec.cysec.platform.bridge.generated.Metadata;
+import eu.smesec.cysec.platform.bridge.generated.Question;
 import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
+import eu.smesec.cysec.platform.bridge.utils.Tuple;
 
 import java.io.IOException;
 import java.util.List;
@@ -108,4 +110,6 @@ public interface ILibCal {
   boolean checkResource(String coachId, String libId, String path);
 
   void unregisterResources(String coachId) throws IOException;
+
+  List<Tuple<FQCN, Question>> getActiveQuestionsWithFqcn() throws CacheException;
 }
