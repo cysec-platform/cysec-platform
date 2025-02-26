@@ -11,6 +11,8 @@
 :root {
     --bs-link-color: var(--cy-primary);
     --bs-link-color-rgb: var(--cy-primary-rgb);
+    --bs-link-hover-color: var(--cy-primary-darker);
+    --bs-link-hover-color-rgb: var(--cy-primary-darker-rgb);
 
     --bs-border-radius: 0;
     --bs-border-radius-sm: 0;
@@ -24,7 +26,7 @@
 a {
     text-decoration: none;
 
-    &:hover {
+    &:not(.nav-link):hover {
         text-decoration: underline;
     }
 }

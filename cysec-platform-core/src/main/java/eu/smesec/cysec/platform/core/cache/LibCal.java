@@ -25,7 +25,9 @@ import eu.smesec.cysec.platform.bridge.CoachLibrary;
 import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.generated.Answer;
 import eu.smesec.cysec.platform.bridge.generated.Metadata;
+import eu.smesec.cysec.platform.bridge.generated.Question;
 import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
+import eu.smesec.cysec.platform.bridge.utils.Tuple;
 
 import java.io.IOException;
 import java.util.List;
@@ -265,5 +267,10 @@ public class LibCal implements ILibCal {
   public void removeMvaluesFroCompany(String metadataKey, Set<String> mvalueKeys)
       throws CacheException {
     cal.removeMvaluesFromAnswer(getCompanyId(), FQCN_COMPANY, metadataKey, mvalueKeys);
+  }
+
+  @Override
+  public List<Tuple<FQCN, Question>> getActiveQuestionsWithFqcn() throws CacheException {
+    return cal.getActiveQuestionsWithFqcn(getCompanyId(), FQCN_COMPANY);
   }
 }

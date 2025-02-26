@@ -478,17 +478,17 @@ html {
     
     svg {
         fill: #007EA7;
-        display: none;
+        visibility: hidden;
     }
 
     &:disabled {
         opacity: 0.2;
     
         img {
-            display: none;
+            visibility: hidden;
         }
         svg {
-            display: inline;
+            visibility: visible;
         }
     }
 }
