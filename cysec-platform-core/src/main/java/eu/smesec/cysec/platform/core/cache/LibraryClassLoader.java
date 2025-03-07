@@ -84,14 +84,6 @@ public class LibraryClassLoader extends ClassLoader {
     String contentName = name.replace('.', '/') + ".class";
     byte[] content = contentMap.get(contentName);
     if (content == null) {
-      System.out.println(contentMap.keySet());
-      try {
-        Files.writeString(Paths.get("./keys.txt"), contentMap.keySet().stream()
-        .map(s -> s.toString())
-        .collect(Collectors.joining("\n")));
-      } catch(Exception e) {
-
-      }
       return this.chain.loadClass(name);
     }
 
