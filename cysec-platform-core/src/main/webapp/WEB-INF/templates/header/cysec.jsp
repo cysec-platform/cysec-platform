@@ -26,7 +26,7 @@
 <t:header>
     <jsp:attribute name="brand">
         <a class="navbar-brand ms-4" href="${context}/app#" title="Home">
-            <img alt="Cysec Logo" src="${context}/assets/logo/CYSEC_Logo_RGB.svg" width="106px" height="44px"/>
+            <img alt="Cysec Logo" src="${context}/assets/logo/${applicationScope.logoName}" width="106px" height="44px"/>
         </a>
     </jsp:attribute>
     <jsp:attribute name="links">

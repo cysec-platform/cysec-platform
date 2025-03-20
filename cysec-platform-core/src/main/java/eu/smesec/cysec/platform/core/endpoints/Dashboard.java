@@ -73,6 +73,8 @@ public class Dashboard {
 
   public static final String CONFIG_RECOMMENDATIONS_COUNT = "cysec_recommend_count";
   public static final String CONFIG_HIDE_LIB_COMPANY = "cysec_hide_lib_company";
+  public static final String CONFIG_ENABLE_DASHBOARD_RECOMMENDATIONS = "cysec_enable_dashboard_recommendations";
+  public static final String CONFIG_ENABLE_DASHBOARD_SIDEBAR = "cysec_enable_dashboard_sidebar";
 
   private static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
@@ -244,6 +246,10 @@ public class Dashboard {
       boolean userIsAdmin = cal.getAllAdminUsers(companyId).stream()
         .anyMatch(u -> u.getUsername().equals(userName));
 
+      // Read config values
+      boolean enableRecommendations = CysecConfig.getDefault().getBooleanValue(contextName, CONFIG_ENABLE_DASHBOARD_RECOMMENDATIONS);
+      boolean enableSidebar = CysecConfig.getDefault().getBooleanValue(contextName, CONFIG_ENABLE_DASHBOARD_SIDEBAR);
+
       Map<String, Object> model = new HashMap<>();
       model.put("msg", msg.getMessages());
       model.put("userIsAdmin", userIsAdmin);
@@ -251,6 +257,8 @@ public class Dashboard {
       model.put("remaining", remaining);
       model.put("recommendations", recommendations);
       model.put("badges", badges);
+      model.put("enableRecommendations", enableRecommendations);
+      model.put("enableSidebar", enableSidebar);
       if (skills != null) {
         model.put(
             "skills",

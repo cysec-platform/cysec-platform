@@ -34,6 +34,7 @@ public class CysecServletContextListener implements ServletContextListener {
   // configuration keys referenced in 'cysec.cfgresources'
   private static final String CONFIG_HEADER_PROFILE = "cysec_header_profile";
   private static final String CONFIG_HEADER_LOGOUT = "cysec_header_logout";
+  private static final String CONFIG_LOGO_NAME = "cysec_logo_name";
 
   @Override
   public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -49,6 +50,9 @@ public class CysecServletContextListener implements ServletContextListener {
     if (headerLogoutHref != null) {
       servletContext.setInitParameter("header_logout_href", headerLogoutHref);
     }
+
+    // Add configured logo name to context so it's available in all JSP pages
+    servletContext.setAttribute("logoName", config.getStringValue(null, CONFIG_LOGO_NAME));
   }
 
   @Override

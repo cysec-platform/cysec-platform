@@ -39,3 +39,8 @@ string; cysec_mail_smtp_host; localhost ; The host of the mail server (SMTP)
 string; cysec_mail_smtp_port; 25 ; The port of the mail server (SMTP)
 string; cysec_mail_sender_name; ; The sender name used by the mail sender
 string; cysec_mail_sender_address; no-reply@example.com ; The sender address used by the mail sender
+
+// coach customization
+boolean; cysec_enable_dashboard_recommendations; true; Whether or not to show recommendations on dashboard
+boolean; cysec_enable_dashboard_sidebar; true; Whether or not to show sidebar on dashboard
+string; cysec_logo_name; CYSEC_Logo_RGB.svg; Name of the logo to show in nav bar
