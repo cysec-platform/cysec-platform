@@ -20,6 +20,7 @@
 package eu.smesec.cysec.platform.core.endpoints;
 
 import eu.smesec.cysec.platform.bridge.FQCN;
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.generated.Answers;
 import eu.smesec.cysec.platform.bridge.generated.Attachment;
 import eu.smesec.cysec.platform.bridge.generated.Attachments;
@@ -38,6 +39,7 @@ import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.cache.LibCal;
 import eu.smesec.cysec.platform.core.config.CysecConfig;
 import eu.smesec.cysec.platform.core.helpers.dashboard.CoachHelper;
+import eu.smesec.cysec.platform.core.json.CoachMetaData;
 import eu.smesec.cysec.platform.core.messages.DashboardMsg;
 import eu.smesec.cysec.platform.core.utils.LocaleUtils;
 import eu.smesec.cysec.platform.core.auth.Secured;
@@ -53,15 +55,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import javax.annotation.security.DenyAll;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.mvc.Viewable;
@@ -78,8 +87,10 @@ public class Dashboard {
 
   private static Logger logger = Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME);
 
-  @Context private ServletContext context;
-  @Inject private CacheAbstractionLayer cal;
+  @Context
+  private ServletContext context;
+  @Inject
+  private CacheAbstractionLayer cal;
 
   /**
    * Renders the questionnaire list for a company.
@@ -100,11 +111,10 @@ public class Dashboard {
       LastSelected lastSelected = null;
       Tuple<FQCN, Skills> skills = null;
       // fetch dashboard data
-      Map<String, Questionnaire> loadedCoaches =
-          cal.getAllCoaches(locale).stream()
-                  // filter out subcoaches, since we don't want to see them on the dashboard
-                  .filter(q -> q.getParent() == null)
-                  .collect(Collectors.toMap(Questionnaire::getId, q -> q));
+      Map<String, Questionnaire> loadedCoaches = cal.getAllCoaches(locale).stream()
+          // filter out subcoaches, since we don't want to see them on the dashboard
+          .filter(q -> q.getParent() == null)
+          .collect(Collectors.toMap(Questionnaire::getId, q -> q));
       Map<String, Answers> answersMap = cal.getAllAnswersMap(companyId);
       Map<Questionnaire, Map<FQCN, Answers>> coachAnswersMap = new HashMap<>();
       for (Map.Entry<String, Answers> answers : answersMap.entrySet()) {
@@ -118,12 +128,11 @@ public class Dashboard {
       // extract company coach
       Questionnaire companyCoach = loadedCoaches.get(LibCal.FQCN_COMPANY.getCoachId());
       // process company coach
-      CoachHelper coachHelper =
-          new CoachHelper(
-              LibCal.FQCN_COMPANY.toString(),
-              companyCoach.getReadableName());
+      CoachHelper coachHelper = new CoachHelper(
+          LibCal.FQCN_COMPANY.toString(),
+          companyCoach.getReadableName());
       coachHelper.setDescription(companyCoach.getDescription());
-      coachHelper.setBlocks(companyCoach.getBlocks()==null?null:companyCoach.getBlocks().getBlock());
+      coachHelper.setBlocks(companyCoach.getBlocks() == null ? null : companyCoach.getBlocks().getBlock());
       Attachments attachments = companyCoach.getAttachments();
       if (attachments != null) {
         for (Attachment attachment : attachments.getAttachment()) {
@@ -158,21 +167,21 @@ public class Dashboard {
       }
       List<CoachHelper> instantiated = new ArrayList<>();
 
-      // Workaround to hide company coach (lib-company) since it currently stores global non-coach data
-      // and therefore needs to be loaded for the platform to work. Once the data is stored in a different
+      // Workaround to hide company coach (lib-company) since it currently stores
+      // global non-coach data
+      // and therefore needs to be loaded for the platform to work. Once the data is
+      // stored in a different
       // way, this code block can be removed
       if (!CysecConfig.getDefault().getBooleanValue(contextName, CONFIG_HIDE_LIB_COMPANY)) {
         instantiated.add(coachHelper);
       }
       // End of workaround
 
-      FQCN lastSelectedFqcn =
-          lastSelected != null ? FQCN.fromString(lastSelected.getCoachId()) : LibCal.FQCN_COMPANY;
+      FQCN lastSelectedFqcn = lastSelected != null ? FQCN.fromString(lastSelected.getCoachId()) : LibCal.FQCN_COMPANY;
       // process other coaches
-      for (Questionnaire coach :
-          loadedCoaches.values().stream()
-              .sorted(Comparator.comparingInt(Questionnaire::getOrder))
-              .collect(Collectors.toList())) {
+      for (Questionnaire coach : loadedCoaches.values().stream()
+          .sorted(Comparator.comparingInt(Questionnaire::getOrder))
+          .collect(Collectors.toList())) {
         // skip already processed company coach
         if (coach.getId().equals(LibCal.FQCN_COMPANY.getCoachId())) {
           continue;
@@ -212,8 +221,7 @@ public class Dashboard {
             Answers answers = entry.getValue();
             for (Metadata md : answers.getMetadata()) {
               String mdKey = md.getKey();
-              Set<String> mvalues =
-                  md.getMvalue().stream().map(Mvalue::getKey).collect(Collectors.toSet());
+              Set<String> mvalues = md.getMvalue().stream().map(Mvalue::getKey).collect(Collectors.toSet());
               // rating
               if (mdKey.equals(MetadataUtils.MD_RATING)
                   && mvalues.contains(MetadataUtils.MV_MICRO_SCORE)
@@ -231,23 +239,22 @@ public class Dashboard {
         }
       }
       // trim recommendations and badges
-      recommendations =
-          recommendations.stream()
-              .sorted(Comparator.comparingInt(Recommendation::getOrder))
-              .limit(CysecConfig.getDefault().getNumericValue(contextName, CONFIG_RECOMMENDATIONS_COUNT))
-              .collect(Collectors.toList());
+      recommendations = recommendations.stream()
+          .sorted(Comparator.comparingInt(Recommendation::getOrder))
+          .limit(CysecConfig.getDefault().getNumericValue(contextName, CONFIG_RECOMMENDATIONS_COUNT))
+          .collect(Collectors.toList());
       badges = badges.subList(Integer.max(0, badges.size() - 3), badges.size());
 
       // add data for jsp
-      DashboardMsg msg =
-          new DashboardMsg(locale, instantiated.size(), remaining.size(), badges.size());
-      
+      DashboardMsg msg = new DashboardMsg(locale, instantiated.size(), remaining.size(), badges.size());
+
       String userName = context.getAttribute("user").toString();
       boolean userIsAdmin = cal.getAllAdminUsers(companyId).stream()
-        .anyMatch(u -> u.getUsername().equals(userName));
+          .anyMatch(u -> u.getUsername().equals(userName));
 
       // Read config values
-      boolean enableRecommendations = CysecConfig.getDefault().getBooleanValue(contextName, CONFIG_ENABLE_DASHBOARD_RECOMMENDATIONS);
+      boolean enableRecommendations = CysecConfig.getDefault().getBooleanValue(contextName,
+          CONFIG_ENABLE_DASHBOARD_RECOMMENDATIONS);
       boolean enableSidebar = CysecConfig.getDefault().getBooleanValue(contextName, CONFIG_ENABLE_DASHBOARD_SIDEBAR);
 
       Map<String, Object> model = new HashMap<>();
@@ -269,6 +276,49 @@ public class Dashboard {
       logger.log(Level.WARNING, "Error loading dashboard", e);
     }
     return Response.status(500).build();
+  }
+
+  @PUT
+  @Path("/metadata/{id}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response updateMetadata(@PathParam("id") String coachId, List<CoachMetaData> body) {
+    Stream<CoachMetaData> visible = body.stream().filter(it -> it.isVisible());
+    Stream<CoachMetaData> hidden = body.stream().filter(it -> !it.isVisible());
+
+    try {
+      updateMetadata(visible, CoachMetaData.KEY_VISIBLE, coachId);
+      updateMetadata(hidden, CoachMetaData.KEY_HIDDEN, coachId);
+    } catch (CacheException e) {
+      logger.warning(e.getMessage());
+      return Response.status(400).build();
+    }
+
+    return Response.status(200).build();
+  }
+
+  private void updateMetadata(Stream<CoachMetaData> stream, String metDataKey, String coachId) throws CacheException {
+    Metadata metaData = stream
+        .map(meta -> MetadataUtils.createMvalueStr(meta.getKey(), meta.getValue()))
+        .collect(
+            () -> {
+              Metadata meta = new Metadata();
+              meta.setKey(metDataKey);
+              return meta;
+            },
+            (meta, mVal) -> meta.getMvalue().add(mVal),
+            (meta1, meta2) -> meta1.getMvalue().addAll(meta2.getMvalue()));
+
+    String company = context.getAttribute("company").toString();
+    FQCN fqcn = FQCN.fromString(coachId);
+
+    if (cal.getMetadataOnAnswer(company, fqcn, metDataKey) != null) {
+      // remove all existing meta data (to conform to PUT semantic) because
+      // setMetadataOnAnswers will merge mValues
+      cal.deleteMetadataOnAnswers(company, fqcn, metDataKey);
+    }
+
+    cal.setMetadataOnAnswers(company, fqcn, metaData);
   }
 
   private String getAnswerName(FQCN fqcn, Map<String, Questionnaire> coaches) {
