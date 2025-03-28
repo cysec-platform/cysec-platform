@@ -278,6 +278,51 @@ public class Dashboard {
     return Response.status(500).build();
   }
 
+  @GET
+  @Path("/metadata/{id}")
+  @Produces(MediaType.TEXT_HTML)
+  public Response getMetadata(@PathParam("id") String coachId) {
+    String company = context.getAttribute("company").toString();
+    FQCN fqcn = FQCN.fromString(coachId);
+
+    try {
+      Stream<CoachMetaData> stream = Stream.of();
+
+      Metadata visible = cal.getMetadataOnAnswer(company, fqcn, CoachMetaData.KEY_VISIBLE);
+      if (visible != null) {
+        stream = Stream.concat(stream, visible.getMvalue().stream()
+            .map(mVal -> new CoachMetaData(
+                mVal.getKey(),
+                mVal.getStringValueOrBinaryValue().getValue(),
+                true)));
+      }
+
+      Metadata hidden = cal.getMetadataOnAnswer(company, fqcn, CoachMetaData.KEY_HIDDEN);
+      if (hidden != null) {
+        stream = Stream.concat(
+            stream,
+            hidden.getMvalue()
+                .stream()
+                .map(mVal -> new CoachMetaData(
+                    mVal.getKey(),
+                    mVal.getStringValueOrBinaryValue().getValue(),
+                    false)));
+      }
+
+      List<CoachMetaData> metadata = stream.collect(Collectors.toList());
+
+      Map<String, Object> model = new HashMap<>();
+      model.put("metadata", metadata);
+
+      return Response.status(200)
+          .entity(new Viewable("/dashboard/metadata", model))
+          .build();
+    } catch (CacheException e) {
+      logger.warning(e.getMessage());
+      return Response.status(400).build();
+    }
+  }
+
   @PUT
   @Path("/metadata/{id}")
   @Consumes(MediaType.APPLICATION_JSON)

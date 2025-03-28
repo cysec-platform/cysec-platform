@@ -40,6 +40,11 @@
                                     <a href="javascript:;" onclick="resume('${coachId}')">${it.msg.coachContinue}</a>
                                     &nbsp; | &nbsp;
                                     <a href="javascript:;" onclick="reset('${coachId}')">${it.msg.coachReset}</a>
+                                    &nbsp; | &nbsp;
+                                    <a href="javascript:;" onclick="openMetaModal('${coachId}')"
+                                        data-bs-toggle="modal" data-bs-target="#metaCoachModal" >
+                                        Meta
+                                    </a>
                                     <c:if test="${it.userIsAdmin}">
                                         &nbsp; | &nbsp;
                                         <a href="javascript:;" onclick="openAdminModal('${coachId}')"
@@ -92,6 +97,17 @@
                     </div>
                 </div>
             </div>
+            <div class="modal" id="metaCoachModal" tabindex="-1" aria-hidden="true" aria-labelledby="metaModalLabel">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="metaModalLabel">Edit Metadata</h3>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body d-flex flex-column gap-3"></div>
+                    </div>
+                </div>
+            </div>
         </c:when>
         <c:otherwise>
             <div class="alert bg-lightbluegrey">
@@ -100,3 +116,25 @@
         </c:otherwise>
     </c:choose>
 </div>
+
+<template id="keyValueFormTemplate">
+    <div class="row gx-3">
+        <div class="col form-floating">
+            <input type="text" name="key" class="form-control m-0 instance-name-input" placeholder="loremipsum" />
+            <label>Key</label>
+        </div>
+        <div class="col form-floating">
+            <input type="text" name="value" class="form-control m-0 instance-name-input" placeholder="loremipsum" />
+            <label>Value</label>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+            <div class="form-check">
+                <input type="checkbox" name="visible" class="form-check-input">
+                <label class="form-check-label">visible</label>
+            </div>
+        </div>
+        <div class="col-auto form-floating">
+            <button type="button" class="btn btn-danger h-100">Delete</button>
+        </div>
+    </div>
+</template>

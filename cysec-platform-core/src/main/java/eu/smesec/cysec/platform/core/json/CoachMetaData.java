@@ -30,6 +30,12 @@ public class CoachMetaData {
     public CoachMetaData() {
     }
 
+    public CoachMetaData(String key, String value, boolean visible) {
+        this.key = key;
+        this.value = value;
+        this.visible = visible;
+    }
+
     public String getKey() {
         return key;
     }

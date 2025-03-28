@@ -72,7 +72,7 @@ const reset = (fqcn) => {
             }
         });
     }
-}
+};
 
 /**
  * Instantiates a new sub-coach
@@ -113,6 +113,20 @@ const openAdminModal = (coachId) => {
     };
 };
 
+/**
+ * 
+ * @param {string} coachId 
+ */
+const openMetaModal = (coachId) => {
+    const url = buildUrl(`/api/rest/dashboard/metadata/${coachId}`);
+    $("#metaCoachModal .modal-body").load(url);
+};
+
+const addMeta = () => {
+    const template = $("keyValueFormTemplate");
+    const clone = template.content.cloneNode(true);
+    $("#metaCoachModal .modal-body").appendChild(clone);
+}
 
 /**
  * Overwriting the default behavior of an HTML form to handle 
@@ -140,6 +154,6 @@ const submitImportForm = (form, coachId) => {
         bootstrap.Modal.getInstance($("#adminCoachModal")).hide();
         form.reset();
     });
-}
+};
 
 window.addEventListener("load", getDashboard);
