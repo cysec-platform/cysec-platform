@@ -1,7 +1,8 @@
 /**
  * Retrieves the rendered dashboard from the backend
+ * @param {() => void | undefined} onSuccess
  */
-const getDashboard = () => {
+const getDashboard = (onSuccess) => {
     const url = buildUrl("/api/rest/dashboard");
     fetch(url, {
         credentials: "include"
@@ -9,6 +10,7 @@ const getDashboard = () => {
         if (response.ok) {
             response.text().then(dashboard => {
                 $("#wrapper").html(dashboard);
+                if (onSuccess) onSuccess();
             })
         } else {
             displayError("GET " + url + "<br>status code " + response.status);
@@ -65,7 +67,7 @@ const reset = (fqcn) => {
             credentials: "include"
         }).then(response => {
             if (response.ok) {
-                displaySuccess("CySec coach has been reset to its default state");
+                getDashboard(() => displaySuccess("CySec coach has been reset to its default state"));
             } else {
                 displayError("GET " + resetUrl + "<br>status code: " + response.status);
                 console.debug(response.status);
@@ -185,18 +187,18 @@ const submitMeta = (coachId) => {
         headers: { "Content-Type": "application/json", },
         body: JSON.stringify(data),
     })
-        .then(res => {
-            if (!res.ok) {
-                console.error(res);
+        .then(response => {
+            if (response.ok) {
+                bootstrap.Modal.getInstance($("#meta-coach-modal")).hide();
+                getDashboard(() => displaySuccess("meta data updated successfully"));
+            } else {
+                console.error(response);
                 displayError("failed to update metadata");
                 bootstrap.Modal.getInstance($("#meta-coach-modal")).hide();
-            } else {
-                bootstrap.Modal.getInstance($("#meta-coach-modal")).hide();
-                getDashboard();
             }
         })
-        .catch(err => {
-            console.error(err);
+        .catch(error => {
+            console.error(error);
             displayError("failed to update metadata");
             bootstrap.Modal.getInstance($("#meta-coach-modal")).hide();
         });
@@ -219,7 +221,7 @@ const submitImportForm = (form, coachId) => {
         credentials: "include",
     }).then(response => {
         if (response.ok) {
-            displaySuccess("Imported coach");
+            getDashboard(() => displaySuccess("Imported coach"));
         } else {
             displayError("POST " + url + "<br>status code: " + response.status);
             console.debug(response.status);
