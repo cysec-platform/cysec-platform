@@ -42,7 +42,7 @@
                                     <a href="javascript:;" onclick="reset('${coachId}')">${it.msg.coachReset}</a>
                                     &nbsp; | &nbsp;
                                     <a href="javascript:;" onclick="openMetaModal('${coachId}')"
-                                        data-bs-toggle="modal" data-bs-target="#metaCoachModal" >
+                                        data-bs-toggle="modal" data-bs-target="#meta-coach-modal" >
                                         Meta
                                     </a>
                                     <c:if test="${it.userIsAdmin}">
@@ -97,14 +97,32 @@
                     </div>
                 </div>
             </div>
-            <div class="modal" id="metaCoachModal" tabindex="-1" aria-hidden="true" aria-labelledby="metaModalLabel">
+            <div class="modal" id="meta-coach-modal" tabindex="-1" aria-hidden="true" aria-labelledby="metaModalLabel">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h3 class="modal-title" id="metaModalLabel">Edit Metadata</h3>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" onclick="closeMetaModal()"
+                                class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close">
+                            </button>
                         </div>
-                        <div class="modal-body d-flex flex-column gap-3"></div>
+                        <div class="modal-body d-flex flex-column gap-3">
+                            <span class="meta-entry-container d-flex flex-column gap-3">
+                                <!-- metadata entires dynamically loaded here -->
+                            </span>
+
+                            <div class="row m-0">
+                                <button type="button" onclick="addMeta()" class="btn btn-primary btn-lg col-auto ms-auto">
+                                    Add Metadata
+                                </button>
+                            </div>
+                            <div class="row m-0">
+                                <button id="meta-send-button" type="button" class="btn btn-outline-primary btn-lg">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -117,10 +135,10 @@
     </c:choose>
 </div>
 
-<template id="keyValueFormTemplate">
+<template id="meta-entry-template">
     <div class="row gx-3">
         <div class="col form-floating">
-            <input type="text" name="key" class="form-control m-0 instance-name-input" placeholder="loremipsum" />
+            <input type="text" required name="key" class="form-control m-0 instance-name-input" placeholder="loremipsum" />
             <label>Key</label>
         </div>
         <div class="col form-floating">

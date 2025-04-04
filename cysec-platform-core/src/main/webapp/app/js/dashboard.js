@@ -114,19 +114,93 @@ const openAdminModal = (coachId) => {
 };
 
 /**
- * 
+ * Fetch metadata for given coach.
  * @param {string} coachId 
  */
 const openMetaModal = (coachId) => {
+    document.getElementById("meta-send-button").onclick = () => submitMeta(coachId);
     const url = buildUrl(`/api/rest/dashboard/metadata/${coachId}`);
-    $("#metaCoachModal .modal-body").load(url);
+    $("#meta-coach-modal .meta-entry-container").load(url);
 };
 
-const addMeta = () => {
-    const template = $("keyValueFormTemplate");
-    const clone = template.content.cloneNode(true);
-    $("#metaCoachModal .modal-body").appendChild(clone);
+/**
+ * Clear modal on close.
+ */
+const closeMetaModal = () => {
+    document.getElementById("meta-send-button").onclick = undefined;
+    document.querySelector("#meta-coach-modal .meta-entry-container").innerHTML = "";
 }
+
+/**
+ * Add another metadata entry row to the form.
+ */
+const addMeta = () => {
+    const key = crypto.randomUUID();
+    const template = document.getElementById("meta-entry-template")
+    /** @type {Element} */
+    const entry = template.content.cloneNode(true);
+
+    entry.querySelector("div").setAttribute("data-meta-key", key);
+    entry.querySelector(`input[type="checkbox"]`).id = `${key}-visible`;
+    entry.querySelector(`label.form-check-label`).setAttribute("for", `${key}-visible`);
+    entry.querySelector("button").onclick = () => deleteMeta(key);
+
+    document.querySelector("#meta-coach-modal .meta-entry-container").appendChild(entry);
+}
+
+/**
+ * Remove a specific row from the form.
+ * @param {string} key key of metadata entry
+ */
+const deleteMeta = (key) => document
+    .querySelector(`.meta-entry-container div[data-meta-key="${key}"]`)
+    .remove();
+
+/**
+ * Submit new metadata for given coach (PUT semantic).
+ * @param {string} coachId 
+ */
+const submitMeta = (coachId) => {
+    if (Array.from(document.querySelectorAll(`.meta-entry-container input[name="key"]`))
+        .filter(input => !input.validity.valid).length > 0) {
+        displayWarning("all meta data entries must have a key");
+        return;
+    }
+
+    const data = [];
+    for (const entry of document.querySelector(".meta-entry-container").children) {
+        const key = entry.querySelector(`input[name="key"]`).value.trim();
+        const value = entry.querySelector(`input[name="value"]`).value.trim();
+        const visible = entry.querySelector(`input[type="checkbox"]`).checked;
+
+        data.push({
+            "key": key,
+            "value": value,
+            "visible": visible,
+        });
+    }
+
+    fetch(buildUrl(`/api/rest/dashboard/metadata/${coachId}`), {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", },
+        body: JSON.stringify(data),
+    })
+        .then(res => {
+            if (!res.ok) {
+                console.error(res);
+                displayError("failed to update metadata");
+                bootstrap.Modal.getInstance($("#meta-coach-modal")).hide();
+            } else {
+                displaySuccess("metadata updated successfully");
+                bootstrap.Modal.getInstance($("#meta-coach-modal")).hide();
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            displayError("failed to update metadata");
+            bootstrap.Modal.getInstance($("#meta-coach-modal")).hide();
+        });
+};
 
 /**
  * Overwriting the default behavior of an HTML form to handle 
