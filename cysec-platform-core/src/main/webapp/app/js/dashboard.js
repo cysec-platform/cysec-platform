@@ -8,7 +8,7 @@ const getDashboard = () => {
     }).then(response => {
         if (response.ok) {
             response.text().then(dashboard => {
-                $("#wrapper").append(dashboard);
+                $("#wrapper").html(dashboard);
             })
         } else {
             displayError("GET " + url + "<br>status code " + response.status);
@@ -191,8 +191,8 @@ const submitMeta = (coachId) => {
                 displayError("failed to update metadata");
                 bootstrap.Modal.getInstance($("#meta-coach-modal")).hide();
             } else {
-                displaySuccess("metadata updated successfully");
                 bootstrap.Modal.getInstance($("#meta-coach-modal")).hide();
+                getDashboard();
             }
         })
         .catch(err => {

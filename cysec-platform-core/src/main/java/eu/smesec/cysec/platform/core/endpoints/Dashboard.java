@@ -247,6 +247,12 @@ public class Dashboard {
 
       // add data for jsp
       DashboardMsg msg = new DashboardMsg(locale, instantiated.size(), remaining.size(), badges.size());
+      for (CoachHelper coach : instantiated) {
+        List<CoachMetaData> metadata = getMetadata(companyId, FQCN.fromString(coach.getId())).stream()
+            .filter(CoachMetaData::isVisible)
+            .collect(Collectors.toList());
+        coach.setVisibleCoachMetadata(metadata);
+      }
 
       String userName = context.getAttribute("user").toString();
       boolean userIsAdmin = cal.getAllAdminUsers(companyId).stream()
@@ -286,30 +292,7 @@ public class Dashboard {
     FQCN fqcn = FQCN.fromString(coachId);
 
     try {
-      Stream<CoachMetaData> stream = Stream.of();
-
-      Metadata visible = cal.getMetadataOnAnswer(company, fqcn, CoachMetaData.KEY_VISIBLE);
-      if (visible != null) {
-        stream = Stream.concat(stream, visible.getMvalue().stream()
-            .map(mVal -> new CoachMetaData(
-                mVal.getKey(),
-                mVal.getStringValueOrBinaryValue().getValue(),
-                true)));
-      }
-
-      Metadata hidden = cal.getMetadataOnAnswer(company, fqcn, CoachMetaData.KEY_HIDDEN);
-      if (hidden != null) {
-        stream = Stream.concat(
-            stream,
-            hidden.getMvalue()
-                .stream()
-                .map(mVal -> new CoachMetaData(
-                    mVal.getKey(),
-                    mVal.getStringValueOrBinaryValue().getValue(),
-                    false)));
-      }
-
-      List<CoachMetaData> metadata = stream.collect(Collectors.toList());
+      List<CoachMetaData> metadata = getMetadata(company, fqcn);
 
       Map<String, Object> model = new HashMap<>();
       model.put("metadata", metadata);
@@ -340,6 +323,33 @@ public class Dashboard {
     }
 
     return Response.status(200).build();
+  }
+
+  private List<CoachMetaData> getMetadata(String companyId, FQCN fqcn) throws CacheException {
+    Stream<CoachMetaData> stream = Stream.of();
+
+    Metadata visible = cal.getMetadataOnAnswer(companyId, fqcn, CoachMetaData.KEY_VISIBLE);
+    if (visible != null) {
+      stream = Stream.concat(stream, visible.getMvalue().stream()
+          .map(mVal -> new CoachMetaData(
+              mVal.getKey(),
+              mVal.getStringValueOrBinaryValue().getValue(),
+              true)));
+    }
+
+    Metadata hidden = cal.getMetadataOnAnswer(companyId, fqcn, CoachMetaData.KEY_HIDDEN);
+    if (hidden != null) {
+      stream = Stream.concat(
+          stream,
+          hidden.getMvalue()
+              .stream()
+              .map(mVal -> new CoachMetaData(
+                  mVal.getKey(),
+                  mVal.getStringValueOrBinaryValue().getValue(),
+                  false)));
+    }
+
+    return stream.collect(Collectors.toList());
   }
 
   private void updateMetadata(Stream<CoachMetaData> stream, String metDataKey, String coachId) throws CacheException {

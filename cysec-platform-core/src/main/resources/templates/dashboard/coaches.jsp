@@ -53,6 +53,18 @@
                                         </a>
                                     </c:if>
                                 </h5>
+                                <div class="d-flex flex-row flex-wrap gap-3">
+                                    <c:forEach var="meta" items="${coach.visibleCoachMetadata}">
+                                        <span class="badge rounded-pill text-bg-light fs-5">
+                                            <span class="me-3">
+                                                <c:out value="${meta.key}" />
+                                            </span>
+                                            <span class="fw-light">
+                                                <c:out value="${meta.value}" />
+                                            </span>
+                                        </span>
+                                    </c:forEach>
+                                </div>
                             </div>
                         </div>
                         <div class="col col-3 col-sm-2">
@@ -113,12 +125,12 @@
                             </span>
 
                             <div class="row m-0">
-                                <button type="button" onclick="addMeta()" class="btn btn-primary btn-lg col-auto ms-auto">
+                                <button type="button" onclick="addMeta()" class="btn btn-outline-primary btn-lg">
                                     Add Metadata
                                 </button>
                             </div>
                             <div class="row m-0">
-                                <button id="meta-send-button" type="button" class="btn btn-outline-primary btn-lg">
+                                <button id="meta-send-button" type="button" class="btn btn-primary btn-lg">
                                     Save
                                 </button>
                             </div>
