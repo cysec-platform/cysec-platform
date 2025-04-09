@@ -2,7 +2,7 @@
 <c:set var="baseUrl"
        value="${header['x-forwarded-proto'] != null ? header['x-forwarded-proto'] : pageContext.request.scheme}://${header.host}${pageContext.request.contextPath}"/>
 
-<div id="pagination" class="container-fluid">
+<div id="pagination" class="container-fluid align-items-end">
     <div class="d-flex w-100 justify-content-between">
         <div class="">
             <c:forEach var="active" items="${it.actives}">
