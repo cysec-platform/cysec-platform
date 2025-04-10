@@ -1,14 +1,16 @@
 /**
  * Retrieves the rendered dashboard from the backend
+ * @param {() => void | undefined} onSuccess
  */
-const getDashboard = () => {
+const getDashboard = (onSuccess) => {
     const url = buildUrl("/api/rest/dashboard");
     fetch(url, {
         credentials: "include"
     }).then(response => {
         if (response.ok) {
             response.text().then(dashboard => {
-                $("#wrapper").append(dashboard);
+                $("#wrapper").html(dashboard);
+                if (onSuccess) onSuccess();
             })
         } else {
             displayError("GET " + url + "<br>status code " + response.status);
@@ -65,14 +67,14 @@ const reset = (fqcn) => {
             credentials: "include"
         }).then(response => {
             if (response.ok) {
-                displaySuccess("CySec coach has been reset to its default state");
+                getDashboard(() => displaySuccess("CySec coach has been reset to its default state"));
             } else {
                 displayError("GET " + resetUrl + "<br>status code: " + response.status);
                 console.debug(response.status);
             }
         });
     }
-}
+};
 
 /**
  * Instantiates a new sub-coach
@@ -113,6 +115,94 @@ const openAdminModal = (coachId) => {
     };
 };
 
+/**
+ * Fetch metadata for given coach.
+ * @param {string} coachId 
+ */
+const openMetaModal = (coachId) => {
+    document.getElementById("meta-send-button").onclick = () => submitMeta(coachId);
+    const url = buildUrl(`/api/rest/dashboard/metadata/${coachId}`);
+    $("#meta-coach-modal .meta-entry-container").load(url);
+};
+
+/**
+ * Clear modal on close.
+ */
+const closeMetaModal = () => {
+    document.getElementById("meta-send-button").onclick = undefined;
+    document.querySelector("#meta-coach-modal .meta-entry-container").innerHTML = "";
+}
+
+/**
+ * Add another metadata entry row to the form.
+ */
+const addMeta = () => {
+    const key = crypto.randomUUID();
+    const template = document.getElementById("meta-entry-template")
+    /** @type {Element} */
+    const entry = template.content.cloneNode(true);
+
+    entry.querySelector("div").setAttribute("data-meta-key", key);
+    entry.querySelector(`input[type="checkbox"]`).id = `${key}-visible`;
+    entry.querySelector(`label.form-check-label`).setAttribute("for", `${key}-visible`);
+    entry.querySelector("button").onclick = () => deleteMeta(key);
+
+    document.querySelector("#meta-coach-modal .meta-entry-container").appendChild(entry);
+}
+
+/**
+ * Remove a specific row from the form.
+ * @param {string} key key of metadata entry
+ */
+const deleteMeta = (key) => document
+    .querySelector(`.meta-entry-container div[data-meta-key="${key}"]`)
+    .remove();
+
+/**
+ * Submit new metadata for given coach (PUT semantic).
+ * @param {string} coachId 
+ */
+const submitMeta = (coachId) => {
+    if (Array.from(document.querySelectorAll(`.meta-entry-container input[name="key"]`))
+        .filter(input => !input.validity.valid).length > 0) {
+        displayWarning("all meta data entries must have a key");
+        return;
+    }
+
+    const data = [];
+    for (const entry of document.querySelector(".meta-entry-container").children) {
+        const key = entry.querySelector(`input[name="key"]`).value.trim();
+        const value = entry.querySelector(`input[name="value"]`).value.trim();
+        const visible = entry.querySelector(`input[type="checkbox"]`).checked;
+
+        data.push({
+            "key": key,
+            "value": value,
+            "visible": visible,
+        });
+    }
+
+    fetch(buildUrl(`/api/rest/dashboard/metadata/${coachId}`), {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", },
+        body: JSON.stringify(data),
+    })
+        .then(response => {
+            if (response.ok) {
+                bootstrap.Modal.getInstance($("#meta-coach-modal")).hide();
+                getDashboard(() => displaySuccess("meta data updated successfully"));
+            } else {
+                console.error(response);
+                displayError("failed to update metadata");
+                bootstrap.Modal.getInstance($("#meta-coach-modal")).hide();
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            displayError("failed to update metadata");
+            bootstrap.Modal.getInstance($("#meta-coach-modal")).hide();
+        });
+};
 
 /**
  * Overwriting the default behavior of an HTML form to handle 
@@ -131,7 +221,7 @@ const submitImportForm = (form, coachId) => {
         credentials: "include",
     }).then(response => {
         if (response.ok) {
-            displaySuccess("Imported coach");
+            getDashboard(() => displaySuccess("Imported coach"));
         } else {
             displayError("POST " + url + "<br>status code: " + response.status);
             console.debug(response.status);
@@ -140,6 +230,6 @@ const submitImportForm = (form, coachId) => {
         bootstrap.Modal.getInstance($("#adminCoachModal")).hide();
         form.reset();
     });
-}
+};
 
 window.addEventListener("load", getDashboard);

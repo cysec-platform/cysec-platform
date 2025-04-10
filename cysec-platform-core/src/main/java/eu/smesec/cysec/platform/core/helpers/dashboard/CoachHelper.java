@@ -24,6 +24,8 @@ import eu.smesec.cysec.platform.bridge.generated.Block;
 import eu.smesec.cysec.platform.bridge.md.Rating;
 import eu.smesec.cysec.platform.bridge.md.Skills;
 import eu.smesec.cysec.platform.bridge.md.State;
+import eu.smesec.cysec.platform.core.json.CoachMetaData;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -37,6 +39,7 @@ public class CoachHelper {
   private Skills skills;
   private Rating rating;
   private List<Block> blocks;
+  private List<CoachMetaData> visibleCoachMetadata;
 
   /**
    * Coach visible data container constructor.
@@ -103,5 +106,13 @@ public class CoachHelper {
 
   public State getState() {
     return state;
+  }
+
+  public void setVisibleCoachMetadata(List<CoachMetaData> metadata) {
+    this.visibleCoachMetadata = (metadata==null) ? new ArrayList<>():new ArrayList<>(metadata);
+  }
+
+  public List<CoachMetaData> getVisibleCoachMetadata() {
+    return visibleCoachMetadata;
   }
 }

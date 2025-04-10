@@ -40,6 +40,11 @@
                                     <a href="javascript:;" onclick="resume('${coachId}')">${it.msg.coachContinue}</a>
                                     &nbsp; | &nbsp;
                                     <a href="javascript:;" onclick="reset('${coachId}')">${it.msg.coachReset}</a>
+                                    &nbsp; | &nbsp;
+                                    <a href="javascript:;" onclick="openMetaModal('${coachId}')"
+                                        data-bs-toggle="modal" data-bs-target="#meta-coach-modal" >
+                                        ${it.msg.coachMeta}
+                                    </a>
                                     <c:if test="${it.userIsAdmin}">
                                         &nbsp; | &nbsp;
                                         <a href="javascript:;" onclick="openAdminModal('${coachId}')"
@@ -48,6 +53,18 @@
                                         </a>
                                     </c:if>
                                 </h5>
+                                <div class="d-flex flex-row flex-wrap gap-3">
+                                    <c:forEach var="meta" items="${coach.visibleCoachMetadata}">
+                                        <span class="badge rounded-pill text-bg-light fs-5">
+                                            <span class="me-3">
+                                                <c:out value="${meta.key}" />
+                                            </span>
+                                            <span class="fw-light">
+                                                <c:out value="${meta.value}" />
+                                            </span>
+                                        </span>
+                                    </c:forEach>
+                                </div>
                             </div>
                         </div>
                         <div class="col col-3 col-sm-2">
@@ -92,6 +109,40 @@
                     </div>
                 </div>
             </div>
+            <div class="modal" id="meta-coach-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" aria-labelledby="metaModalLabel">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title" id="metaModalLabel">${it.msg.editMetadata}</h3>
+                        </div>
+                        <div class="modal-body d-flex flex-column gap-3">
+                            <span class="meta-entry-container d-flex flex-column gap-3">
+                                <!-- metadata entires dynamically loaded here -->
+                            </span>
+
+                            <div class="row">
+                                <div class="col">
+                                    <button type="button" onclick="addMeta()" class="btn btn-outline-primary btn-lg w-100">
+                                        ${it.msg.addMetadataField}
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <button id="meta-cancel-button" type="button" class="btn btn-danger btn-lg w-100" data-bs-dismiss="modal" onclick="closeMetaModal()">
+                                        ${it.msg.metadataCancel}
+                                    </button>
+                                </div>
+                                <div class="col">
+                                    <button id="meta-send-button" type="button" class="btn btn-primary btn-lg w-100">
+                                        ${it.msg.metadataSave}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </c:when>
         <c:otherwise>
             <div class="alert bg-lightbluegrey">
@@ -100,3 +151,29 @@
         </c:otherwise>
     </c:choose>
 </div>
+
+<template id="meta-entry-template">
+    <div class="row gx-3">
+        <div class="col">
+            <div class="form-floating">
+                <input type="text" required name="key" class="form-control m-0 instance-name-input" placeholder="loremipsum" />
+                <label>${it.msg.metadataKey}</label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-floating">
+                <input type="text" name="value" class="form-control m-0 instance-name-input" placeholder="loremipsum" />
+                <label>${it.msg.metadataValue}</label>
+            </div>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+            <div class="form-check">
+                <input type="checkbox" name="visible" class="form-check-input">
+                <label class="form-check-label">${it.msg.metadataVisible}</label>
+            </div>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-danger h-100">${it.msg.metadataDelete}</button>
+        </div>
+    </div>
+</template>
