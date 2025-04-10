@@ -11,7 +11,7 @@
         </c:when>
         <c:otherwise>
             <c:forEach items="${it.answer.subcoachInstances.subcoachInstance}" var="instance">
-                <div class="row gx-3 mb-3 subcoach-instance existing-instance">
+                <div class="row gx-3 mb-3 subcoach-instance existing-instance" id="instance-${instance.instanceName}">
                     <div class="col-5">
                         <div class="form-floating">
                             <input type="text" readonly class="form-control-plaintext m-0 pt-5" id="parentArgumentText-${instance.instanceName}" placeholder="lorem" value="${instance.parentArgument}">

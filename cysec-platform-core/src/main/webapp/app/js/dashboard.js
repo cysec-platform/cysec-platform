@@ -2,7 +2,7 @@
  * Retrieves the rendered dashboard from the backend
  * @param {() => void | undefined} onSuccess
  */
-const getDashboard = (onSuccess) => {
+const getDashboard = (onSuccess = null) => {
     const url = buildUrl("/api/rest/dashboard");
     fetch(url, {
         credentials: "include"
@@ -232,4 +232,4 @@ const submitImportForm = (form, coachId) => {
     });
 };
 
-window.addEventListener("load", getDashboard);
+window.addEventListener("load", () => getDashboard());
