@@ -43,7 +43,7 @@
                                     &nbsp; | &nbsp;
                                     <a href="javascript:;" onclick="openMetaModal('${coachId}')"
                                         data-bs-toggle="modal" data-bs-target="#meta-coach-modal" >
-                                        Meta
+                                        ${it.msg.coachMeta}
                                     </a>
                                     <c:if test="${it.userIsAdmin}">
                                         &nbsp; | &nbsp;
@@ -113,7 +113,7 @@
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h3 class="modal-title" id="metaModalLabel">Edit Metadata</h3>
+                            <h3 class="modal-title" id="metaModalLabel">${it.msg.editMetadata}</h3>
                         </div>
                         <div class="modal-body d-flex flex-column gap-3">
                             <span class="meta-entry-container d-flex flex-column gap-3">
@@ -123,19 +123,19 @@
                             <div class="row">
                                 <div class="col">
                                     <button type="button" onclick="addMeta()" class="btn btn-outline-primary btn-lg w-100">
-                                        Add Metadata Field
+                                        ${it.msg.addMetadataField}
                                     </button>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col">
                                     <button id="meta-cancel-button" type="button" class="btn btn-danger btn-lg w-100" data-bs-dismiss="modal" onclick="closeMetaModal()">
-                                        Cancel
+                                        ${it.msg.metadataCancel}
                                     </button>
                                 </div>
                                 <div class="col">
                                     <button id="meta-send-button" type="button" class="btn btn-primary btn-lg w-100">
-                                        Save
+                                        ${it.msg.metadataSave}
                                     </button>
                                 </div>
                             </div>
@@ -157,23 +157,23 @@
         <div class="col">
             <div class="form-floating">
                 <input type="text" required name="key" class="form-control m-0 instance-name-input" placeholder="loremipsum" />
-                <label>Key</label>
+                <label>${it.msg.metadataKey}</label>
             </div>
         </div>
         <div class="col">
             <div class="form-floating">
                 <input type="text" name="value" class="form-control m-0 instance-name-input" placeholder="loremipsum" />
-                <label>Value</label>
+                <label>${it.msg.metadataValue}</label>
             </div>
         </div>
         <div class="col-auto d-flex align-items-center">
             <div class="form-check">
                 <input type="checkbox" name="visible" class="form-check-input">
-                <label class="form-check-label">visible</label>
+                <label class="form-check-label">${it.msg.metadataVisible}</label>
             </div>
         </div>
         <div class="col-auto">
-            <button type="button" class="btn btn-danger h-100">Delete</button>
+            <button type="button" class="btn btn-danger h-100">${it.msg.metadataDelete}</button>
         </div>
     </div>
 </template>

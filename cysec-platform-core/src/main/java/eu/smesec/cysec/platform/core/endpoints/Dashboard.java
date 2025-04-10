@@ -288,14 +288,17 @@ public class Dashboard {
   @Path("/metadata/{id}")
   @Produces(MediaType.TEXT_HTML)
   public Response getMetadata(@PathParam("id") String coachId) {
+    Locale locale = LocaleUtils.fromString(context.getAttribute("locale").toString());
     String company = context.getAttribute("company").toString();
     FQCN fqcn = FQCN.fromString(coachId);
 
     try {
       List<CoachMetaData> metadata = getMetadata(company, fqcn);
 
+      DashboardMsg msg = new DashboardMsg(locale, 0, 0, 0); // Number of coaches is not relevant here, so we just set it to zero
       Map<String, Object> model = new HashMap<>();
       model.put("metadata", metadata);
+      model.put("msg", msg.getMessages());
 
       return Response.status(200)
           .entity(new Viewable("/dashboard/metadata", model))

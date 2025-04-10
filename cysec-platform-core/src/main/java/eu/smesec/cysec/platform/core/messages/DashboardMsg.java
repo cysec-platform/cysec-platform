@@ -60,5 +60,15 @@ public class DashboardMsg extends Message {
     messages.put("adminModalTitle", i18n.tr("Admin actions"));
     messages.put("adminModalExport", i18n.tr("Export"));
     messages.put("adminModalImport", i18n.tr("Import"));
+    messages.put("coachMeta", i18n.tr("meta"));
+    messages.put("editMetadata", i18n.tr("Edit Metadata"));
+    messages.put("addMetadataField", i18n.tr("Add Metadata Field"));
+    messages.put("metadataCancel", i18n.tr("Cancel"));
+    messages.put("metadataSave", i18n.tr("Save"));
+    messages.put("metadataDelete", i18n.tr("Delete"));
+    messages.put("metadataVisible", i18n.tr("visible"));
+    messages.put("metadataKey", i18n.tr("Field Name"));
+    messages.put("metadataValue", i18n.tr("Value"));
+
   }
 }
