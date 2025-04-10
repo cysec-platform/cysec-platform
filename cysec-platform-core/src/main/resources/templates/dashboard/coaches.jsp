@@ -109,30 +109,35 @@
                     </div>
                 </div>
             </div>
-            <div class="modal" id="meta-coach-modal" tabindex="-1" aria-hidden="true" aria-labelledby="metaModalLabel">
+            <div class="modal" id="meta-coach-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" aria-labelledby="metaModalLabel">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h3 class="modal-title" id="metaModalLabel">Edit Metadata</h3>
-                            <button type="button" onclick="closeMetaModal()"
-                                class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close">
-                            </button>
                         </div>
                         <div class="modal-body d-flex flex-column gap-3">
                             <span class="meta-entry-container d-flex flex-column gap-3">
                                 <!-- metadata entires dynamically loaded here -->
                             </span>
 
-                            <div class="row m-0">
-                                <button type="button" onclick="addMeta()" class="btn btn-outline-primary btn-lg">
-                                    Add Metadata
-                                </button>
+                            <div class="row">
+                                <div class="col">
+                                    <button type="button" onclick="addMeta()" class="btn btn-outline-primary btn-lg w-100">
+                                        Add Metadata Field
+                                    </button>
+                                </div>
                             </div>
-                            <div class="row m-0">
-                                <button id="meta-send-button" type="button" class="btn btn-primary btn-lg">
-                                    Save
-                                </button>
+                            <div class="row">
+                                <div class="col">
+                                    <button id="meta-cancel-button" type="button" class="btn btn-danger btn-lg w-100" data-bs-dismiss="modal" onclick="closeMetaModal()">
+                                        Cancel
+                                    </button>
+                                </div>
+                                <div class="col">
+                                    <button id="meta-send-button" type="button" class="btn btn-primary btn-lg w-100">
+                                        Save
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
