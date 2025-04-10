@@ -74,7 +74,7 @@ const registerDebugInfoShortcut = () => {
 }
 
 const toggleFlagged = () => {
-    const currentFlaggedState = !!$("#question-flag").data("flagged");
+    const currentFlaggedState = document.querySelector("#question-flag").getAttribute("data-flagged") === 'true';
     const url = buildUrl("/api/rest/coaches/" + fqcn + "/questions/" + qid + "/flag");
 
     fetch(url, {
