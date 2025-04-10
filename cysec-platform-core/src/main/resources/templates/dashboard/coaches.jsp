@@ -149,13 +149,17 @@
 
 <template id="meta-entry-template">
     <div class="row gx-3">
-        <div class="col form-floating">
-            <input type="text" required name="key" class="form-control m-0 instance-name-input" placeholder="loremipsum" />
-            <label>Key</label>
+        <div class="col">
+            <div class="form-floating">
+                <input type="text" required name="key" class="form-control m-0 instance-name-input" placeholder="loremipsum" />
+                <label>Key</label>
+            </div>
         </div>
-        <div class="col form-floating">
-            <input type="text" name="value" class="form-control m-0 instance-name-input" placeholder="loremipsum" />
-            <label>Value</label>
+        <div class="col">
+            <div class="form-floating">
+                <input type="text" name="value" class="form-control m-0 instance-name-input" placeholder="loremipsum" />
+                <label>Value</label>
+            </div>
         </div>
         <div class="col-auto d-flex align-items-center">
             <div class="form-check">
@@ -163,7 +167,7 @@
                 <label class="form-check-label">visible</label>
             </div>
         </div>
-        <div class="col-auto form-floating">
+        <div class="col-auto">
             <button type="button" class="btn btn-danger h-100">Delete</button>
         </div>
     </div>
