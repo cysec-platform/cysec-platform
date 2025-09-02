@@ -35,6 +35,7 @@ const init = () => {
         load();
     }
     registerDebugInfoShortcut();
+    registerNextShortcut();
 };
 
 const load = () => {
@@ -72,6 +73,14 @@ const registerDebugInfoShortcut = () => {
         }
     })
 }
+
+const registerNextShortcut = () => {
+    document.addEventListener("keydown", e => {
+        if (e.code === 'KeyN') {
+            document.querySelector("#next-button").onmousedown();
+        }
+    })
+};
 
 const toggleFlagged = () => {
     const currentFlaggedState = document.querySelector("#question-flag").getAttribute("data-flagged") === 'true';
