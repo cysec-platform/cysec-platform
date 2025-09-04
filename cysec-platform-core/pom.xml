@@ -286,17 +286,75 @@
             <version>1.5.0</version>
         </dependency>
 
-        <!--testing-->
+        <!--testing - Modern Test Stack with Minimal Dependencies-->
+        <!-- JUnit 5 (Jupiter) - Modern testing framework -->
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <version>2.0.2</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- JUnit 4 Vintage for backward compatibility during migration -->
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>5.10.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Mockito - Mocking framework -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.8.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Mockito JUnit Jupiter integration -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.8.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- PowerMock removed - migrated to Mockito 5.x static mocking -->
+        <!-- AssertJ - Fluent assertions -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.24.2</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- REST Assured - API testing -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>5.4.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- HTMLUnit - Lightweight UI testing -->
+        <dependency>
+            <groupId>net.sourceforge.htmlunit</groupId>
+            <artifactId>htmlunit</artifactId>
+            <version>2.70.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Testcontainers for database testing (optional, can be removed for slim SBOM) -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>1.19.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito2</artifactId>
-            <version>2.0.2</version>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.19.3</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- WireMock for mocking external services -->
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <version>2.35.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -379,26 +437,24 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.1</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>surefire-junit47</artifactId>
-                        <version>2.22.1</version>
-                    </dependency>
-                </dependencies>
+                <version>3.2.3</version>
                 <configuration>
                     <useSystemClassLoader>false</useSystemClassLoader>
                     <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                        <include>**/*TestCase.java</include>
                         <include>${runSuite}</include>
                     </includes>
-                    <argLine>@{argLine} ${argLine}</argLine>
+                    <argLine>@{argLine} ${argLine} -Dfile.encoding=UTF-8</argLine>
+                    <trimStackTrace>false</trimStackTrace>
+                    <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.3</version>
+                <version>0.8.11</version>
                 <configuration>
                     <append>true</append>
                 </configuration>
@@ -501,6 +557,317 @@
         </plugins>
     </reporting>
     <profiles>
+        <!-- Comprehensive Test Profile with Coverage -->
+        <profile>
+            <id>test-with-coverage</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- JaCoCo Coverage -->
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.11</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>check</id>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <rule>
+                                            <element>CLASS</element>
+                                            <limits>
+                                                <limit>
+                                                    <counter>LINE</counter>
+                                                    <value>COVEREDRATIO</value>
+                                                    <minimum>0.90</minimum>
+                                                </limit>
+                                                <limit>
+                                                    <counter>BRANCH</counter>
+                                                    <value>COVEREDRATIO</value>
+                                                    <minimum>0.85</minimum>
+                                                </limit>
+                                            </limits>
+                                        </rule>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Surefire for Unit Tests -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.2.3</version>
+                        <configuration>
+                            <includes>
+                                <include>**/unit/**/*Test.java</include>
+                                <include>**/unit/**/*Tests.java</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/integration/**</exclude>
+                                <exclude>**/e2e/**</exclude>
+                                <exclude>**/ui/**</exclude>
+                            </excludes>
+                            <argLine>@{argLine} -Dfile.encoding=UTF-8</argLine>
+                        </configuration>
+                    </plugin>
+                    <!-- Failsafe for Integration Tests -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>3.2.3</version>
+                        <configuration>
+                            <includes>
+                                <include>**/integration/**/*Test.java</include>
+                                <include>**/integration/**/*IT.java</include>
+                                <include>**/e2e/**/*Test.java</include>
+                                <include>**/e2e/**/*E2E.java</include>
+                            </includes>
+                            <argLine>@{argLine} -Dfile.encoding=UTF-8</argLine>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Unit Tests Only Profile -->
+        <profile>
+            <id>unit-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/unit/**/*Test.java</include>
+                            </includes>
+                            <excludes>
+                                <exclude>**/integration/**</exclude>
+                                <exclude>**/e2e/**</exclude>
+                                <exclude>**/ui/**</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Integration Tests Profile -->
+        <profile>
+            <id>integration-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>3.2.3</version>
+                        <configuration>
+                            <includes>
+                                <include>**/integration/**/*Test.java</include>
+                                <include>**/integration/**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- E2E Tests Profile -->
+        <profile>
+            <id>e2e-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>3.2.3</version>
+                        <configuration>
+                            <includes>
+                                <include>**/e2e/**/*Test.java</include>
+                                <include>**/e2e/**/*E2E.java</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- UI Tests Profile -->
+        <profile>
+            <id>ui-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>3.2.3</version>
+                        <configuration>
+                            <includes>
+                                <include>**/ui/**/*Test.java</include>
+                                <include>**/ui/**/*UITest.java</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Security Tests Profile -->
+        <profile>
+            <id>security-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/security/**/*Test.java</include>
+                                <include>**/security/**/*SecurityTest.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                    <!-- OWASP Dependency Check -->
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>9.0.7</version>
+                        <configuration>
+                            <failBuildOnCVSS>7</failBuildOnCVSS>
+                            <skipTestScope>false</skipTestScope>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- All Tests with Full Coverage Report -->
+        <profile>
+            <id>all-tests</id>
+            <build>
+                <plugins>
+                    <!-- JaCoCo must run first -->
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.11</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report-aggregate</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report-aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Unit tests -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.2.3</version>
+                        <configuration>
+                            <argLine>@{argLine} -Dfile.encoding=UTF-8</argLine>
+                        </configuration>
+                    </plugin>
+                    <!-- Integration tests -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>3.2.3</version>
+                        <configuration>
+                            <argLine>@{argLine} -Dfile.encoding=UTF-8</argLine>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Coverage report generation -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <version>3.12.1</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
         <profile>
             <id>release</id>
             <build>

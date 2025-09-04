@@ -19,74 +19,261 @@
  */
 package eu.smesec.cysec.platform.core.utils;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import eu.smesec.cysec.platform.bridge.generated.User;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 public class ValidatorTest {
-  @Test
-  public void testWord() {
-    Assert.assertTrue(Validator.validateWord("Muster"));
-    Assert.assertTrue(Validator.validateWord("Muster27"));
-    Assert.assertTrue(Validator.validateWord("Muster_27"));
-  }
 
-  @Test
-  public void testInvalidWord() {
-    Assert.assertFalse(Validator.validateWord(null));
-    Assert.assertFalse(Validator.validateWord("Hans Muster"));
-    Assert.assertFalse(Validator.validateWord("Hans/Muster"));
-    Assert.assertFalse(Validator.validateWord("HansMuster:pwd"));
-  }
+    private User testUser;
 
-  @Test
-  public void testWordSpace() {
-    Assert.assertTrue(Validator.validateWordSpace("Muster"));
-    Assert.assertTrue(Validator.validateWordSpace("Muster27"));
-    Assert.assertTrue(Validator.validateWordSpace("Muster_27"));
-    Assert.assertTrue(Validator.validateWordSpace("Muster 27"));
-  }
+    @BeforeEach
+    void setUp() {
+        testUser = new User();
+        testUser.setUsername("testuser");
+        testUser.setEmail("test@example.com");
+        testUser.setFirstname("John");
+        testUser.setSurname("Doe");
+        testUser.getRole().clear();
+        testUser.getRole().add("user");
+    }
 
-  @Test
-  public void testInvalidWordSpace() {
-    Assert.assertFalse(Validator.validateWordSpace("Hans/Muster"));
-    Assert.assertFalse(Validator.validateWordSpace("Hans / Muster"));
-    Assert.assertFalse(Validator.validateWordSpace("Hans Muster:pwd"));
-  }
+    @Test
+    void validateWord_shouldReturnTrueForValidWords() {
+        assertThat(Validator.validateWord("word")).isTrue();
+        assertThat(Validator.validateWord("Word123")).isTrue();
+        assertThat(Validator.validateWord("test_user")).isTrue();
+        assertThat(Validator.validateWord("123")).isTrue();
+        assertThat(Validator.validateWord("_underscore")).isTrue();
+        assertThat(Validator.validateWord("")).isTrue(); // Empty string matches \w*
+    }
 
-  @Test
-  public void testEmail() {
-    Assert.assertTrue(Validator.validateEmail("hans.muster@example.com"));
-    Assert.assertTrue(Validator.validateEmail("muster@example.com"));
-    Assert.assertTrue(Validator.validateEmail("hans.muster.lol@example.com"));
-    Assert.assertTrue(Validator.validateEmail("hans.muster@students.example.com"));
-  }
+    @Test
+    void validateWord_shouldReturnFalseForInvalidWords() {
+        assertThat(Validator.validateWord("word with space")).isFalse();
+        assertThat(Validator.validateWord("word-dash")).isFalse();
+        assertThat(Validator.validateWord("word.dot")).isFalse();
+        assertThat(Validator.validateWord("word@symbol")).isFalse();
+        assertThat(Validator.validateWord("word!")).isFalse();
+    }
 
-  @Test
-  public void testInvalidEmail() {
-    Assert.assertFalse(Validator.validateEmail("hans.muster.example.com"));
-    Assert.assertFalse(Validator.validateEmail("hans.muster@com"));
-    Assert.assertFalse(Validator.validateEmail("hans.muster@.com"));
-    Assert.assertFalse(Validator.validateEmail("@example.com"));
-    Assert.assertFalse(Validator.validateEmail("test.@example.com"));
-  }
+    @Test
+    void validateWord_shouldReturnFalseForNull() {
+        assertThat(Validator.validateWord(null)).isFalse();
+    }
 
-  @Test
-  public void testAnswer() {
-    Assert.assertTrue(Validator.validateAnswer("Hello World"));
-    Assert.assertTrue(Validator.validateAnswer("Answer: \"My answer. \""));
-    Assert.assertTrue(Validator.validateAnswer("answer 1 (Detailed explanation)"));
-  }
+    @ParameterizedTest
+    @ValueSource(strings = {"validword", "Word123", "test_user", "_start", "123numbers"})
+    void validateWord_shouldAcceptValidInputs(String input) {
+        assertThat(Validator.validateWord(input)).isTrue();
+    }
 
-  @Test
-  public void testInvalidAnswer() {
-    Assert.assertFalse(Validator.validateAnswer("Hello World!"));
-    Assert.assertFalse(Validator.validateAnswer("a&b"));
-    Assert.assertFalse(Validator.validateAnswer("<"));
-    Assert.assertFalse(Validator.validateAnswer(">"));
-    Assert.assertFalse(Validator.validateAnswer("hans/muster"));
-    Assert.assertFalse(Validator.validateAnswer(";hansmuster"));
-    Assert.assertFalse(Validator.validateAnswer("hansmuster?"));
-    Assert.assertFalse(Validator.validateAnswer("hansmuster*"));
-    Assert.assertFalse(Validator.validateAnswer("\"><script> </script><user name=\""));
-  }
+    @ParameterizedTest
+    @ValueSource(strings = {"word space", "word-dash", "word.dot", "word@email", "special!"})
+    void validateWord_shouldRejectInvalidInputs(String input) {
+        assertThat(Validator.validateWord(input)).isFalse();
+    }
+
+    @Test
+    void validateWordSpace_shouldReturnTrueForValidWordsWithSpaces() {
+        assertThat(Validator.validateWordSpace("word")).isTrue();
+        assertThat(Validator.validateWordSpace("word with spaces")).isTrue();
+        assertThat(Validator.validateWordSpace("Word123 Test")).isTrue();
+        assertThat(Validator.validateWordSpace("test_user name")).isTrue();
+        assertThat(Validator.validateWordSpace("123 456")).isTrue();
+        assertThat(Validator.validateWordSpace("")).isTrue();
+        assertThat(Validator.validateWordSpace(" ")).isTrue();
+    }
+
+    @Test
+    void validateWordSpace_shouldReturnFalseForInvalidCharacters() {
+        assertThat(Validator.validateWordSpace("word-dash")).isFalse();
+        assertThat(Validator.validateWordSpace("word.dot")).isFalse();
+        assertThat(Validator.validateWordSpace("word@symbol")).isFalse();
+        assertThat(Validator.validateWordSpace("word!")).isFalse();
+        assertThat(Validator.validateWordSpace("word\ttab")).isFalse();
+        assertThat(Validator.validateWordSpace("word\nnewline")).isFalse();
+    }
+
+    @Test
+    void validateWordSpace_shouldReturnFalseForNull() {
+        assertThat(Validator.validateWordSpace(null)).isFalse();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"John Doe", "Mary Jane", "First Middle Last", "Test User 123", "_underscore name"})
+    void validateWordSpace_shouldAcceptValidNames(String input) {
+        assertThat(Validator.validateWordSpace(input)).isTrue();
+    }
+
+    @Test
+    void validateEmail_shouldReturnTrueForValidEmails() {
+        assertThat(Validator.validateEmail("user@example.com")).isTrue();
+        assertThat(Validator.validateEmail("test.user@domain.org")).isTrue();
+        assertThat(Validator.validateEmail("name123@test.co.uk")).isTrue();
+        assertThat(Validator.validateEmail("simple@domain.io")).isTrue();
+    }
+
+    @Test
+    void validateEmail_shouldReturnFalseForInvalidEmails() {
+        assertThat(Validator.validateEmail("invalid.email")).isFalse();
+        assertThat(Validator.validateEmail("@domain.com")).isFalse();
+        assertThat(Validator.validateEmail("user@")).isFalse();
+        assertThat(Validator.validateEmail("user@domain")).isFalse();
+        assertThat(Validator.validateEmail("user name@domain.com")).isFalse();
+        assertThat(Validator.validateEmail("user@domain .com")).isFalse();
+        assertThat(Validator.validateEmail("")).isFalse();
+    }
+
+    @Test
+    void validateEmail_shouldReturnFalseForNull() {
+        assertThat(Validator.validateEmail(null)).isFalse();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "user@example.com",
+        "test.user@domain.org", 
+        "name123@test.co.uk",
+        "a@b.co",
+        "long.email.address@very.long.domain.name.com"
+    })
+    void validateEmail_shouldAcceptValidEmailFormats(String email) {
+        assertThat(Validator.validateEmail(email)).isTrue();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "invalid.email",
+        "@domain.com",
+        "user@",
+        "user@domain",
+        "user name@domain.com",
+        "user@domain .com"
+    })
+    void validateEmail_shouldRejectInvalidEmailFormats(String email) {
+        assertThat(Validator.validateEmail(email)).isFalse();
+    }
+
+    @Test
+    void validateAnswer_shouldReturnTrueForValidAnswers() {
+        assertThat(Validator.validateAnswer("This is a valid answer")).isTrue();
+        assertThat(Validator.validateAnswer("Answer with numbers 123")).isTrue();
+        assertThat(Validator.validateAnswer("Allowed chars: @#$%^()[]+=_-")).isTrue();
+        assertThat(Validator.validateAnswer("Simple answer")).isTrue();
+    }
+
+    @Test
+    void validateAnswer_shouldReturnFalseForForbiddenCharacters() {
+        assertThat(Validator.validateAnswer("Answer with /")).isFalse();
+        assertThat(Validator.validateAnswer("Answer with >")).isFalse();
+        assertThat(Validator.validateAnswer("Answer with <")).isFalse();
+        assertThat(Validator.validateAnswer("Answer with ;")).isFalse();
+        assertThat(Validator.validateAnswer("Answer with ?")).isFalse();
+        assertThat(Validator.validateAnswer("Answer with *")).isFalse();
+        assertThat(Validator.validateAnswer("Answer with !")).isFalse();
+        assertThat(Validator.validateAnswer("Answer with &")).isFalse();
+        assertThat(Validator.validateAnswer("Answer with {")).isFalse();
+        assertThat(Validator.validateAnswer("Answer with }")).isFalse();
+    }
+
+    @Test
+    void validateAnswer_shouldReturnFalseForNull() {
+        assertThat(Validator.validateAnswer(null)).isFalse();
+    }
+
+    @Test
+    void validateAnswer_shouldReturnFalseForEmptyString() {
+        assertThat(Validator.validateAnswer("")).isFalse();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"/", ">", "<", ";", "?", "*", "!", "&", "{", "}"})
+    void validateAnswer_shouldRejectEachForbiddenCharacter(String forbiddenChar) {
+        String answer = "Valid answer " + forbiddenChar;
+        assertThat(Validator.validateAnswer(answer)).isFalse();
+    }
+
+    @Test
+    void validateUser_shouldReturnTrueForValidUser() {
+        assertThat(Validator.validateUser(testUser)).isTrue();
+    }
+
+    @Test
+    void validateUser_shouldReturnFalseForInvalidUsername() {
+        testUser.setUsername("invalid username");
+        assertThat(Validator.validateUser(testUser)).isFalse();
+    }
+
+    @Test
+    void validateUser_shouldReturnFalseForInvalidEmail() {
+        testUser.setEmail("invalid.email");
+        assertThat(Validator.validateUser(testUser)).isFalse();
+    }
+
+    @Test
+    void validateUser_shouldReturnFalseForInvalidFirstname() {
+        testUser.setFirstname("John@invalid");
+        assertThat(Validator.validateUser(testUser)).isFalse();
+    }
+
+    @Test
+    void validateUser_shouldReturnFalseForInvalidSurname() {
+        testUser.setSurname("Doe!invalid");
+        assertThat(Validator.validateUser(testUser)).isFalse();
+    }
+
+    @Test
+    void validateUser_shouldReturnFalseForInvalidRole() {
+        testUser.getRole().clear();
+        testUser.getRole().add("invalid role");
+        assertThat(Validator.validateUser(testUser)).isFalse();
+    }
+
+    @Test
+    void validateUser_shouldHandleMultipleRoles() {
+        testUser.getRole().clear();
+        testUser.getRole().add("admin");
+        testUser.getRole().add("user");
+        testUser.getRole().add("moderator");
+        
+        assertThat(Validator.validateUser(testUser)).isTrue();
+    }
+
+    @Test
+    void validateUser_shouldReturnFalseForMixedValidInvalidRoles() {
+        testUser.getRole().clear();
+        testUser.getRole().add("admin");
+        testUser.getRole().add("invalid role");
+        testUser.getRole().add("user");
+        
+        assertThat(Validator.validateUser(testUser)).isFalse();
+    }
+
+    @Test
+    void validateUser_shouldHandleEdgeCases() {
+        User edgeUser = new User();
+        edgeUser.setUsername("a");
+        edgeUser.setEmail("a@b.co");
+        edgeUser.setFirstname("A");
+        edgeUser.setSurname("B");
+        edgeUser.getRole().clear();
+        edgeUser.getRole().add("r");
+        
+        assertThat(Validator.validateUser(edgeUser)).isTrue();
+    }
+
+    @Test
+    void validateUser_shouldAcceptEmptyNames() {
+        testUser.setFirstname("");
+        testUser.setSurname("");
+        
+        assertThat(Validator.validateUser(testUser)).isTrue();
+    }
 }

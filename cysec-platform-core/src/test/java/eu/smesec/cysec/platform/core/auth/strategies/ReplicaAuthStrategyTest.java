@@ -19,137 +19,242 @@
  */
 package eu.smesec.cysec.platform.core.auth.strategies;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import eu.smesec.cysec.platform.bridge.execptions.CacheException;
-import eu.smesec.cysec.platform.bridge.utils.TokenUtils;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.config.Config;
 
-import javax.annotation.security.RolesAllowed;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 import javax.servlet.ServletContext;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.GET;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
+import java.lang.reflect.Method;
+import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(TokenUtils.class)
-@PowerMockIgnore({"javax.xml.*"})
 public class ReplicaAuthStrategyTest {
-  private ReplicaAuthStrategy authStrategy;
 
-  private ServletContext context;
-  private CacheAbstractionLayer cal;
-  private Config config;
+    @Mock
+    private CacheAbstractionLayer cal;
+    @Mock
+    private Config config;
+    @Mock
+    private ServletContext context;
 
-  @Before
-  public void setup() {
-    context = PowerMockito.mock(ServletContext.class, Mockito.CALLS_REAL_METHODS);
-    cal = PowerMockito.mock(CacheAbstractionLayer.class);
-    config = PowerMockito.mock(Config.class);
-    PowerMockito.mockStatic(TokenUtils.class);
+    private ReplicaAuthStrategy authStrategy;
 
-    authStrategy = new ReplicaAuthStrategy(cal, config, context);
-  }
-
-  @Test
-  public void testHeaders() {
-    String[] headerNames = new String[] {
-        ReplicaAuthStrategy.REPLICA_TOKEN_HEADER
-    };
-    Assert.assertArrayEquals(headerNames, authStrategy.getHeaderNames().toArray());
-  }
-
-  @Test
-  public void testAuthenticationEmptyHeader() {
-    MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-    try {
-      authStrategy.authenticate(headers, null);
-      Assert.fail();
-    } catch (BadRequestException e) {
-      Assert.assertEquals("invalid auth header", e.getMessage());
-    } catch (CacheException e) {
-      e.printStackTrace();
-      Assert.fail();
-    }
-  }
-
-  @Test
-  public void testAuthenticationInvalidHeader() {
-    MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-    headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "lkuvlujgvhl");
-    try {
-      authStrategy.authenticate(headers, null);
-      Assert.fail();
-    } catch (BadRequestException e) {
-      Assert.assertEquals("company/token pattern does not match", e.getMessage());
-    } catch (CacheException e) {
-      e.printStackTrace();
-      Assert.fail();
-    }
-  }
-
-  @Test
-  public void testAuthenticate() {
-    MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-    headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "company/testtoken");
-    try {
-      PowerMockito.when(cal.getCompanyReplicaToken("company")).thenReturn("testtoken");
-
-      Assert.assertTrue(authStrategy.authenticate(headers, Resource.class.getMethod("get")));
-    } catch (Exception e) {
-      e.printStackTrace();
-      Assert.fail();
-    }
-  }
-
-  @Test
-  public void testAuthenticateFailed() {
-    MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-    headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "company/testtoken");
-    try {
-      PowerMockito.when(cal.getCompanyReplicaToken("company")).thenReturn("invalidToken");
-
-      Assert.assertFalse(authStrategy.authenticate(headers, Resource.class.getMethod("get")));
-    } catch (Exception e) {
-      e.printStackTrace();
-      Assert.fail();
-    }
-  }
-
-  @Test
-  public void testAuthenticateNoCompanyToken() {
-    MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-    headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "company/testtoken");
-    try {
-      PowerMockito.when(cal.getCompanyReplicaToken("company")).thenReturn(null);
-
-      Assert.assertFalse(authStrategy.authenticate(headers, Resource.class.getMethod("get")));
-    } catch (Exception e) {
-      e.printStackTrace();
-      Assert.fail();
-    }
-  }
-
-  // test endpoint to fake method annotation
-  private static class Resource {
-    @GET
-    public String get() {
-      return "GET";
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        authStrategy = new ReplicaAuthStrategy(cal, config, context);
     }
 
-    @RolesAllowed("admin")
-    public String getAdmin() {
-      return "GET";
+    @Test
+    void constructor_shouldSetProxyAuthToFalse() {
+        assertThat(authStrategy.isProxyAuth()).isFalse();
     }
-  }
+
+    @Test
+    void getHeaderNames_shouldReturnReplicaTokenHeader() {
+        List<String> headerNames = authStrategy.getHeaderNames();
+        
+        assertThat(headerNames).containsExactly("x-cysec-replica-token");
+    }
+
+    @Test
+    void authenticate_shouldThrowForMissingReplicaHeader() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        Method method = TestResource.class.getMethod("get");
+        
+        assertThatThrownBy(() -> authStrategy.authenticate(headers, method))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("invalid auth header");
+    }
+
+    @Test
+    void authenticate_shouldThrowForNullReplicaHeader() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, null);
+        Method method = TestResource.class.getMethod("get");
+        
+        assertThatThrownBy(() -> authStrategy.authenticate(headers, method))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("invalid auth header");
+    }
+
+    @Test
+    void authenticate_shouldThrowForInvalidTokenPattern() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "invalidtoken");
+        Method method = TestResource.class.getMethod("get");
+        
+        assertThatThrownBy(() -> authStrategy.authenticate(headers, method))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("company/token pattern does not match");
+    }
+
+    @Test
+    void authenticate_shouldThrowForMissingCompanyInPattern() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "/token");
+        Method method = TestResource.class.getMethod("get");
+        
+        assertThatThrownBy(() -> authStrategy.authenticate(headers, method))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("company/token pattern does not match");
+    }
+
+    @Test
+    void authenticate_shouldThrowForMissingTokenInPattern() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "company/");
+        Method method = TestResource.class.getMethod("get");
+        
+        assertThatThrownBy(() -> authStrategy.authenticate(headers, method))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("company/token pattern does not match");
+    }
+
+    @Test
+    void authenticate_shouldReturnFalseForMissingCompanyToken() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "testcompany/validtoken");
+        Method method = TestResource.class.getMethod("get");
+        
+        when(cal.getCompanyReplicaToken("testcompany")).thenReturn(null);
+        
+        boolean result = authStrategy.authenticate(headers, method);
+        
+        assertThat(result).isFalse();
+        verify(cal).getCompanyReplicaToken("testcompany");
+    }
+
+    @Test
+    void authenticate_shouldReturnFalseForEmptyCompanyToken() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "testcompany/validtoken");
+        Method method = TestResource.class.getMethod("get");
+        
+        when(cal.getCompanyReplicaToken("testcompany")).thenReturn("");
+        
+        boolean result = authStrategy.authenticate(headers, method);
+        
+        assertThat(result).isFalse();
+        verify(cal).getCompanyReplicaToken("testcompany");
+    }
+
+    @Test
+    void authenticate_shouldReturnFalseForMismatchedToken() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "testcompany/providedtoken");
+        Method method = TestResource.class.getMethod("get");
+        
+        when(cal.getCompanyReplicaToken("testcompany")).thenReturn("differenttoken");
+        
+        boolean result = authStrategy.authenticate(headers, method);
+        
+        assertThat(result).isFalse();
+        verify(cal).getCompanyReplicaToken("testcompany");
+    }
+
+    @Test
+    void authenticate_shouldSucceedWithValidToken() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "testcompany/correcttoken");
+        Method method = TestResource.class.getMethod("get");
+        
+        when(cal.getCompanyReplicaToken("testcompany")).thenReturn("correcttoken");
+        
+        boolean result = authStrategy.authenticate(headers, method);
+        
+        assertThat(result).isTrue();
+        verify(cal).getCompanyReplicaToken("testcompany");
+        verify(context).setAttribute("company", "testcompany");
+    }
+
+    @Test
+    void authenticate_shouldHandleComplexCompanyNames() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "company123/token456");
+        Method method = TestResource.class.getMethod("get");
+        
+        when(cal.getCompanyReplicaToken("company123")).thenReturn("token456");
+        
+        boolean result = authStrategy.authenticate(headers, method);
+        
+        assertThat(result).isTrue();
+        verify(context).setAttribute("company", "company123");
+    }
+
+    @Test
+    void authenticate_shouldHandleComplexTokens() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "testcompany/abc123-def456_ghi789");
+        Method method = TestResource.class.getMethod("get");
+        
+        when(cal.getCompanyReplicaToken("testcompany")).thenReturn("abc123-def456_ghi789");
+        
+        boolean result = authStrategy.authenticate(headers, method);
+        
+        assertThat(result).isTrue();
+        verify(context).setAttribute("company", "testcompany");
+    }
+
+    @Test
+    void authenticate_shouldHandleCacheException() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "testcompany/token");
+        Method method = TestResource.class.getMethod("get");
+        
+        when(cal.getCompanyReplicaToken("testcompany")).thenThrow(new CacheException("Cache error"));
+        
+        assertThatThrownBy(() -> authStrategy.authenticate(headers, method))
+                .isInstanceOf(CacheException.class)
+                .hasMessage("Cache error");
+    }
+
+    @Test
+    void authenticate_shouldValidateRegexPattern() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        // Test that the regex properly validates word characters for company name
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "test-company/token"); // hyphen should not match \w+
+        Method method = TestResource.class.getMethod("get");
+        
+        assertThatThrownBy(() -> authStrategy.authenticate(headers, method))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("company/token pattern does not match");
+    }
+
+    @Test
+    void authenticate_shouldHandleTokensWithSpecialCharacters() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER, "company/token-with-special_chars.123");
+        Method method = TestResource.class.getMethod("get");
+        
+        when(cal.getCompanyReplicaToken("company")).thenReturn("token-with-special_chars.123");
+        
+        boolean result = authStrategy.authenticate(headers, method);
+        
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void constants_shouldHaveExpectedValues() {
+        assertThat(ReplicaAuthStrategy.REPLICA_TOKEN_HEADER).isEqualTo("x-cysec-replica-token");
+    }
+
+    // Test resource class to simulate JAX-RS endpoints
+    private static class TestResource {
+        @GET
+        public String get() {
+            return "GET";
+        }
+    }
 }

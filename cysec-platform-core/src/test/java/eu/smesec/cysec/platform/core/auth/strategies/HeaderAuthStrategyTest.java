@@ -19,279 +19,267 @@
  */
 package eu.smesec.cysec.platform.core.auth.strategies;
 
-import eu.smesec.cysec.platform.bridge.execptions.LockedExpetion;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
+import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.generated.Locks;
 import eu.smesec.cysec.platform.bridge.generated.User;
 import eu.smesec.cysec.platform.core.cache.CacheAbstractionLayer;
 import eu.smesec.cysec.platform.core.config.Config;
 
-import javax.annotation.security.RolesAllowed;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 import javax.servlet.ServletContext;
 import javax.ws.rs.BadRequestException;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-
+import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.List;
 
 public class HeaderAuthStrategyTest {
-    private static final String cysec_header_username = "oidc_claim_preferred_username";
-    private static final String cysec_header_email = "oidc_claim_email";
-    private static final String cysec_header_company = "oidc_claim_company";
-    private static final String cysec_header_firstname = "oidc_claim_given_name";
-    private static final String cysec_header_lastname = "oidc_claim_family_name";
-    private static final String cysec_header_locale = "oidc_claim_locale";
+
+    @Mock
+    private CacheAbstractionLayer cal;
+    @Mock
+    private Config config;
+    @Mock
+    private ServletContext context;
 
     private HeaderAuthStrategy authStrategy;
 
-    private ServletContext context;
-    private CacheAbstractionLayer cal;
-    private Config config;
-
-    @Before
-    public void setup() {
-        context = PowerMockito.mock(ServletContext.class, Mockito.CALLS_REAL_METHODS);
-        cal = PowerMockito.mock(CacheAbstractionLayer.class);
-        config = PowerMockito.mock(Config.class);
-
-        PowerMockito.when(context.getContextPath()).thenReturn("/cysec");
-        PowerMockito.when(config.getStringValue("cysec", HeaderAuthStrategy.OIDC_NAME))
-                .thenReturn(cysec_header_username);
-        PowerMockito.when(config.getStringValue("cysec", HeaderAuthStrategy.OIDC_MAIL))
-                .thenReturn(cysec_header_email);
-        PowerMockito.when(config.getStringValue("cysec", HeaderAuthStrategy.OIDC_COMPANY))
-                .thenReturn(cysec_header_company);
-        PowerMockito.when(config.getStringValue("cysec", HeaderAuthStrategy.OIDC_FIRSTNAME))
-                .thenReturn(cysec_header_firstname);
-        PowerMockito.when(config.getStringValue("cysec", HeaderAuthStrategy.OIDC_LASTNAME))
-                .thenReturn(cysec_header_lastname);
-        PowerMockito.when(config.getStringValue("cysec", HeaderAuthStrategy.OIDC_LOCALE))
-                .thenReturn(cysec_header_locale);
-
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        
+        when(context.getContextPath()).thenReturn("/cysec");
+        when(config.getStringValue("cysec", HeaderAuthStrategy.OIDC_NAME)).thenReturn("x-username");
+        when(config.getStringValue("cysec", HeaderAuthStrategy.OIDC_MAIL)).thenReturn("x-email");
+        when(config.getStringValue("cysec", HeaderAuthStrategy.OIDC_COMPANY)).thenReturn("x-company");
+        when(config.getStringValue("cysec", HeaderAuthStrategy.OIDC_FIRSTNAME)).thenReturn("x-firstname");
+        when(config.getStringValue("cysec", HeaderAuthStrategy.OIDC_LASTNAME)).thenReturn("x-lastname");
+        when(config.getStringValue("cysec", HeaderAuthStrategy.OIDC_LOCALE)).thenReturn("x-locale");
+        
         authStrategy = new HeaderAuthStrategy(cal, config, context);
     }
 
     @Test
-    public void testHeaders() {
-        String[] headerNames = new String[]{
-                cysec_header_username,
-                cysec_header_email,
-                cysec_header_company
-        };
-        Assert.assertArrayEquals(headerNames, authStrategy.getHeaderNames().toArray());
+    void constructor_shouldSetProxyAuthToTrue() {
+        assertThat(authStrategy.isProxyAuth()).isTrue();
     }
 
     @Test
-    public void testAuthentication() {
-        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-        headers.add(cysec_header_username, "user");
-        headers.add(cysec_header_email, "user@example.com");
-        headers.add(cysec_header_company, "company");
-        try {
-            User user = PowerMockito.mock(User.class);
-            PowerMockito.when(user.getLock()).thenReturn(Locks.NONE);
-            PowerMockito.when(user.getLocale()).thenReturn(null);
-            PowerMockito.when(cal.getUserByName("company", "user")).thenReturn(user);
-
-            Assert.assertTrue(authStrategy.authenticate(headers, Resource.class.getMethod("get")));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+    void getHeaderNames_shouldReturnFirstThreeHeaders() {
+        List<String> headerNames = authStrategy.getHeaderNames();
+        
+        assertThat(headerNames).containsExactly("x-username", "x-email", "x-company");
     }
 
     @Test
-    public void testAuthenticationAdmin() {
+    void authenticate_shouldThrowForMissingUsernameHeader() throws Exception {
         MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-        headers.add(cysec_header_username, "user");
-        headers.add(cysec_header_email, "user@example.com");
-        headers.add(cysec_header_company, "company");
-        try {
-            User user = PowerMockito.mock(User.class);
-            PowerMockito.when(user.getLock()).thenReturn(Locks.NONE);
-            PowerMockito.when(user.getRole()).thenReturn(Collections.singletonList("admin"));
-            PowerMockito.when(user.getLocale()).thenReturn(null);
-            PowerMockito.when(cal.getUserByName("company", "user")).thenReturn(user);
-
-            Assert.assertTrue(authStrategy.authenticate(headers, Resource.class.getMethod("getAdmin")));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+        headers.add("x-email", "user@example.com");
+        headers.add("x-company", "testcompany");
+        Method method = TestResource.class.getMethod("get");
+        
+        assertThatThrownBy(() -> authStrategy.authenticate(headers, method))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("missing oidc fields x-username");
     }
 
     @Test
-    public void testAuthenticationNonUser() {
+    void authenticate_shouldThrowForEmptyUsernameHeader() throws Exception {
         MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-        headers.add(cysec_header_username, "user");
-        headers.add(cysec_header_email, "user@example.com");
-        headers.add(cysec_header_company, "company");
-        try {
-            PowerMockito.when(cal.getUserByName("company", "user")).thenReturn(null);
-            authStrategy.authenticate(headers, Resource.class.getMethod("get"));
-            Assert.fail();
-        } catch (BadRequestException e) {
-            Assert.assertEquals("User user not found in comapny company", e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+        headers.add("x-username", "");
+        headers.add("x-email", "user@example.com");
+        headers.add("x-company", "testcompany");
+        Method method = TestResource.class.getMethod("get");
+        
+        assertThatThrownBy(() -> authStrategy.authenticate(headers, method))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("missing oidc fields x-username");
     }
 
     @Test
-    public void testAuthenticationLockedPending() {
+    void authenticate_shouldThrowForMissingEmailHeader() throws Exception {
         MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-        headers.add(cysec_header_username, "user");
-        headers.add(cysec_header_email, "user@example.com");
-        headers.add(cysec_header_company, "company");
-        try {
-            User user = PowerMockito.mock(User.class);
-            PowerMockito.when(user.getLock()).thenReturn(Locks.PENDING);
-            PowerMockito.when(cal.getUserByName("company", "user")).thenReturn(user);
-
-            authStrategy.authenticate(headers, Resource.class.getMethod("get"));
-            Assert.fail();
-        } catch (LockedExpetion le) {
-            Assert.assertEquals("User user is currently locked: PENDING", le.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+        headers.add("x-username", "testuser");
+        headers.add("x-company", "testcompany");
+        Method method = TestResource.class.getMethod("get");
+        
+        assertThatThrownBy(() -> authStrategy.authenticate(headers, method))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("missing oidc fields x-email");
     }
 
     @Test
-    public void testAuthenticationLockedLocked() {
+    void authenticate_shouldThrowForMissingCompanyHeader() throws Exception {
         MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-        headers.add(cysec_header_username, "user");
-        headers.add(cysec_header_email, "user@example.com");
-        headers.add(cysec_header_company, "company");
-        try {
-            User user = PowerMockito.mock(User.class);
-            PowerMockito.when(user.getLock()).thenReturn(Locks.LOCKED);
-            PowerMockito.when(cal.getUserByName("company", "user")).thenReturn(user);
-
-            authStrategy.authenticate(headers, Resource.class.getMethod("get"));
-            Assert.fail();
-        } catch (LockedExpetion le) {
-            Assert.assertEquals("User user is currently locked: LOCKED", le.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+        headers.add("x-username", "testuser");
+        headers.add("x-email", "user@example.com");
+        Method method = TestResource.class.getMethod("get");
+        
+        assertThatThrownBy(() -> authStrategy.authenticate(headers, method))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("missing oidc fields x-company");
     }
 
     @Test
-    public void testAuthenticationForbidden() {
+    void authenticate_shouldSucceedWithValidHeaders() throws Exception {
         MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-        headers.add(cysec_header_username, "user");
-        headers.add(cysec_header_email, "user@example.com");
-        headers.add(cysec_header_company, "company");
-        try {
-            User user = PowerMockito.mock(User.class);
-            PowerMockito.when(user.getLock()).thenReturn(Locks.NONE);
-            PowerMockito.when(user.getRole()).thenReturn(Collections.emptyList());
-            PowerMockito.when(cal.getUserByName("company", "user")).thenReturn(user);
-
-            authStrategy.authenticate(headers, Resource.class.getMethod("getAdmin"));
-            Assert.fail();
-        } catch (ForbiddenException fe) {
-            Assert.assertEquals("user user does not have one of the required roles [admin]", fe.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+        headers.add("x-username", "testuser");
+        headers.add("x-email", "user@example.com");
+        headers.add("x-company", "testcompany");
+        headers.add("x-firstname", "Test");
+        headers.add("x-lastname", "User");
+        headers.add("x-locale", "en");
+        Method method = TestResource.class.getMethod("get");
+        
+        User existingUser = mock(User.class);
+        when(existingUser.getLock()).thenReturn(Locks.NONE);
+        when(existingUser.getRole()).thenReturn(Collections.emptyList());
+        when(existingUser.getLocale()).thenReturn("en");
+        when(existingUser.getUsername()).thenReturn("testuser");
+        
+        when(cal.existsCompany("testcompany")).thenReturn(true);
+        when(cal.getUserByEmail("testcompany", "user@example.com")).thenReturn(existingUser);
+        
+        boolean result = authStrategy.authenticate(headers, method);
+        
+        assertThat(result).isTrue();
+        verify(context).setAttribute("company", "testcompany");
+        verify(context).setAttribute("user", "testuser");
+        verify(context).setAttribute("locale", "en");
     }
 
     @Test
-    public void testMissingHeaders() {
+    void authenticate_shouldCreateCompanyForNewUser() throws Exception {
         MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-        headers.add(cysec_header_username, "user");
-        headers.add(cysec_header_email, "");
-        headers.add(cysec_header_company, "company");
-        try {
-            User user = PowerMockito.mock(User.class);
-            PowerMockito.when(user.getLock()).thenReturn(Locks.NONE);
-            PowerMockito.when(cal.getUserByName("company", "user")).thenReturn(user);
-
-            authStrategy.authenticate(headers, Resource.class.getMethod("get"));
-            Assert.fail();
-        } catch (BadRequestException fe) {
-            Assert.assertTrue(fe.getMessage().startsWith("missing oidc fields"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+        headers.add("x-username", "newuser");
+        headers.add("x-email", "newuser@example.com");
+        headers.add("x-company", "newcompany");
+        headers.add("x-firstname", "New");
+        headers.add("x-lastname", "User");
+        headers.add("x-locale", "de");
+        Method method = TestResource.class.getMethod("get");
+        
+        when(cal.existsCompany("newcompany")).thenReturn(false);
+        
+        // Extract credentials should succeed and trigger company creation
+        String[] credentials = authStrategy.extractCredentials(headers);
+        
+        assertThat(credentials).hasSize(4);
+        assertThat(credentials[0]).isEqualTo("newcompany");
+        assertThat(credentials[1]).isEqualTo("newuser");
+        assertThat(credentials[2]).isNull(); // No password for header auth
+        assertThat(credentials[3]).isEqualTo("de");
+        
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(cal).createCompany(eq("newcompany"), eq("newcompany"), userCaptor.capture());
+        
+        User capturedUser = userCaptor.getValue();
+        assertThat(capturedUser.getUsername()).isEqualTo("newuser");
+        assertThat(capturedUser.getEmail()).isEqualTo("newuser@example.com");
+        assertThat(capturedUser.getFirstname()).isEqualTo("New");
+        assertThat(capturedUser.getLocale()).isEqualTo("de");
+        assertThat(capturedUser.getRole()).contains("Admin");
     }
 
-    @Ignore
     @Test
-    public void testCreateNewCompany() {
+    void authenticate_shouldCreateUserInExistingCompany() throws Exception {
         MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-        headers.add(cysec_header_username, "user");
-        headers.add(cysec_header_email, "user@example.com");
-        headers.add(cysec_header_firstname, "Thomas");
-        headers.add(cysec_header_company, "company");
-        try {
-            User user = PowerMockito.mock(User.class);
-            PowerMockito.when(user.getLock()).thenReturn(Locks.LOCKED);
-            PowerMockito.when(cal.getUserByName("company", "user")).thenReturn(user);
-            PowerMockito.when(cal.existsCompany("company")).thenReturn(false);
-            // do nothing on company creation
-            PowerMockito.doNothing().when(cal).createCompany("company", "company", user);
-            authStrategy.authenticate(headers, Resource.class.getMethod("get"));
-
-        } catch (LockedExpetion le) {
-            Assert.assertEquals("User user is currently locked: LOCKED", le.getMessage());
-            Assert.fail();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+        headers.add("x-username", "newuser");
+        headers.add("x-email", "newuser@example.com");
+        headers.add("x-company", "existingcompany");
+        headers.add("x-firstname", "New");
+        headers.add("x-lastname", "User");
+        Method method = TestResource.class.getMethod("get");
+        
+        when(cal.existsCompany("existingcompany")).thenReturn(true);
+        when(cal.getUserByEmail("existingcompany", "newuser@example.com")).thenReturn(null);
+        
+        String[] credentials = authStrategy.extractCredentials(headers);
+        
+        assertThat(credentials[0]).isEqualTo("existingcompany");
+        assertThat(credentials[1]).isEqualTo("newuser");
+        
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(cal).createUser(eq("existingcompany"), userCaptor.capture());
+        
+        User capturedUser = userCaptor.getValue();
+        assertThat(capturedUser.getUsername()).isEqualTo("newuser");
+        assertThat(capturedUser.getEmail()).isEqualTo("newuser@example.com");
+        assertThat(capturedUser.getFirstname()).isEqualTo("New");
+        assertThat(capturedUser.getLock()).isEqualTo(Locks.NONE);
+        assertThat(capturedUser.getRole()).doesNotContain("Admin");
     }
 
-    @Ignore
     @Test
-    public void testCreateNewUserInExistingCompany() {
+    void authenticate_shouldHandleOptionalHeaders() throws Exception {
         MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
-        headers.add(cysec_header_username, "user2");
-        headers.add(cysec_header_email, "user2@example.com");
-        headers.add(cysec_header_firstname, "Hank");
-        headers.add(cysec_header_company, "company");
-        try {
-            User user = PowerMockito.mock(User.class);
-            PowerMockito.when(user.getLock()).thenReturn(Locks.LOCKED);
-            PowerMockito.when(cal.existsCompany("company")).thenReturn(true);
-            PowerMockito.when(cal.getUserByName("company", "user2")).thenReturn(user);
-            // do nothing on company creation
-            PowerMockito.doNothing().when(cal).createCompany("company", "company", user);
-            authStrategy.authenticate(headers, Resource.class.getMethod("get"));
-            // New users remain in locked state
-            Assert.fail();
-        } catch (LockedExpetion le) {
-            Assert.assertEquals("User user2 is currently locked: LOCKED", le.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
+        headers.add("x-username", "testuser");
+        headers.add("x-email", "user@example.com");
+        headers.add("x-company", "testcompany");
+        // Not providing optional headers (firstname, lastname, locale)
+        Method method = TestResource.class.getMethod("get");
+        
+        when(cal.existsCompany("testcompany")).thenReturn(true);
+        when(cal.getUserByEmail("testcompany", "user@example.com")).thenReturn(null);
+        
+        String[] credentials = authStrategy.extractCredentials(headers);
+        
+        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
+        verify(cal).createUser(eq("testcompany"), userCaptor.capture());
+        
+        User capturedUser = userCaptor.getValue();
+        assertThat(capturedUser.getUsername()).isEqualTo("testuser");
+        assertThat(capturedUser.getEmail()).isEqualTo("user@example.com");
+        assertThat(capturedUser.getFirstname()).isNull();
+        assertThat(capturedUser.getLocale()).isNull();
     }
 
-    // test endpoint to fake method annotation
-    private static class Resource {
+    @Test
+    void extractCredentials_shouldReturnCorrectFormat() throws Exception {
+        MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        headers.add("x-username", "testuser");
+        headers.add("x-email", "user@example.com");
+        headers.add("x-company", "testcompany");
+        headers.add("x-locale", "fr");
+        
+        when(cal.existsCompany("testcompany")).thenReturn(true);
+        when(cal.getUserByEmail("testcompany", "user@example.com")).thenReturn(mock(User.class));
+        
+        String[] credentials = authStrategy.extractCredentials(headers);
+        
+        assertThat(credentials).hasSize(4);
+        assertThat(credentials[0]).isEqualTo("testcompany");
+        assertThat(credentials[1]).isEqualTo("testuser");
+        assertThat(credentials[2]).isNull(); // No password for header auth
+        assertThat(credentials[3]).isEqualTo("fr");
+    }
+
+    @Test
+    void constants_shouldHaveExpectedValues() {
+        assertThat(HeaderAuthStrategy.OIDC_NAME).isEqualTo("cysec_header_username");
+        assertThat(HeaderAuthStrategy.OIDC_MAIL).isEqualTo("cysec_header_email");
+        assertThat(HeaderAuthStrategy.OIDC_COMPANY).isEqualTo("cysec_header_company");
+        assertThat(HeaderAuthStrategy.OIDC_FIRSTNAME).isEqualTo("cysec_header_firstname");
+        assertThat(HeaderAuthStrategy.OIDC_LASTNAME).isEqualTo("cysec_header_lastname");
+        assertThat(HeaderAuthStrategy.OIDC_LOCALE).isEqualTo("cysec_header_locale");
+    }
+
+    // Test resource class to simulate JAX-RS endpoints
+    private static class TestResource {
         @GET
         public String get() {
-            return "GET";
-        }
-
-        @RolesAllowed("admin")
-        public String getAdmin() {
             return "GET";
         }
     }

@@ -20,7 +20,11 @@
 package eu.smesec.cysec.platform.core;
 
 import eu.smesec.cysec.platform.core.utils.FileUtilsZipTest;
+import eu.smesec.cysec.platform.core.utils.FileUtilsTest;
+import eu.smesec.cysec.platform.core.utils.FileResponseTest;
 import eu.smesec.cysec.platform.core.utils.LocaleTest;
+import eu.smesec.cysec.platform.core.utils.LocaleUtilsTest;
+import eu.smesec.cysec.platform.core.utils.PathSegmentUtilsTest;
 import eu.smesec.cysec.platform.core.utils.ValidatorTest;
 import junit.framework.JUnit4TestAdapter;
 import junit.framework.TestSuite;
@@ -33,14 +37,22 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         FileUtilsZipTest.class,
+        FileUtilsTest.class,
+        FileResponseTest.class,
         LocaleTest.class,
+        LocaleUtilsTest.class,
+        PathSegmentUtilsTest.class,
         ValidatorTest.class,
 })
 public class MainUtilsSuite {
     public static junit.framework.Test suite() {
         final TestSuite s = new TestSuite();
         s.addTest(new JUnit4TestAdapter(FileUtilsZipTest.class));
+        s.addTest(new JUnit4TestAdapter(FileUtilsTest.class));
+        s.addTest(new JUnit4TestAdapter(FileResponseTest.class));
         s.addTest(new JUnit4TestAdapter(LocaleTest.class));
+        s.addTest(new JUnit4TestAdapter(LocaleUtilsTest.class));
+        s.addTest(new JUnit4TestAdapter(PathSegmentUtilsTest.class));
         s.addTest(new JUnit4TestAdapter(ValidatorTest.class));
         return s;
     }
