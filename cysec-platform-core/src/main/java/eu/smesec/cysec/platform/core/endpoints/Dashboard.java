@@ -149,11 +149,11 @@ public class Dashboard {
         if (mdKey.startsWith(MetadataUtils.MD_RECOMMENDED)) {
           // add all metadata belonging to RECOMMENDED, given:
           // Name, Description and Order present
-          logger.info("Adding recommendations");
+          logger.fine("Adding recommendations");
           recommendations.add(MetadataUtils.fromMd(md, Recommendation.class));
         } else if (mdKey.startsWith(MetadataUtils.MD_BADGES)) {
           // add all metadata belonging to BADGES
-          logger.info("Adding badges");
+          logger.fine("Adding badges");
           badges.add(MetadataUtils.fromMd(md, Badge.class));
         } else if (mdKey.startsWith(MetadataUtils.MD_LAST_SELECTED)) {
           lastSelected = MetadataUtils.fromMd(md, LastSelected.class);

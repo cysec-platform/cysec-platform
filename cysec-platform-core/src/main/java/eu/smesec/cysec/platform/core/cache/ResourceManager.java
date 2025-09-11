@@ -69,7 +69,7 @@ public class ResourceManager {
               Path file = dir.resolve(path);
               Files.createDirectories(file.getParent());
               Files.move(tempFile, file, StandardCopyOption.REPLACE_EXISTING); // override if exists
-              logger.info(
+              logger.fine(
                   "Copied file "
                       + path
                       + " from library "
