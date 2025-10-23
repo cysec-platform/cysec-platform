@@ -22,6 +22,7 @@ package eu.smesec.cysec.platform.core.cache;
 import eu.smesec.cysec.platform.bridge.FQCN;
 import eu.smesec.cysec.platform.bridge.ILibCal;
 import eu.smesec.cysec.platform.bridge.CoachLibrary;
+import eu.smesec.cysec.platform.bridge.QuestionAnswerState;
 import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.generated.Answer;
 import eu.smesec.cysec.platform.bridge.generated.Metadata;
@@ -31,6 +32,7 @@ import eu.smesec.cysec.platform.bridge.utils.Tuple;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
@@ -272,5 +274,10 @@ public class LibCal implements ILibCal {
   @Override
   public List<Tuple<FQCN, Question>> getActiveQuestionsWithFqcn() throws CacheException {
     return cal.getActiveQuestionsWithFqcn(getCompanyId(), FQCN_COMPANY);
+  }
+
+  @Override
+  public Map<String, QuestionAnswerState> getQuestionsAnsweredStates() throws CacheException {
+    return cal.getQuestionsAnsweredStates(getCompanyId(), FQCN_COMPANY);
   }
 }

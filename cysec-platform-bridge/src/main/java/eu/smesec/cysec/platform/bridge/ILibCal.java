@@ -28,6 +28,7 @@ import eu.smesec.cysec.platform.bridge.utils.Tuple;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -112,4 +113,6 @@ public interface ILibCal {
   void unregisterResources(String coachId) throws IOException;
 
   List<Tuple<FQCN, Question>> getActiveQuestionsWithFqcn() throws CacheException;
+
+  Map<String, QuestionAnswerState> getQuestionsAnsweredStates() throws CacheException;
 }

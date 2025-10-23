@@ -21,24 +21,14 @@ package eu.smesec.cysec.platform.core.cache;
 
 import eu.smesec.cysec.platform.bridge.FQCN;
 import eu.smesec.cysec.platform.bridge.CoachLibrary;
+import eu.smesec.cysec.platform.bridge.QuestionAnswerState;
 import eu.smesec.cysec.platform.bridge.execptions.CacheAlreadyExistsException;
 import eu.smesec.cysec.platform.bridge.execptions.CacheException;
 import eu.smesec.cysec.platform.bridge.execptions.CacheNotFoundException;
 import eu.smesec.cysec.platform.bridge.execptions.ElementAlreadyExistsException;
 import eu.smesec.cysec.platform.bridge.execptions.ElementNotFoundException;
 import eu.smesec.cysec.platform.bridge.execptions.TokenExpiredException;
-import eu.smesec.cysec.platform.bridge.generated.Answer;
-import eu.smesec.cysec.platform.bridge.generated.Answers;
-import eu.smesec.cysec.platform.bridge.generated.Audit;
-import eu.smesec.cysec.platform.bridge.generated.Audits;
-import eu.smesec.cysec.platform.bridge.generated.Company;
-import eu.smesec.cysec.platform.bridge.generated.FlaggedQuestion;
-import eu.smesec.cysec.platform.bridge.generated.Metadata;
-import eu.smesec.cysec.platform.bridge.generated.Mvalue;
-import eu.smesec.cysec.platform.bridge.generated.Question;
-import eu.smesec.cysec.platform.bridge.generated.Questionnaire;
-import eu.smesec.cysec.platform.bridge.generated.Token;
-import eu.smesec.cysec.platform.bridge.generated.User;
+import eu.smesec.cysec.platform.bridge.generated.*;
 import eu.smesec.cysec.platform.bridge.md.MetadataUtils;
 import eu.smesec.cysec.platform.bridge.md.State;
 import eu.smesec.cysec.platform.bridge.utils.Tuple;
@@ -1711,5 +1701,40 @@ public class CacheAbstractionLayer {
         return SubcoachHelper
                 .of(companyId, fqcn, this)
                 .insertSubcoachQuestions(questions);
+    }
+
+    /**
+     * Calculates a map with all active unique question IDs and the corresponding answered-state.
+     * @param companyId The id of the company
+     * @param fqcn The FQCN
+     * @return A map of unique question IDs and the corresponding answered state. The unique question ID has the format "$FQCN:@QID"
+     * @throws CacheException
+     */
+    public Map<String, QuestionAnswerState> getQuestionsAnsweredStates(String companyId, FQCN fqcn) throws CacheException {
+        List<Tuple<FQCN, Question>> activeQuestions = getActiveQuestionsWithFqcn(companyId, fqcn);
+        Set<QuestionType> relevantQuestionTypes = new HashSet<>();
+        relevantQuestionTypes.add(QuestionType.A);
+        relevantQuestionTypes.add(QuestionType.ASTAR);
+        relevantQuestionTypes.add(QuestionType.ASTAREXCL);
+        relevantQuestionTypes.add(QuestionType.DATE);
+        relevantQuestionTypes.add(QuestionType.TEXT);
+        relevantQuestionTypes.add(QuestionType.YESNO);
+        relevantQuestionTypes.add(QuestionType.SUBCOACH_INSTANTIATOR);
+
+        Map<String, QuestionAnswerState> states = new HashMap<>();
+        for (Tuple<FQCN, Question> activeQuestion : activeQuestions) {
+            Question question = activeQuestion.getSecond();
+            Answer answer = getAnswer(companyId, activeQuestion.getFirst(), question.getId());
+            String uniqueId = activeQuestion.getFirst().toString() + ":" + question.getId();
+            if (relevantQuestionTypes.contains(question.getType()) && answer == null) {
+                states.put(uniqueId, QuestionAnswerState.UNANSWERED);
+            } else if (answer == null) {
+                states.put(uniqueId, QuestionAnswerState.NEUTRAL);
+            } else {
+                states.put(uniqueId, QuestionAnswerState.ANSWERED);
+            }
+        }
+
+        return states;
     }
 }

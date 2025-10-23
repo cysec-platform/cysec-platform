@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="66px" height="66px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>status/workinprogress</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="11 0 20.5262794 5.5 20.5262794 16.5 11 22 1.47372056 16.5 1.47372056 5.5"></polygon>
+    </defs>
+    <linearGradient id="gradient-fill" x1="0" y1="0" x2="22" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#ffde6d" />
+        <stop offset="0.14285714285714285" stop-color="#ffd762" />
+        <stop offset="0.2857142857142857" stop-color="#fed157" />
+        <stop offset="0.42857142857142855" stop-color="#feca4c" />
+        <stop offset="0.5714285714285714" stop-color="#fec341" />
+        <stop offset="0.7142857142857143" stop-color="#febc35" />
+        <stop offset="0.8571428571428571" stop-color="#ffb529" />
+        <stop offset="1" stop-color="#ffad1b" />
+
+    </linearGradient>
+    <g id="status/workinprogress" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Polygon-Copy-5" stroke-linejoin="square">
+            <path stroke="#FFFFFF" stroke-width="1.5" d="M11,0.866025404 L2.22372056,5.9330127 L2.22372056,16.0669873 L11,21.1339746 L19.7762794,16.0669873 L19.7762794,5.9330127 L11,0.866025404 Z" fill="url(#gradient-fill)" fill-rule="evenodd"></path>
+            <path stroke="#001921" stroke-width="0.5" d="M11,0.288675135 L1.72372056,5.64433757 L1.72372056,16.3556624 L11,21.7113249 L20.2762794,16.3556624 L20.2762794,5.64433757 L11,0.288675135 Z"></path>
+        </g>
+    </g>
+</svg>

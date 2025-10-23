@@ -11,6 +11,9 @@
                 <c:set var="answer" value="${it.answers.get(active)}" />
                 <c:set var="questionIdUnique" value="${questionFqcn.toString()}:${question.getId()}" />
                 <c:set var="isFlagged" value="${it.flagStatus.get(questionIdUnique)}" />
+                <c:set var="answeredState" value="${it.questionAnsweredStates.get(questionIdUnique)}" />
+                <c:set var="answerMissing" value='${answeredState.toString().equals("UNANSWERED")}' />
+                <c:set var="answered" value='${answeredState.toString().equals("ANSWERED")}' />
                 <c:set var="aid" value="${question.getId()}"/>
 
                 <c:set var="text"> <c:out value="${question.getText()}"/></c:set> <%-- use c:out to escape strings --%>
@@ -27,13 +30,23 @@
                 >
                     <img
                         class="pagination-img"
-                        src="${baseUrl}/assets/${it.question.getId() == aid && it.fqcn.toString() == questionFqcn
-                            ? 'status_in_progress.png'
-                            : isFlagged
-                                    ? 'status_flagged.png'
-                                    : answer != null
-                                        ? 'status_done.png'
-                                        : 'status_empty.png'}"
+                        <c:choose>
+                            <c:when test="${it.question.getId() == aid && it.fqcn.toString() == questionFqcn}">
+                                src="${baseUrl}/assets/status_in_progress.png"
+                            </c:when>
+                            <c:when test="${isFlagged}">
+                                src="${baseUrl}/assets/status_flagged.png"
+                            </c:when>
+                            <c:when test="${answerMissing}">
+                                src="${baseUrl}/assets/status_unanswered.png"
+                            </c:when>
+                            <c:when test="${answered}">
+                                src="${baseUrl}/assets/status_done.png"
+                            </c:when>
+                            <c:otherwise>
+                                src="${baseUrl}/assets/status_empty.png"
+                            </c:otherwise>
+                        </c:choose>
                     >
                 </a>
             </c:forEach>

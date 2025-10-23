@@ -633,6 +633,7 @@ public class Coaches {
       model.put("answers", answers);
       model.put("flagStatus", flagStatus);
       model.put("flagStatusKey", fqcn + ":" + question.getId()); // Needed for Flag Status lookup to work.
+      model.put("questionAnsweredStates", cal.getQuestionsAnsweredStates(companyId, parentFqcn));
       model.put("aidList", answer != null && answer.getAidList() != null
           ? Arrays.asList(answer.getAidList().split(" "))
           : Arrays.asList());
